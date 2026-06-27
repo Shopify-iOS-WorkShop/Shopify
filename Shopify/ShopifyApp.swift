@@ -6,12 +6,12 @@
 //
 
 import SwiftUI
-
+import Home
 @main
 struct ShopifyApp: App {
     var body: some Scene {
         WindowGroup {
-            NetworkTestView()
+            HomeView()
         }
     }
 }
