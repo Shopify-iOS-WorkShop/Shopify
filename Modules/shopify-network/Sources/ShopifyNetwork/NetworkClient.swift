@@ -1,13 +1,12 @@
 //
 //  NetworkClient.swift
-//
+//  Shopify
 //
 //  Created by Mazen Amr on 27/06/2026.
 //
 
 import Foundation
 public protocol NetworkClient {
-    @available(iOS 13.0.0, *)
     func request<T: Decodable>(endpoint: Endpoint) async throws -> T
 }
 
@@ -18,7 +17,6 @@ public class URLSessionNetworkClient: NetworkClient {
         self.session = session
     }
     
-    @available(iOS 13.0.0, *)
     public func request<T: Decodable>(endpoint: Endpoint) async throws -> T {
         guard let request = endpoint.urlRequest else {
             throw NetworkError.invalidURL

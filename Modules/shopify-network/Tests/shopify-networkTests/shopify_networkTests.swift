@@ -1,7 +1,7 @@
 import XCTest
-@testable import Network
+@testable import shopify_network
 
-final class NetworkTests: XCTestCase {
+final class shopify_networkTests: XCTestCase {
     func testExample() throws {
         // XCTest Documentation
         // https://developer.apple.com/documentation/xctest
