@@ -6,6 +6,7 @@
 //
 
 import Foundation
+@available(iOS 13.0.0, *)
 public protocol AuthRepositoryInterface {
     func login(email: String, password: String) async throws -> AuthUser
     func register(email: String, password: String, name: String) async throws -> AuthUser
