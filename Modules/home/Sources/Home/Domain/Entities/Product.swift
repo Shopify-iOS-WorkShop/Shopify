@@ -7,6 +7,7 @@
 
 import Foundation
 
+
 public struct Product: Identifiable {
     public let id: String
     public let title: String
