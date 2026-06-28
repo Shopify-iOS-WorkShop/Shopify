@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 public struct SectionHeaderView: View {
     public let title: String
     public let hasViewAll: Bool

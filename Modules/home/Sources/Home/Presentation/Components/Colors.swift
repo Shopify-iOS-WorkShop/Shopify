@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 enum DS {
     static let red        = Color(hex: "#E8193C")
     static let navy       = Color(hex: "#1C1F3B")
@@ -13,6 +14,7 @@ enum DS {
     static let cardBG     = Color.white
     static let textPri    = Color(hex: "#111111")
     static let textSec    = Color(hex: "#888888")
+    static let lightGray  = Color(hex: "#D9D9D9")
 }
 
 extension Color {

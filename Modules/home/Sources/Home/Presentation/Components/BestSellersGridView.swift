@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 public struct BestSellersGridView: View {
     public let products: [Product]
     private let columns = [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)]

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 public struct CategoryCardView: View {
     public let category: Category
 

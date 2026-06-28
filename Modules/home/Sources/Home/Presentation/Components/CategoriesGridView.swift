@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 public struct CategoriesGridView: View {
     public let categories: [Category]
     private let columns = [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)]
