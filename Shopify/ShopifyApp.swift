@@ -7,11 +7,15 @@
 
 import SwiftUI
 import Home
+import ShopifyNetwork
 @main
 struct ShopifyApp: App {
     var body: some Scene {
         WindowGroup {
-            HomeView()
+            let client = URLSessionNetworkClient()
+            let repo = HomeRepository(networkClient: client)
+            let viewModel = HomeViewModel(repository: repo)
+            HomeView(viewModel: viewModel)
         }
     }
 }

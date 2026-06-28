@@ -11,14 +11,24 @@ let package = Package(
         .library(
             name: "Home",
             targets: ["Home"]),
+    ]
+    ,dependencies: [
+        .package(path: "../shopify-network")
     ],
     targets: [
-        // Targets are the basic building blocks of a package, defining a module or a test suite.
-        // Targets can depend on other targets in this package and products from dependencies.
-        .target(
-            name: "Home"),
-        .testTarget(
-            name: "HomeTests",
-            dependencies: ["Home"]),
-    ]
+            .target(
+                name: "Home",
+                dependencies: [
+                    // Explicitly tells SPM: "Look for the product 'ShopifyNetwork' inside the package 'shopify-network'"
+                    .product(name: "ShopifyNetwork", package: "shopify-network")
+                ]
+            ),
+            .testTarget(
+                name: "HomeTests",
+                dependencies: [
+                    "Home",
+                    .product(name: "ShopifyNetwork", package: "shopify-network")
+                ]
+            ),
+        ]
 )
