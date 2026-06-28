@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		31A1577E2FEFFBF50080AC8E /* ShopifyNetwork in Frameworks */ = {isa = PBXBuildFile; productRef = 31A1577D2FEFFBF50080AC8E /* ShopifyNetwork */; };
 		78BFEC8B2FEFCB6800358550 /* ShopifyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78BFEC8A2FEFCB6800358550 /* ShopifyApp.swift */; };
 		78BFEC8D2FEFCB6800358550 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78BFEC8C2FEFCB6800358550 /* ContentView.swift */; };
 		78BFEC8F2FEFCB6A00358550 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 78BFEC8E2FEFCB6A00358550 /* Assets.xcassets */; };
@@ -26,17 +27,26 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				31A1577E2FEFFBF50080AC8E /* ShopifyNetwork in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		31A1577C2FEFFBF50080AC8E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		78BFEC7E2FEFCB6800358550 = {
 			isa = PBXGroup;
 			children = (
 				78BFEC892FEFCB6800358550 /* Shopify */,
 				78BFEC882FEFCB6800358550 /* Products */,
+				31A1577C2FEFFBF50080AC8E /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -83,6 +93,9 @@
 			dependencies = (
 			);
 			name = Shopify;
+			packageProductDependencies = (
+				31A1577D2FEFFBF50080AC8E /* ShopifyNetwork */,
+			);
 			productName = Shopify;
 			productReference = 78BFEC872FEFCB6800358550 /* Shopify.app */;
 			productType = "com.apple.product-type.application";
@@ -339,6 +352,13 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		31A1577D2FEFFBF50080AC8E /* ShopifyNetwork */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ShopifyNetwork;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 78BFEC7F2FEFCB6800358550 /* Project object */;
 }

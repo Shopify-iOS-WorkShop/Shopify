@@ -11,7 +11,7 @@ import SwiftUI
 struct ShopifyApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            NetworkTestView()
         }
     }
 }
