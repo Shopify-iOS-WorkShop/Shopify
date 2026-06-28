@@ -31,6 +31,4 @@ struct PrimaryButton: View {
     }
 }
 
-#Preview {
-    PrimaryButton()
-}
+
