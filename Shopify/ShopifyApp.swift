@@ -1,17 +1,31 @@
-//
-//  ShopifyApp.swift
-//  Shopify
-//
-//  Created by Ahmed Elkady on 27/06/2026.
-//
-
 import SwiftUI
+import Auth
+import Firebase
 
 @main
 struct ShopifyApp: App {
+    init() {
+        if FirebaseApp.app() == nil {
+            FirebaseApp.configure()
+        }
+    }
+
     var body: some Scene {
         WindowGroup {
-            NetworkTestView()
+            if #available(iOS 13.0.0, *) {
+                RegistrationView(
+                    viewModel: RegistrationViewModel(
+                        registerUseCase: RegisterUseCase(repository: AuthRepository()),
+                        googleSignInUseCase: GoogleSignInUseCase(repository: AuthRepository()),
+                        continueAsGuestUseCase: ContinueAsGuestUseCase()
+                    ),
+                    onNavigateToLogin: {
+                        print("Navigate to login clicked")
+                    }
+                )
+            } else {
+                Text("Unsupported iOS version")
+            }
         }
     }
 }

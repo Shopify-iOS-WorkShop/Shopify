@@ -1,9 +1,9 @@
 // The Swift Programming Language
 // https://docs.swift.org/swift-book
 	
- public typealias AuthUserEntity = AuthUser
+public typealias AuthUserEntity = AuthUser
 
-@_exported import protocol Auth.AuthRepositoryInterface
+@available(iOS 13.0.0, *)
 public enum AuthRepositoryFactory {
     public static func make() -> AuthRepositoryInterface {
         AuthRepository()

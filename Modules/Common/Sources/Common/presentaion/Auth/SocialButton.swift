@@ -7,11 +7,16 @@
 
 import SwiftUI
 
-struct SocialButton: View {
+public struct SocialButton: View {
     let iconName: String
     let action: () -> Void
+
+    public init(iconName: String, action: @escaping () -> Void) {
+        self.iconName = iconName
+        self.action = action
+    }
     
-    var body: some View {
+    public var body: some View {
         Button(action: action) {
             Image(iconName)
                 .resizable()

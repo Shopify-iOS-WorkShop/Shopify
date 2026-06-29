@@ -14,10 +14,16 @@ import Common
 public struct RegistrationView: View {
     @ObservedObject var viewModel: RegistrationViewModel
     var onNavigateToLogin: () -> Void
+    var onContinueAsGuest: (UserSession) -> Void
 
-    public init(viewModel: RegistrationViewModel, onNavigateToLogin: @escaping () -> Void) {
+    public init(
+        viewModel: RegistrationViewModel,
+        onNavigateToLogin: @escaping () -> Void,
+        onContinueAsGuest: @escaping (UserSession) -> Void = { _ in }
+    ) {
         self.viewModel = viewModel
         self.onNavigateToLogin = onNavigateToLogin
+        self.onContinueAsGuest = onContinueAsGuest
     }
 
     public var body: some View {
@@ -100,6 +106,17 @@ public struct RegistrationView: View {
                             .fontWeight(.bold)
                             .foregroundColor(Color(red: 233 / 255.0, green: 69 / 255.0, blue: 96 / 255.0)) // Onboarding theme color
                     }
+                }
+                .padding(.bottom, 16)
+                
+                // Guest Mode Link
+                Button(action: {
+                    onContinueAsGuest(viewModel.continueAsGuest())
+                }) {
+                    Text("Continue as Guest")
+                        .fontWeight(.medium)
+                        .foregroundColor(.gray)
+                        .underline()
                 }
                 .padding(.bottom, 32)
             }
