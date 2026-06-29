@@ -12,20 +12,8 @@ struct ShopifyApp: App {
 
     var body: some Scene {
         WindowGroup {
-            if #available(iOS 13.0.0, *) {
-                RegistrationView(
-                    viewModel: RegistrationViewModel(
-                        registerUseCase: RegisterUseCase(repository: AuthRepository()),
-                        googleSignInUseCase: GoogleSignInUseCase(repository: AuthRepository()),
-                        continueAsGuestUseCase: ContinueAsGuestUseCase()
-                    ),
-                    onNavigateToLogin: {
-                        print("Navigate to login clicked")
-                    }
-                )
-            } else {
-                Text("Unsupported iOS version")
-            }
+            ContentView()
+                
         }
     }
 }
