@@ -8,6 +8,7 @@
 import SwiftUI
 import Home
 import ShopifyNetwork
+import ProductListing
 @main
 struct ShopifyApp: App {
     var body: some Scene {
@@ -15,7 +16,9 @@ struct ShopifyApp: App {
             let client = URLSessionNetworkClient()
             let repo = HomeRepository(networkClient: client)
             let viewModel = HomeViewModel(repository: repo)
-            HomeView(viewModel: viewModel)
+            NavigationStack {
+                ProductListingView(title: "Women's Tops")
+            }
         }
     }
 }

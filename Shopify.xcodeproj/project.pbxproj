@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		31A1577E2FEFFBF50080AC8E /* ShopifyNetwork in Frameworks */ = {isa = PBXBuildFile; productRef = 31A1577D2FEFFBF50080AC8E /* ShopifyNetwork */; };
 		31A157822FF01A740080AC8E /* Home in Frameworks */ = {isa = PBXBuildFile; productRef = 31A157812FF01A740080AC8E /* Home */; };
+		31FB03F32FF2FD2F00EE8817 /* ProductListing in Frameworks */ = {isa = PBXBuildFile; productRef = 31FB03F22FF2FD2F00EE8817 /* ProductListing */; };
 		78BFEC8B2FEFCB6800358550 /* ShopifyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78BFEC8A2FEFCB6800358550 /* ShopifyApp.swift */; };
 		78BFEC8D2FEFCB6800358550 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78BFEC8C2FEFCB6800358550 /* ContentView.swift */; };
 		78BFEC8F2FEFCB6A00358550 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 78BFEC8E2FEFCB6A00358550 /* Assets.xcassets */; };
@@ -30,6 +31,7 @@
 			files = (
 				31A1577E2FEFFBF50080AC8E /* ShopifyNetwork in Frameworks */,
 				31A157822FF01A740080AC8E /* Home in Frameworks */,
+				31FB03F32FF2FD2F00EE8817 /* ProductListing in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -98,6 +100,7 @@
 			packageProductDependencies = (
 				31A1577D2FEFFBF50080AC8E /* ShopifyNetwork */,
 				31A157812FF01A740080AC8E /* Home */,
+				31FB03F22FF2FD2F00EE8817 /* ProductListing */,
 			);
 			productName = Shopify;
 			productReference = 78BFEC872FEFCB6800358550 /* Shopify.app */;
@@ -292,6 +295,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -320,6 +324,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -364,6 +369,10 @@
 		31A157812FF01A740080AC8E /* Home */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Home;
+		};
+		31FB03F22FF2FD2F00EE8817 /* ProductListing */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ProductListing;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
