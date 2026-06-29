@@ -10,7 +10,20 @@ import Auth
 
 struct ContentView: View {
     var body: some View {
-    LoginView()
+        let repo = AuthRepositoryFactory.make()
+        let loginUseCase = LoginUseCase(repository: repo)
+        let googleUseCase = GoogleSignInUseCase(repository: repo)
+        
+        let loginViewModel = LoginViewModel(
+            loginUseCase: loginUseCase,
+            googleSignInUseCase: googleUseCase,
+        )
+        
+        LoginView(
+            viewModel: loginViewModel,
+            onNavigateToSignUp: {},
+            onLoginSuccess: {}
+        )
     }
 }
 
