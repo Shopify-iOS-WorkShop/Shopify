@@ -14,6 +14,8 @@ final class GoogleSignInDataSource {
 
     @MainActor
     func signIn() async throws -> AuthUser {
+        try configureGoogleSignInIfNeeded()
+
         guard
             let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
             let rootViewController = windowScene.windows.first?.rootViewController
@@ -37,11 +39,29 @@ final class GoogleSignInDataSource {
         let firebaseResult = try await Auth.auth().signIn(with: credential)
         return firebaseResult.user.toDomain()
     }
+
+    private func configureGoogleSignInIfNeeded() throws {
+        if GIDSignIn.sharedInstance.configuration != nil {
+            return
+        }
+
+        guard
+            let path = Bundle.main.path(forResource: "GoogleService-Info", ofType: "plist"),
+            let config = NSDictionary(contentsOfFile: path),
+            let clientID = config["CLIENT_ID"] as? String,
+            !clientID.isEmpty
+        else {
+            throw AuthDataError.missingGoogleClientID
+        }
+
+        GIDSignIn.sharedInstance.configuration = GIDConfiguration(clientID: clientID)
+    }
 }
 
 enum AuthDataError: LocalizedError {
     case missingRootViewController
     case missingGoogleToken
+    case missingGoogleClientID
 
     var errorDescription: String? {
         switch self {
@@ -49,6 +69,8 @@ enum AuthDataError: LocalizedError {
             return "Unable to present Google sign-in screen."
         case .missingGoogleToken:
             return "Google sign-in token is missing."
+        case .missingGoogleClientID:
+            return "Google Sign-In client ID is missing from GoogleService-Info.plist."
         }
     }
 }
