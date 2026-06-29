@@ -16,6 +16,7 @@ public struct AuthUser: Equatable {
     public let providerID: String
     public let creationDate: Date?
     public let lastSignInDate: Date?
+    public var shopifyCustomerID: String?
 
     public init(
         uid: String,
@@ -26,7 +27,8 @@ public struct AuthUser: Equatable {
         phoneNumber: String?,
         providerID: String,
         creationDate: Date?,
-        lastSignInDate: Date?
+        lastSignInDate: Date?,
+        shopifyCustomerID: String? = nil
     ) {
         self.uid = uid
         self.email = email
@@ -37,5 +39,6 @@ public struct AuthUser: Equatable {
         self.providerID = providerID
         self.creationDate = creationDate
         self.lastSignInDate = lastSignInDate
+        self.shopifyCustomerID = shopifyCustomerID
     }
 }

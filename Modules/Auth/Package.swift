@@ -6,7 +6,8 @@ import PackageDescription
 let package = Package(
     name: "Auth",
     platforms: [
-        .iOS(.v15)
+        .iOS(.v15),
+        .macOS(.v10_15)
     ],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
@@ -18,7 +19,8 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/firebase/firebase-ios-sdk.git", .upToNextMajor(from: "10.0.0")),
         .package(url: "https://github.com/google/GoogleSignIn-iOS.git", .upToNextMajor(from: "7.0.0")),
-        .package(path: "../Common")
+        .package(path: "../Common"),
+        .package(path: "../shopify-network")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -28,7 +30,8 @@ let package = Package(
             dependencies: [
                 "Common",
                 .product(name: "FirebaseAuth", package: "firebase-ios-sdk"),
-                .product(name: "GoogleSignIn", package: "GoogleSignIn-iOS")
+                .product(name: "GoogleSignIn", package: "GoogleSignIn-iOS"),
+                .product(name: "ShopifyNetwork", package: "shopify-network")
             ]
         ),
         .testTarget(
