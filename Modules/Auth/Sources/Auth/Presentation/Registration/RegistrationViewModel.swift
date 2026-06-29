@@ -12,6 +12,7 @@ import Combine
 public final class RegistrationViewModel: ObservableObject {
 
     // MARK: - Input Fields
+    @Published public var fullName: String        = ""
     @Published public var firstName: String       = ""
     @Published public var lastName: String        = ""
     @Published public var email: String           = ""
@@ -43,10 +44,9 @@ public final class RegistrationViewModel: ObservableObject {
 
     // MARK: - Computed Validation
     public var isFormValid: Bool {
-        !firstName.trimmingCharacters(in: .whitespaces).isEmpty &&
-        !lastName.trimmingCharacters(in: .whitespaces).isEmpty  &&
-        isValidEmail(email)                                      &&
-        password.count >= 6                                      &&
+        isNameValid &&
+        isValidEmail(email) &&
+        password.count >= 6 &&
         password == confirmPassword
     }
 
@@ -60,6 +60,11 @@ public final class RegistrationViewModel: ObservableObject {
         return password.count >= 6 ? nil : "Password must be at least 6 characters"
     }
 
+    public var emailValidationError: String? {
+        guard !email.isEmpty else { return nil }
+        return isValidEmail(email) ? nil : "Please enter a valid email address"
+    }
+
     // MARK: - Register Action
     public func register() {
         guard validate() else { return }
@@ -69,11 +74,10 @@ public final class RegistrationViewModel: ObservableObject {
 
         Task { @MainActor in
             do {
-                let fullName = "\(firstName.trimmingCharacters(in: .whitespaces)) \(lastName.trimmingCharacters(in: .whitespaces))"
                 _ = try await registerUseCase.execute(
                     email: email.trimmingCharacters(in: .whitespaces),
                     password: password,
-                    name: fullName
+                    name: registrationName
                 )
 
                 isLoading = false
@@ -113,12 +117,8 @@ public final class RegistrationViewModel: ObservableObject {
 
     // MARK: - Helpers
     private func validate() -> Bool {
-        if firstName.trimmingCharacters(in: .whitespaces).isEmpty {
-            errorMessage = "First name is required."
-            return false
-        }
-        if lastName.trimmingCharacters(in: .whitespaces).isEmpty {
-            errorMessage = "Last name is required."
+        if !isNameValid {
+            errorMessage = "Full name is required."
             return false
         }
         if !isValidEmail(email) {
@@ -139,5 +139,22 @@ public final class RegistrationViewModel: ObservableObject {
     private func isValidEmail(_ email: String) -> Bool {
         let pattern = #"^[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"#
         return email.range(of: pattern, options: .regularExpression) != nil
+    }
+
+    private var isNameValid: Bool {
+        !fullName.trimmingCharacters(in: .whitespaces).isEmpty ||
+        (
+            !firstName.trimmingCharacters(in: .whitespaces).isEmpty &&
+            !lastName.trimmingCharacters(in: .whitespaces).isEmpty
+        )
+    }
+
+    private var registrationName: String {
+        let trimmedFullName = fullName.trimmingCharacters(in: .whitespaces)
+        if !trimmedFullName.isEmpty {
+            return trimmedFullName
+        }
+
+        return "\(firstName.trimmingCharacters(in: .whitespaces)) \(lastName.trimmingCharacters(in: .whitespaces))"
     }
 }

@@ -28,99 +28,102 @@ public struct RegistrationView: View {
 
     public var body: some View {
         ScrollView {
-            VStack(spacing: 24) {
-                // Logo placeholder or text
-                Text("Create Account")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .padding(.top, 40)
+            VStack(spacing: 28) {
+                ZStack {
+                    Text("Create Account")
+                        .font(.system(size: 23, weight: .bold))
+                        .foregroundColor(.black)
+
+                    HStack {
+                        Button(action: onNavigateToLogin) {
+                            Image(systemName: "chevron.left")
+                                .font(.system(size: 28, weight: .medium))
+                                .foregroundColor(.black)
+                        }
+
+                        Spacer()
+                    }
+                }
+                .padding(.top, 18)
 
                 VStack(spacing: 16) {
-                    // First Name & Last Name
-                    HStack(spacing: 16) {
-                        CustomInputField(title: "First Name", placeholder: "John", text: $viewModel.firstName, isSecure: false)
-                        CustomInputField(title: "Last Name", placeholder: "Doe", text: $viewModel.lastName, isSecure: false)
-                    }
+                    CustomInputField(title: "Full Name", placeholder: "Enter your name", text: $viewModel.fullName)
 
-                    // Email
-                    CustomInputField(title: "Email", placeholder: "john.doe@example.com", text: $viewModel.email, isSecure: false)
-
-                    // Password
-                    VStack(alignment: .leading, spacing: 4) {
-                        CustomInputField(title: "Password", placeholder: "Enter password", text: $viewModel.password, isSecure: true)
-                        if let error = viewModel.passwordLengthError {
-                            Text(error).font(.caption).foregroundColor(.red)
+                    VStack(alignment: .leading, spacing: 8) {
+                        CustomInputField(title: "Email", placeholder: "example@email.com", text: $viewModel.email)
+                        Text("Verify email will be sent")
+                            .font(.caption)
+                            .fontWeight(.semibold)
+                            .foregroundColor(Color(.systemGray3))
+                        if let error = viewModel.emailValidationError {
+                            Text(error)
+                                .font(.caption)
+                                .foregroundColor(.red)
                         }
                     }
 
-                    // Confirm Password
                     VStack(alignment: .leading, spacing: 4) {
-                        CustomInputField(title: "Confirm Password", placeholder: "Re-enter password", text: $viewModel.confirmPassword, isSecure: true)
+                        CustomInputField(title: "Password", placeholder: "Password", text: $viewModel.password, isSecure: true)
+                        if let error = viewModel.passwordLengthError {
+                            Text(error)
+                                .font(.caption)
+                                .foregroundColor(.red)
+                        }
+                    }
+
+                    VStack(alignment: .leading, spacing: 4) {
+                        CustomInputField(title: "Confirm Password", placeholder: "Confirm password", text: $viewModel.confirmPassword, isSecure: true)
                         if let error = viewModel.passwordMatchError {
-                            Text(error).font(.caption).foregroundColor(.red)
+                            Text(error)
+                                .font(.caption)
+                                .foregroundColor(.red)
                         }
                     }
                 }
-                .padding(.horizontal)
 
-                // Error Message
                 if let error = viewModel.errorMessage {
                     Text(error)
                         .font(.callout)
                         .foregroundColor(.red)
                         .multilineTextAlignment(.center)
-                        .padding(.horizontal)
                 }
 
-                // Register Button
-                VStack(spacing: 16) {
-                    if viewModel.isLoading {
-                        ProgressView()
-                    } else {
-                        PrimaryButton(title: "Sign Up", icon: nil) {
-                            viewModel.register()
-                        }
-                        .opacity(viewModel.isFormValid ? 1.0 : 0.6)
-                        .disabled(!viewModel.isFormValid)
+                if viewModel.isLoading {
+                    ProgressView()
+                        .frame(maxWidth: .infinity, minHeight: 58)
+                } else {
+                    PrimaryButton(title: "Sign Up") {
+                        viewModel.register()
                     }
-
-                    // Social Login
-                    SocialLoginRow(
-                        label: "Or Sign Up with",
-                        onGoogleTap: { viewModel.signInWithGoogle() },
-                        onAppleTap: { /* Future Apple Sign In */ },
-                        onFacebookTap: { /* Future Facebook Sign In */ }
-                    )
-                    .padding(.top, 16)
+                    .opacity(viewModel.isFormValid ? 1.0 : 0.6)
+                    .disabled(!viewModel.isFormValid)
                 }
-                .padding(.horizontal)
 
-                Spacer(minLength: 32)
+                SocialLoginRow(
+                    label: "or sign up with",
+                    onGoogleTap: { viewModel.signInWithGoogle() },
+                    onAppleTap: {},
+                    onFacebookTap: {}
+                )
+                .padding(.top, 10)
 
-                // Sign In Link
                 Button(action: onNavigateToLogin) {
                     HStack(spacing: 4) {
                         Text("Already have an account?")
-                            .foregroundColor(.gray)
-                        Text("Sign In")
+                            .font(.system(size: 16))
+                            .foregroundColor(Color(.darkGray))
+                        Text("Login")
+                            .font(.system(size: 16))
                             .fontWeight(.bold)
-                            .foregroundColor(Color(red: 233 / 255.0, green: 69 / 255.0, blue: 96 / 255.0)) // Onboarding theme color
+                            .foregroundColor(Color(red: 233 / 255.0, green: 69 / 255.0, blue: 96 / 255.0))
                     }
                 }
-                .padding(.bottom, 16)
-                
-                // Guest Mode Link
-                Button(action: {
-                    onContinueAsGuest(viewModel.continueAsGuest())
-                }) {
-                    Text("Continue as Guest")
-                        .fontWeight(.medium)
-                        .foregroundColor(.gray)
-                        .underline()
-                }
-                .padding(.bottom, 32)
+                .padding(.top, 28)
+                .padding(.bottom, 24)
             }
+            .padding(.horizontal, 18)
         }
+        .background(Color(.systemBackground))
         .alert(isPresented: $viewModel.registrationSucceeded) {
             Alert(
                 title: Text("Success"),

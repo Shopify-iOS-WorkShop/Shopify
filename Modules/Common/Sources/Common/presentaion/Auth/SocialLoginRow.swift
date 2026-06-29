@@ -27,11 +27,12 @@ public struct SocialLoginRow: View {
     
     public var body: some View {
         VStack(spacing: 20) {
-            HStack {
+            HStack(spacing: 16) {
                 VStack { Divider() }
                 Text(label)
-                    .font(.footnote)
-                    .foregroundColor(.gray)
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .foregroundColor(Color(.systemGray3))
                     .layoutPriority(1)
                 VStack { Divider() }
             }
@@ -45,7 +46,6 @@ public struct SocialLoginRow: View {
         }
     }
 }
-
 
 
 

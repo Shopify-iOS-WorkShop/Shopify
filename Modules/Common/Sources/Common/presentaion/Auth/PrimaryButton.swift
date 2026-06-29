@@ -29,11 +29,10 @@ public struct PrimaryButton: View {
             }
             .foregroundColor(.white)
             .frame(maxWidth: .infinity)
-            .padding()
+            .frame(height: 58)
             .background(Color(.systemPink))
-            .cornerRadius(25)
+            .cornerRadius(24)
             .shadow(color: Color(.systemPink).opacity(0.3), radius: 10, x: 0, y: 5)
         }
     }
 }
-
