@@ -6,7 +6,7 @@
 //
 
 import Foundation
-public struct AuthUser {
+public struct AuthUser: Equatable {
     public let uid: String
     public let email: String?
     public let displayName: String?

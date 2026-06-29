@@ -22,18 +22,23 @@ public final class RegistrationViewModel: ObservableObject {
     @Published public var isLoading: Bool              = false
     @Published public var errorMessage: String?        = nil
     @Published public var registrationSucceeded: Bool  = false
+    @Published public var guestModeActivated: Bool     = false
+    @Published public private(set) var activeSession: UserSession? = nil
 
     // MARK: - Dependencies
     private let registerUseCase: RegisterUseCase
     private let googleSignInUseCase: GoogleSignInUseCase
+    private let continueAsGuestUseCase: ContinueAsGuestUseCase
 
     // MARK: - Init
     public init(
         registerUseCase: RegisterUseCase,
-        googleSignInUseCase: GoogleSignInUseCase
+        googleSignInUseCase: GoogleSignInUseCase,
+        continueAsGuestUseCase: ContinueAsGuestUseCase
     ) {
         self.registerUseCase = registerUseCase
         self.googleSignInUseCase = googleSignInUseCase
+        self.continueAsGuestUseCase = continueAsGuestUseCase
     }
 
     // MARK: - Computed Validation
@@ -95,6 +100,15 @@ public final class RegistrationViewModel: ObservableObject {
                 errorMessage = error.localizedDescription
             }
         }
+    }
+
+    // MARK: - Guest Mode Action
+    @discardableResult
+    public func continueAsGuest() -> UserSession {
+        let session = continueAsGuestUseCase.execute()
+        activeSession = session
+        guestModeActivated = true
+        return session
     }
 
     // MARK: - Helpers

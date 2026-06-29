@@ -7,13 +7,25 @@
 
 import SwiftUI
 
-struct SocialLoginRow: View {
+public struct SocialLoginRow: View {
     let label: String
     var onGoogleTap: () -> Void
     var onAppleTap: () -> Void
     var onFacebookTap: () -> Void
+
+    public init(
+        label: String,
+        onGoogleTap: @escaping () -> Void,
+        onAppleTap: @escaping () -> Void,
+        onFacebookTap: @escaping () -> Void
+    ) {
+        self.label = label
+        self.onGoogleTap = onGoogleTap
+        self.onAppleTap = onAppleTap
+        self.onFacebookTap = onFacebookTap
+    }
     
-    var body: some View {
+    public var body: some View {
         VStack(spacing: 20) {
             HStack {
                 VStack { Divider() }
@@ -33,7 +45,6 @@ struct SocialLoginRow: View {
         }
     }
 }
-
 
 
 
