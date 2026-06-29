@@ -1,6 +1,7 @@
 import SwiftUI
 import Auth
 import Firebase
+import GoogleSignIn
 
 @main
 struct ShopifyApp: App {
@@ -12,8 +13,16 @@ struct ShopifyApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                
+            Group {
+                if #available(iOS 13.0.0, *) {
+                    ContentView()
+                } else {
+                    Text("Unsupported iOS version")
+                }
+            }
+            .onOpenURL { url in
+                GIDSignIn.sharedInstance.handle(url)
+            }
         }
     }
 }

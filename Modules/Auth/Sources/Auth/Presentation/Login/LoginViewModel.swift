@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 public final class LoginViewModel: ObservableObject {
 
@@ -27,12 +28,10 @@ public final class LoginViewModel: ObservableObject {
    
     public init(
         loginUseCase: LoginUseCase,
-        googleSignInUseCase: GoogleSignInUseCase,
-       
+        googleSignInUseCase: GoogleSignInUseCase
     ) {
         self.loginUseCase = loginUseCase
         self.googleSignInUseCase = googleSignInUseCase
-       
     }
 
    

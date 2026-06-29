@@ -22,8 +22,7 @@ public struct SocialButton: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 24, height: 24)
-                .padding(.horizontal, 32)
-                .padding(.vertical, 16)
+                .frame(width: 66, height: 66)
                 .background(Color(.systemGray6).opacity(0.5))
                 .cornerRadius(16)
                 .overlay(

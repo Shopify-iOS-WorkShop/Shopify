@@ -27,7 +27,7 @@ public struct CustomInputField: View {
             Text(title.uppercased())
                 .font(.caption)
                 .bold()
-                .foregroundColor(.gray)
+                .foregroundColor(.black)
             
             ZStack(alignment: .trailing) {
                 if isSecure && !isPasswordVisible {
@@ -45,6 +45,7 @@ public struct CustomInputField: View {
                 }
             }
             .padding()
+            .frame(minHeight: 56)
             .background(Color(.systemGray6))
             .cornerRadius(12)
         }
