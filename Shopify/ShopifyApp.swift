@@ -6,12 +6,13 @@
 //
 
 import SwiftUI
+import ProductDetails
 
 @main
 struct ShopifyApp: App {
     var body: some Scene {
         WindowGroup {
-            NetworkTestView()
+            ProductDetailFactory.makeView(productId: 10390919708989)
         }
     }
 }

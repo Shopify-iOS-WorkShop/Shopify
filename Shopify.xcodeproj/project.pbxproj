@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		31A1577E2FEFFBF50080AC8E /* ShopifyNetwork in Frameworks */ = {isa = PBXBuildFile; productRef = 31A1577D2FEFFBF50080AC8E /* ShopifyNetwork */; };
+		39C65F8D2FF2BDD20025BDB1 /* ProductDetails in Frameworks */ = {isa = PBXBuildFile; productRef = 39C65F8C2FF2BDD20025BDB1 /* ProductDetails */; };
 		78BFEC8B2FEFCB6800358550 /* ShopifyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78BFEC8A2FEFCB6800358550 /* ShopifyApp.swift */; };
 		78BFEC8D2FEFCB6800358550 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78BFEC8C2FEFCB6800358550 /* ContentView.swift */; };
 		78BFEC8F2FEFCB6A00358550 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 78BFEC8E2FEFCB6A00358550 /* Assets.xcassets */; };
@@ -28,6 +29,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				31A1577E2FEFFBF50080AC8E /* ShopifyNetwork in Frameworks */,
+				39C65F8D2FF2BDD20025BDB1 /* ProductDetails in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -95,6 +97,7 @@
 			name = Shopify;
 			packageProductDependencies = (
 				31A1577D2FEFFBF50080AC8E /* ShopifyNetwork */,
+				39C65F8C2FF2BDD20025BDB1 /* ProductDetails */,
 			);
 			productName = Shopify;
 			productReference = 78BFEC872FEFCB6800358550 /* Shopify.app */;
@@ -357,6 +360,10 @@
 		31A1577D2FEFFBF50080AC8E /* ShopifyNetwork */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ShopifyNetwork;
+		};
+		39C65F8C2FF2BDD20025BDB1 /* ProductDetails */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ProductDetails;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
