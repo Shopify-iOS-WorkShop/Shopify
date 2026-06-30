@@ -1,18 +1,24 @@
-// swift-tools-version: 6.1
+// swift-tools-version: 5.5
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
 
 let package = Package(
-    name: "Cart",
-    platforms: [.iOS(.v15), .macOS(.v13)],
+    name: "Auth",
+    platforms: [
+        .iOS(.v15),
+        .macOS(.v10_15)
+    ],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
-            name: "Cart",
-            targets: ["Cart"]),
+            name: "Auth",
+            targets: ["Auth"]
+        ),
     ],
     dependencies: [
+        .package(url: "https://github.com/firebase/firebase-ios-sdk.git", .upToNextMajor(from: "10.0.0")),
+        .package(url: "https://github.com/google/GoogleSignIn-iOS.git", .upToNextMajor(from: "7.0.0")),
         .package(path: "../Common"),
         .package(path: "../shopify-network")
     ],
@@ -20,15 +26,17 @@ let package = Package(
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "Cart",
+            name: "Auth",
             dependencies: [
                 "Common",
+                .product(name: "FirebaseAuth", package: "firebase-ios-sdk"),
+                .product(name: "GoogleSignIn", package: "GoogleSignIn-iOS"),
                 .product(name: "ShopifyNetwork", package: "shopify-network")
             ]
         ),
         .testTarget(
-            name: "CartTests",
-            dependencies: ["Cart"]
+            name: "AuthTests",
+            dependencies: ["Auth"]
         ),
     ]
 )
