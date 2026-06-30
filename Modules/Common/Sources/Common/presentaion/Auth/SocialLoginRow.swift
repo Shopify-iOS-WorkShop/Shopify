@@ -7,19 +7,32 @@
 
 import SwiftUI
 
-struct SocialLoginRow: View {
+public struct SocialLoginRow: View {
     let label: String
     var onGoogleTap: () -> Void
     var onAppleTap: () -> Void
     var onFacebookTap: () -> Void
+
+    public init(
+        label: String,
+        onGoogleTap: @escaping () -> Void,
+        onAppleTap: @escaping () -> Void,
+        onFacebookTap: @escaping () -> Void
+    ) {
+        self.label = label
+        self.onGoogleTap = onGoogleTap
+        self.onAppleTap = onAppleTap
+        self.onFacebookTap = onFacebookTap
+    }
     
-    var body: some View {
+    public var body: some View {
         VStack(spacing: 20) {
-            HStack {
+            HStack(spacing: 16) {
                 VStack { Divider() }
                 Text(label)
-                    .font(.footnote)
-                    .foregroundColor(.gray)
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .foregroundColor(Color(.systemGray3))
                     .layoutPriority(1)
                 VStack { Divider() }
             }
@@ -33,8 +46,6 @@ struct SocialLoginRow: View {
         }
     }
 }
-
-
 
 
 

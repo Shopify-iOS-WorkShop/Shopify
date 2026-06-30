@@ -7,20 +7,27 @@
 
 import SwiftUI
 
-struct CustomInputField: View {
+public struct CustomInputField: View {
     let title: String
     let placeholder: String
     @Binding var text: String
     var isSecure: Bool = false
     
     @State private var isPasswordVisible: Bool = false
+
+    public init(title: String, placeholder: String, text: Binding<String>, isSecure: Bool = false) {
+        self.title = title
+        self.placeholder = placeholder
+        self._text = text
+        self.isSecure = isSecure
+    }
     
-    var body: some View {
+    public var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title.uppercased())
                 .font(.caption)
                 .bold()
-                .foregroundColor(.gray)
+                .foregroundColor(.black)
             
             ZStack(alignment: .trailing) {
                 if isSecure && !isPasswordVisible {
@@ -38,6 +45,7 @@ struct CustomInputField: View {
                 }
             }
             .padding()
+            .frame(minHeight: 56)
             .background(Color(.systemGray6))
             .cornerRadius(12)
         }
