@@ -4,27 +4,30 @@
 import PackageDescription
 
 let package = Package(
-    name: "Common",
-    platforms: [
-        .iOS(.v15)
-    ],
+    name: "ProductDetails",
+    platforms: [.iOS(.v15)],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
-        
         .library(
-            name: "Common",
-            targets: ["Common"]
+            name: "ProductDetails",
+            targets: ["ProductDetails"]
         ),
     ],
+    dependencies: [.package(path: "../shopify-network")]
+    ,
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "Common"
+            name: "ProductDetails",
+            dependencies: [
+               // Explicitly tells SPM: "Look for the product 'ShopifyNetwork' inside the package 'shopify-network'"
+               .product(name: "ShopifyNetwork", package: "shopify-network")
+           ]
         ),
         .testTarget(
-            name: "CommonTests",
-            dependencies: ["Common"]
+            name: "ProductDetailsTests",
+            dependencies: ["ProductDetails", .product(name: "ShopifyNetwork", package: "shopify-network")]
         ),
     ]
 )
