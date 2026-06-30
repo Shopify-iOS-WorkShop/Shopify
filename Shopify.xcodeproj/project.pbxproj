@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		31A1577E2FEFFBF50080AC8E /* ShopifyNetwork in Frameworks */ = {isa = PBXBuildFile; productRef = 31A1577D2FEFFBF50080AC8E /* ShopifyNetwork */; };
+		39C65F8D2FF2BDD20025BDB1 /* ProductDetails in Frameworks */ = {isa = PBXBuildFile; productRef = 39C65F8C2FF2BDD20025BDB1 /* ProductDetails */; };
 		6DD877782FF15EF500D94255 /* Common in Frameworks */ = {isa = PBXBuildFile; productRef = 6DD877772FF15EF500D94255 /* Common */; };
 		78BFEC8B2FEFCB6800358550 /* ShopifyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78BFEC8A2FEFCB6800358550 /* ShopifyApp.swift */; };
 		78BFEC8D2FEFCB6800358550 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78BFEC8C2FEFCB6800358550 /* ContentView.swift */; };
@@ -36,6 +37,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				31A1577E2FEFFBF50080AC8E /* ShopifyNetwork in Frameworks */,
+				39C65F8D2FF2BDD20025BDB1 /* ProductDetails in Frameworks */,
 				C47A3B342FF1CBC600857006 /* GoogleSignInSwift in Frameworks */,
 				6DD877782FF15EF500D94255 /* Common in Frameworks */,
 				C47A3B2A2FF1C30E00857006 /* Auth in Frameworks */,
@@ -110,6 +112,7 @@
 			name = Shopify;
 			packageProductDependencies = (
 				31A1577D2FEFFBF50080AC8E /* ShopifyNetwork */,
+				39C65F8C2FF2BDD20025BDB1 /* ProductDetails */,
 				6DD877772FF15EF500D94255 /* Common */,
 				C47A3B292FF1C30E00857006 /* Auth */,
 				C47A3B2C2FF1CB6F00857006 /* FirebaseAuth */,
@@ -394,6 +397,9 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = ShopifyNetwork;
 		};
+		39C65F8C2FF2BDD20025BDB1 /* ProductDetails */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ProductDetails;
 		6DD877772FF15EF500D94255 /* Common */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Common;
