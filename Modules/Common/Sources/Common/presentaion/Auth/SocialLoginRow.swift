@@ -1,0 +1,52 @@
+//
+//  SwiftUIView.swift
+//  Common
+//
+//  Created by Al3dwy on 28/06/2026.
+//
+
+import SwiftUI
+
+public struct SocialLoginRow: View {
+    let label: String
+    var onGoogleTap: () -> Void
+    var onAppleTap: () -> Void
+    var onFacebookTap: () -> Void
+
+    public init(
+        label: String,
+        onGoogleTap: @escaping () -> Void,
+        onAppleTap: @escaping () -> Void,
+        onFacebookTap: @escaping () -> Void
+    ) {
+        self.label = label
+        self.onGoogleTap = onGoogleTap
+        self.onAppleTap = onAppleTap
+        self.onFacebookTap = onFacebookTap
+    }
+    
+    public var body: some View {
+        VStack(spacing: 20) {
+            HStack(spacing: 16) {
+                VStack { Divider() }
+                Text(label)
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .foregroundColor(Color(.systemGray3))
+                    .layoutPriority(1)
+                VStack { Divider() }
+            }
+            
+
+            HStack(spacing: 20) {
+                SocialButton(iconName: "google_icon") { onGoogleTap() }
+                SocialButton(iconName: "apple_icon") { onAppleTap() }
+                SocialButton(iconName: "facebook_icon") { onFacebookTap() }
+            }
+        }
+    }
+}
+
+
+
+
