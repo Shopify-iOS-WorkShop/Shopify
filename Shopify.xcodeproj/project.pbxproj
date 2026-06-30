@@ -7,10 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		312D07652FF448DE005558A5 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 312D07642FF448DE005558A5 /* GoogleService-Info.plist */; };
+		31A157822FF01A740080AC8E /* Home in Frameworks */ = {isa = PBXBuildFile; productRef = 31A157812FF01A740080AC8E /* Home */; };
 		31B58BB52FF4433600845705 /* ProductDetails in Frameworks */ = {isa = PBXBuildFile; productRef = 31B58BB42FF4433600845705 /* ProductDetails */; };
-		31B58BB72FF4436500845705 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 31B58BB62FF4436500845705 /* GoogleService-Info.plist */; };
 		31C3F1432FF435BF005036EF /* ShopifyNetwork in Frameworks */ = {isa = PBXBuildFile; productRef = 31C3F1422FF435BF005036EF /* ShopifyNetwork */; };
-		39C65F8D2FF2BDD20025BDB1 /* (null) in Frameworks */ = {isa = PBXBuildFile; };
 		6DD877782FF15EF500D94255 /* Common in Frameworks */ = {isa = PBXBuildFile; productRef = 6DD877772FF15EF500D94255 /* Common */; };
 		78BFEC8B2FEFCB6800358550 /* ShopifyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78BFEC8A2FEFCB6800358550 /* ShopifyApp.swift */; };
 		78BFEC8D2FEFCB6800358550 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78BFEC8C2FEFCB6800358550 /* ContentView.swift */; };
@@ -23,7 +23,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		31B58BB62FF4436500845705 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		312D07642FF448DE005558A5 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		78BFEC872FEFCB6800358550 /* Shopify.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Shopify.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		78BFEC8A2FEFCB6800358550 /* ShopifyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopifyApp.swift; sourceTree = "<group>"; };
 		78BFEC8C2FEFCB6800358550 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -38,7 +38,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				31C3F1432FF435BF005036EF /* ShopifyNetwork in Frameworks */,
-				39C65F8D2FF2BDD20025BDB1 /* (null) in Frameworks */,
+				31A157822FF01A740080AC8E /* Home in Frameworks */,
 				6DD877782FF15EF500D94255 /* Common in Frameworks */,
 				C47A3B342FF1CBC600857006 /* GoogleSignInSwift in Frameworks */,
 				C47A3B2A2FF1C30E00857006 /* Auth in Frameworks */,
@@ -81,7 +81,7 @@
 				78BFEC8A2FEFCB6800358550 /* ShopifyApp.swift */,
 				78BFEC8C2FEFCB6800358550 /* ContentView.swift */,
 				78BFEC9A2FEFCB6A00358550 /* Info.plist */,
-				31B58BB62FF4436500845705 /* GoogleService-Info.plist */,
+				312D07642FF448DE005558A5 /* GoogleService-Info.plist */,
 				78BFEC8E2FEFCB6A00358550 /* Assets.xcassets */,
 				78BFEC902FEFCB6A00358550 /* Preview Content */,
 			);
@@ -114,6 +114,7 @@
 			name = Shopify;
 			packageProductDependencies = (
 				31C3F1422FF435BF005036EF /* ShopifyNetwork */,
+				31A157812FF01A740080AC8E /* Home */,
 				6DD877772FF15EF500D94255 /* Common */,
 				C47A3B292FF1C30E00857006 /* Auth */,
 				C47A3B2C2FF1CB6F00857006 /* FirebaseAuth */,
@@ -169,7 +170,7 @@
 			files = (
 				78BFEC922FEFCB6A00358550 /* Preview Assets.xcassets in Resources */,
 				78BFEC8F2FEFCB6A00358550 /* Assets.xcassets in Resources */,
-				31B58BB72FF4436500845705 /* GoogleService-Info.plist in Resources */,
+				312D07652FF448DE005558A5 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -395,6 +396,10 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		31A157812FF01A740080AC8E /* Home */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Home;
+		};
 		31B58BB42FF4433600845705 /* ProductDetails */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ProductDetails;

@@ -5,6 +5,9 @@
       location = "group:Modules/product-details">
    </FileRef>
    <FileRef
+      location = "group:Modules/home">
+   </FileRef>
+   <FileRef
       location = "group:Modules/Auth">
    </FileRef>
    <FileRef
