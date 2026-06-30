@@ -1,15 +1,18 @@
-//
-//  ShopifyApp.swift
-//  Shopify
-//
-//  Created by Ahmed Elkady on 27/06/2026.
-//
-
 import SwiftUI
 import Home
 import ShopifyNetwork
+import Auth
+import Firebase
+import GoogleSignIn
+
 @main
 struct ShopifyApp: App {
+    init() {
+        if FirebaseApp.app() == nil {
+            FirebaseApp.configure()
+        }
+    }
+
     var body: some Scene {
         WindowGroup {
             let client = URLSessionNetworkClient()

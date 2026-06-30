@@ -2,7 +2,16 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:Modules/product-details">
+   </FileRef>
+   <FileRef
       location = "group:Modules/home">
+   </FileRef>
+   <FileRef
+      location = "group:Modules/Auth">
+   </FileRef>
+   <FileRef
+      location = "group:Modules/Common">
    </FileRef>
    <FileRef
       location = "group:Modules/shopify-network">
