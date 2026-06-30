@@ -12,11 +12,20 @@ let package = Package(
             name: "Cart",
             targets: ["Cart"]),
     ],
+    dependencies: [
+        .package(path: "../Common"),
+        .package(path: "../shopify-network")
+    ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "Cart"),
+            name: "Cart",
+            dependencies: [
+                "Common",
+                .product(name: "ShopifyNetwork", package: "shopify-network")
+            ]
+        ),
         .testTarget(
             name: "CartTests",
             dependencies: ["Cart"]
