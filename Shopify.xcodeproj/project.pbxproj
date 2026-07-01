@@ -10,10 +10,10 @@
 		31872E512FF4EFCF0007975B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 31872E502FF4EFCF0007975B /* GoogleService-Info.plist */; };
 		31A157822FF01A740080AC8E /* Home in Frameworks */ = {isa = PBXBuildFile; productRef = 31A157812FF01A740080AC8E /* Home */; };
 		31B58BB52FF4433600845705 /* ProductDetails in Frameworks */ = {isa = PBXBuildFile; productRef = 31B58BB42FF4433600845705 /* ProductDetails */; };
-        31FB03F32FF2FD2F00EE8817 /* ProductListing in Frameworks */ = {isa = PBXBuildFile; productRef = 31FB03F22FF2FD2F00EE8817 /* ProductListing */; };
-        6DB16D892FF537B6004925EF /* Apollo in Frameworks */ = {isa = PBXBuildFile; productRef = 6DB16D882FF537B6004925EF /* Apollo */; };
-        6DB16D8B2FF537B6004925EF /* ApolloAPI in Frameworks */ = {isa = PBXBuildFile; productRef = 6DB16D8A2FF537B6004925EF /* ApolloAPI */; };
-        6DB16D8F2FF54133004925EF /* ShopifyNetwork in Frameworks */ = {isa = PBXBuildFile; productRef = 6DB16D8E2FF54133004925EF /* ShopifyNetwork */; };
+		31FB03F32FF2FD2F00EE8817 /* ProductListing in Frameworks */ = {isa = PBXBuildFile; productRef = 31FB03F22FF2FD2F00EE8817 /* ProductListing */; };
+		6DB16D892FF537B6004925EF /* Apollo in Frameworks */ = {isa = PBXBuildFile; productRef = 6DB16D882FF537B6004925EF /* Apollo */; };
+		6DB16D8B2FF537B6004925EF /* ApolloAPI in Frameworks */ = {isa = PBXBuildFile; productRef = 6DB16D8A2FF537B6004925EF /* ApolloAPI */; };
+		6DB16D8F2FF54133004925EF /* ShopifyNetwork in Frameworks */ = {isa = PBXBuildFile; productRef = 6DB16D8E2FF54133004925EF /* ShopifyNetwork */; };
 		6DD877782FF15EF500D94255 /* Common in Frameworks */ = {isa = PBXBuildFile; productRef = 6DD877772FF15EF500D94255 /* Common */; };
 		78BFEC8B2FEFCB6800358550 /* ShopifyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78BFEC8A2FEFCB6800358550 /* ShopifyApp.swift */; };
 		78BFEC8D2FEFCB6800358550 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78BFEC8C2FEFCB6800358550 /* ContentView.swift */; };
@@ -403,8 +403,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apollographql/apollo-ios.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.2.0;
+				kind = exactVersion;
+				version = 1.8.0;
 			};
 		};
 		C47A3B2B2FF1CB6F00857006 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
@@ -434,6 +434,10 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = ProductDetails;
 		};
+		31FB03F22FF2FD2F00EE8817 /* ProductListing */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ProductListing;
+		};
 		6DB16D882FF537B6004925EF /* Apollo */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 6DB16D872FF537B6004925EF /* XCRemoteSwiftPackageReference "apollo-ios" */;
@@ -447,10 +451,6 @@
 		6DB16D8E2FF54133004925EF /* ShopifyNetwork */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ShopifyNetwork;
-		};
-		31FB03F22FF2FD2F00EE8817 /* ProductListing */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = ProductListing;
 		};
 		6DD877772FF15EF500D94255 /* Common */ = {
 			isa = XCSwiftPackageProductDependency;
