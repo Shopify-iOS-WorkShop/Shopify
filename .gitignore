@@ -1,9 +1,20 @@
 **/ShopifyConfig.swift
-Modules/.DS_Store
+
+# Firebase / local secrets
+**/GoogleService-Info.plist
+
+# macOS generated files
 .DS_Store
-Modules/.DS_Store
-Modules/shopify-network/Sources/ShopifyNetwork/ShopifyConfig.swift
-Modules/.DS_Store
-Shopify.xcworkspace/xcuserdata/mazenamr.xcuserdatad/UserInterfaceState.xcuserstate
-.DS_Store
-Shopify.xcworkspace/xcuserdata/mazenamr.xcuserdatad/UserInterfaceState.xcuserstate
+**/.DS_Store
+
+# Xcode user-specific generated files
+*.xcuserstate
+xcuserdata/
+**/xcuserdata/
+*.xcscmblueprint
+
+# SwiftPM / Xcode generated state
+**/.build/
+**/.swiftpm/xcode/
+**/Package.resolved
+Shopify.xcworkspace/xcshareddata/swiftpm/

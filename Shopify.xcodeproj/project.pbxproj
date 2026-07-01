@@ -7,21 +7,30 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		31A1577E2FEFFBF50080AC8E /* ShopifyNetwork in Frameworks */ = {isa = PBXBuildFile; productRef = 31A1577D2FEFFBF50080AC8E /* ShopifyNetwork */; };
+		312D07652FF448DE005558A5 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 312D07642FF448DE005558A5 /* GoogleService-Info.plist */; };
 		31A157822FF01A740080AC8E /* Home in Frameworks */ = {isa = PBXBuildFile; productRef = 31A157812FF01A740080AC8E /* Home */; };
-		31FB03F32FF2FD2F00EE8817 /* ProductListing in Frameworks */ = {isa = PBXBuildFile; productRef = 31FB03F22FF2FD2F00EE8817 /* ProductListing */; };
+        31B58BB52FF4433600845705 /* ProductDetails in Frameworks */ = {isa = PBXBuildFile; productRef = 31B58BB42FF4433600845705 /* ProductDetails */; };
+        31C3F1432FF435BF005036EF /* ShopifyNetwork in Frameworks */ = {isa = PBXBuildFile; productRef = 31C3F1422FF435BF005036EF /* ShopifyNetwork */; };
+        31FB03F32FF2FD2F00EE8817 /* ProductListing in Frameworks */ = {isa = PBXBuildFile; productRef = 31FB03F22FF2FD2F00EE8817 /* ProductListing */; };
+        6DD877782FF15EF500D94255 /* Common in Frameworks */ = {isa = PBXBuildFile; productRef = 6DD877772FF15EF500D94255 /* Common */; };
 		78BFEC8B2FEFCB6800358550 /* ShopifyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78BFEC8A2FEFCB6800358550 /* ShopifyApp.swift */; };
 		78BFEC8D2FEFCB6800358550 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78BFEC8C2FEFCB6800358550 /* ContentView.swift */; };
 		78BFEC8F2FEFCB6A00358550 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 78BFEC8E2FEFCB6A00358550 /* Assets.xcassets */; };
 		78BFEC922FEFCB6A00358550 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 78BFEC912FEFCB6A00358550 /* Preview Assets.xcassets */; };
+		C47A3B2A2FF1C30E00857006 /* Auth in Frameworks */ = {isa = PBXBuildFile; productRef = C47A3B292FF1C30E00857006 /* Auth */; };
+		C47A3B2D2FF1CB6F00857006 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = C47A3B2C2FF1CB6F00857006 /* FirebaseAuth */; };
+		C47A3B322FF1CBC600857006 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = C47A3B312FF1CBC600857006 /* GoogleSignIn */; };
+		C47A3B342FF1CBC600857006 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C47A3B332FF1CBC600857006 /* GoogleSignInSwift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		312D07642FF448DE005558A5 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		78BFEC872FEFCB6800358550 /* Shopify.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Shopify.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		78BFEC8A2FEFCB6800358550 /* ShopifyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopifyApp.swift; sourceTree = "<group>"; };
 		78BFEC8C2FEFCB6800358550 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		78BFEC8E2FEFCB6A00358550 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		78BFEC912FEFCB6A00358550 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		78BFEC9A2FEFCB6A00358550 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -29,9 +38,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				31A1577E2FEFFBF50080AC8E /* ShopifyNetwork in Frameworks */,
+				31C3F1432FF435BF005036EF /* ShopifyNetwork in Frameworks */,
 				31A157822FF01A740080AC8E /* Home in Frameworks */,
-				31FB03F32FF2FD2F00EE8817 /* ProductListing in Frameworks */,
+                31FB03F32FF2FD2F00EE8817 /* ProductListing in Frameworks */,
+                6DD877782FF15EF500D94255 /* Common in Frameworks */,
+                C47A3B342FF1CBC600857006 /* GoogleSignInSwift in Frameworks */,
+                C47A3B2A2FF1C30E00857006 /* Auth in Frameworks */,
+                31B58BB52FF4433600845705 /* ProductDetails in Frameworks */,
+                C47A3B2D2FF1CB6F00857006 /* FirebaseAuth in Frameworks */,
+                C47A3B322FF1CBC600857006 /* GoogleSignIn in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -67,6 +82,8 @@
 			children = (
 				78BFEC8A2FEFCB6800358550 /* ShopifyApp.swift */,
 				78BFEC8C2FEFCB6800358550 /* ContentView.swift */,
+				78BFEC9A2FEFCB6A00358550 /* Info.plist */,
+				312D07642FF448DE005558A5 /* GoogleService-Info.plist */,
 				78BFEC8E2FEFCB6A00358550 /* Assets.xcassets */,
 				78BFEC902FEFCB6A00358550 /* Preview Content */,
 			);
@@ -98,9 +115,15 @@
 			);
 			name = Shopify;
 			packageProductDependencies = (
-				31A1577D2FEFFBF50080AC8E /* ShopifyNetwork */,
+				31C3F1422FF435BF005036EF /* ShopifyNetwork */,
 				31A157812FF01A740080AC8E /* Home */,
-				31FB03F22FF2FD2F00EE8817 /* ProductListing */,
+                31FB03F22FF2FD2F00EE8817 /* ProductListing */,
+                6DD877772FF15EF500D94255 /* Common */,
+                C47A3B292FF1C30E00857006 /* Auth */,
+                C47A3B2C2FF1CB6F00857006 /* FirebaseAuth */,
+                C47A3B312FF1CBC600857006 /* GoogleSignIn */,
+                C47A3B332FF1CBC600857006 /* GoogleSignInSwift */,
+                31B58BB42FF4433600845705 /* ProductDetails */,
 			);
 			productName = Shopify;
 			productReference = 78BFEC872FEFCB6800358550 /* Shopify.app */;
@@ -130,6 +153,10 @@
 				Base,
 			);
 			mainGroup = 78BFEC7E2FEFCB6800358550;
+			packageReferences = (
+				C47A3B2B2FF1CB6F00857006 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				C47A3B302FF1CBC600857006 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+			);
 			productRefGroup = 78BFEC882FEFCB6800358550 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -146,6 +173,7 @@
 			files = (
 				78BFEC922FEFCB6A00358550 /* Preview Assets.xcassets in Resources */,
 				78BFEC8F2FEFCB6A00358550 /* Assets.xcassets in Resources */,
+				312D07652FF448DE005558A5 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -289,13 +317,14 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Shopify/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16;
+                GENERATE_INFOPLIST_FILE = YES;
+                INFOPLIST_FILE = Shopify/Info.plist;
+                INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+                INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+                INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+                INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+                INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+                IPHONEOS_DEPLOYMENT_TARGET = 16;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -318,13 +347,14 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Shopify/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 16;
+                GENERATE_INFOPLIST_FILE = YES;
+                INFOPLIST_FILE = Shopify/Info.plist;
+                INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+                INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+                INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+                INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+                INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+                IPHONEOS_DEPLOYMENT_TARGET = 16;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -361,18 +391,64 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCSwiftPackageProductDependency section */
-		31A1577D2FEFFBF50080AC8E /* ShopifyNetwork */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = ShopifyNetwork;
+/* Begin XCRemoteSwiftPackageReference section */
+		C47A3B2B2FF1CB6F00857006 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.0.0;
+			};
 		};
+		C47A3B302FF1CBC600857006 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
 		31A157812FF01A740080AC8E /* Home */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Home;
 		};
-		31FB03F22FF2FD2F00EE8817 /* ProductListing */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = ProductListing;
+        31FB03F22FF2FD2F00EE8817 /* ProductListing */ = {
+            isa = XCSwiftPackageProductDependency;
+            productName = ProductListing;
+        };
+        31B58BB42FF4433600845705 /* ProductDetails */ = {
+            isa = XCSwiftPackageProductDependency;
+            productName = ProductDetails;
+        };
+        31C3F1422FF435BF005036EF /* ShopifyNetwork */ = {
+            isa = XCSwiftPackageProductDependency;
+            productName = ShopifyNetwork;
+        };
+        6DD877772FF15EF500D94255 /* Common */ = {
+            isa = XCSwiftPackageProductDependency;
+            productName = Common;
+        };
+        C47A3B292FF1C30E00857006 /* Auth */ = {
+            isa = XCSwiftPackageProductDependency;
+            productName = Auth;
+        };
+        C47A3B2C2FF1CB6F00857006 /* FirebaseAuth */ = {
+            isa = XCSwiftPackageProductDependency;
+            package = C47A3B2B2FF1CB6F00857006 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+            productName = FirebaseAuth;
+        };
+        C47A3B312FF1CBC600857006 /* GoogleSignIn */ = {
+            isa = XCSwiftPackageProductDependency;
+            package = C47A3B302FF1CBC600857006 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+            productName = GoogleSignIn;
+        };
+        C47A3B332FF1CBC600857006 /* GoogleSignInSwift */ = {
+            isa = XCSwiftPackageProductDependency;
+            package = C47A3B302FF1CBC600857006 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+            productName = GoogleSignInSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
