@@ -181,6 +181,10 @@ private struct ShopifyStorefrontConfiguration {
     let apiVersion: String
     let storefrontToken: String
 
+    /// Fallback token used when SHOPIFY_STOREFRONT_TOKEN is not resolved via Secrets.xcconfig.
+    /// This is the team's Storefront API token for mad46-ios-team5.myshopify.com.
+    private static let fallbackStorefrontToken = "8842c04427c5f8a6e967f204266cd8bf"
+
     static var current: ShopifyStorefrontConfiguration {
         let info = Bundle.main.infoDictionary ?? [:]
         return ShopifyStorefrontConfiguration(
@@ -191,7 +195,7 @@ private struct ShopifyStorefrontConfiguration {
     }
 
     private static func configuredValue(_ value: String?) -> String {
-        guard let value, !value.hasPrefix("$(") else { return "" }
+        guard let value, !value.hasPrefix("$(") else { return fallbackStorefrontToken }
         return value
     }
 }
