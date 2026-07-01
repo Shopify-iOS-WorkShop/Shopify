@@ -1,96 +1,103 @@
-//
-//  LoginViewModel.swift
-//  Auth
-//
-//  Created by Al3dwy on 29/06/2026.
-//
-
 import Foundation
 import Combine
 
 public final class LoginViewModel: ObservableObject {
-
- 
-    @Published public var email: String    = ""
+    @Published public var email: String = ""
     @Published public var password: String = ""
+    @Published public var isLoading: Bool = false
+    @Published public var errorMessage: String? = nil
+    @Published public private(set) var completedSession: Session? = nil
+    @Published public private(set) var pendingSocialUser: SocialSignInResult? = nil
 
-    
-    @Published public var isLoading: Bool          = false
-    @Published public var errorMessage: String?    = nil
-    @Published public var loginSucceeded: Bool     = false
+    private let signInUseCase: SignInUseCaseProtocol
+    private let signInWithSocialUseCase: SignInWithSocialUseCaseProtocol
 
-
- 
-    private let loginUseCase: LoginUseCase
-    private let googleSignInUseCase: GoogleSignInUseCase
-  
-
-   
     public init(
-        loginUseCase: LoginUseCase,
-        googleSignInUseCase: GoogleSignInUseCase
+        signInUseCase: SignInUseCaseProtocol,
+        signInWithSocialUseCase: SignInWithSocialUseCaseProtocol
     ) {
-        self.loginUseCase = loginUseCase
-        self.googleSignInUseCase = googleSignInUseCase
+        self.signInUseCase = signInUseCase
+        self.signInWithSocialUseCase = signInWithSocialUseCase
     }
 
-   
+    public convenience init(
+        loginUseCase: SignInUseCase,
+        googleSignInUseCase: SignInWithSocialUseCase
+    ) {
+        self.init(
+            signInUseCase: loginUseCase,
+            signInWithSocialUseCase: googleSignInUseCase
+        )
+    }
+
+    public convenience init(repository: AuthRepositoryProtocol = AuthRepositoryFactory.make()) {
+        self.init(
+            signInUseCase: SignInUseCase(repository: repository),
+            signInWithSocialUseCase: SignInWithSocialUseCase(repository: repository)
+        )
+    }
+
     public var isFormValid: Bool {
-        isValidEmail(email) && password.count >= 6
+        isValidEmail(email) && !password.isEmpty
     }
 
-   
     public func login() {
         guard validate() else { return }
 
-        isLoading    = true
+        isLoading = true
         errorMessage = nil
 
         Task { @MainActor in
-            do {
-                _ = try await loginUseCase.execute(
-                    email: email.trimmingCharacters(in: .whitespaces),
-                    password: password
-                )
+            let result = await signInUseCase.execute(
+                email: email.trimmingCharacters(in: .whitespacesAndNewlines),
+                password: password
+            )
 
-                isLoading = false
-                loginSucceeded = true
-            } catch {
-                isLoading = false
-                errorMessage = error.localizedDescription
+            isLoading = false
+            switch result {
+            case .success(let session):
+                completedSession = session
+            case .failure(let error):
+                errorMessage = error.userFacingMessage
             }
         }
     }
-    
-    
+
     public func signInWithGoogle() {
         isLoading = true
         errorMessage = nil
-        
+        pendingSocialUser = nil
+
         Task { @MainActor in
-            do {
-                _ = try await googleSignInUseCase.execute()
-                isLoading = false
-                loginSucceeded = true
-            } catch {
-                isLoading = false
-                errorMessage = error.localizedDescription
+            let result = await signInWithSocialUseCase.execute(provider: .google)
+
+            isLoading = false
+            switch result {
+            case .success(let socialResult):
+                pendingSocialUser = socialResult
+                switch socialResult {
+                case .existingUser(let session):
+                    completedSession = session
+                case .newUser:
+                    errorMessage = "Set a password to finish connecting your Shopify account."
+                }
+            case .failure(let error):
+                errorMessage = error.userFacingMessage
             }
         }
     }
-
-   
-
 
     private func validate() -> Bool {
         if !isValidEmail(email) {
             errorMessage = "Please enter a valid email address."
             return false
         }
-        if password.count < 6 {
-            errorMessage = "Password must be at least 6 characters."
+
+        if password.isEmpty {
+            errorMessage = "Password is required."
             return false
         }
+
         return true
     }
 

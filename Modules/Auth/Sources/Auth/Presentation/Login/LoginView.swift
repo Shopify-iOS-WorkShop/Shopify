@@ -11,12 +11,12 @@ import Common
 public struct LoginView: View {
     @ObservedObject var viewModel: LoginViewModel
     var onNavigateToSignUp: () -> Void
-    var onLoginSuccess: () -> Void
+    var onLoginSuccess: (Session) -> Void
     
     public init(
         viewModel: LoginViewModel,
         onNavigateToSignUp: @escaping () -> Void,
-        onLoginSuccess: @escaping () -> Void = {}
+        onLoginSuccess: @escaping (Session) -> Void = { _ in }
     ) {
         self.viewModel = viewModel
         self.onNavigateToSignUp = onNavigateToSignUp
@@ -96,12 +96,8 @@ public struct LoginView: View {
             }
             .padding(.bottom, 32)
         }
-        .alert(isPresented: $viewModel.loginSucceeded) {
-            Alert(
-                title: Text("Success"),
-                message: Text("You have logged in successfully."),
-                dismissButton: .default(Text("OK"), action: onLoginSuccess)
-            )
+        .onReceive(viewModel.$completedSession.compactMap { $0 }) { session in
+            onLoginSuccess(session)
         }
     }
 }

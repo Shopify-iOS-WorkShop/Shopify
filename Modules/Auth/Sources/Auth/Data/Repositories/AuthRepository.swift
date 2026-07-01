@@ -160,6 +160,12 @@ public final class AuthRepository: AuthRepositoryProtocol {
             return authError
         }
 
+        if let localizedError = error as? LocalizedError,
+           let message = localizedError.errorDescription,
+           !message.isEmpty {
+            return .authentication(message)
+        }
+
         return .authentication(error.localizedDescription)
     }
 }
