@@ -111,18 +111,37 @@ public final class AuthRepository: AuthRepositoryProtocol {
                 throw AuthError.authentication("Social sign-in session expired. Please try again.")
             }
 
-            let customerId = try await shopifyDataSource.createCustomer(
-                credentials: ShopifyCustomerCredentials(email: email, password: password),
-                name: ShopifyCustomerName(firstName: firstName, lastName: lastName)
-            )
-            let session = try await shopifyDataSource.createAccessToken(
-                credentials: ShopifyCustomerCredentials(email: email, password: password),
-                firebaseUID: currentUser.uid,
-                customerId: customerId
-            )
-            try keychainDataSource.savePassword(password, for: email)
-            try sessionLocalDataSource.save(session)
-            return .success(session)
+            do {
+                // Attempt to create a new Shopify customer account
+                let customerId = try await shopifyDataSource.createCustomer(
+                    credentials: ShopifyCustomerCredentials(email: email, password: password),
+                    name: ShopifyCustomerName(firstName: firstName, lastName: lastName)
+                )
+                let session = try await shopifyDataSource.createAccessToken(
+                    credentials: ShopifyCustomerCredentials(email: email, password: password),
+                    firebaseUID: currentUser.uid,
+                    customerId: customerId
+                )
+                try keychainDataSource.savePassword(password, for: email)
+                try sessionLocalDataSource.save(session)
+                return .success(session)
+
+            } catch AuthError.shopify(let message)
+                where message.localizedCaseInsensitiveContains("already been taken")
+                   || message.localizedCaseInsensitiveContains("already exists") {
+
+                // MARK: Keychain-lost fallback (AGENT_Auth.md §known-case)
+                // The Shopify customer already exists (e.g. app was reinstalled and
+                // Keychain was wiped). We cannot set a new password via customerCreate.
+                // Fall back to customerRecover so the user gets a Shopify reset-password
+                // email — they can then log in normally with email+password.
+                try? await shopifyDataSource.recoverPassword(email: email)
+                return .failure(.shopify(
+                    "An account with this email already exists. " +
+                    "We've sent a password reset link to \(email). " +
+                    "Please check your inbox, reset your password, then sign in with email and password."
+                ))
+            }
         } catch {
             sessionLocalDataSource.clear()
             return .failure(mapError(error))

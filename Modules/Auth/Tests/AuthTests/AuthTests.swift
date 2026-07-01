@@ -390,6 +390,79 @@ final class SetPasswordForSocialUserUseCaseTests: XCTestCase {
     }
 }
 
+// MARK: - SetPasswordViewModel Keychain-Lost Fallback Tests
+// Tests the AuthRepository behaviour, exercised through SetPasswordViewModel,
+// when Shopify returns "already been taken" (reinstall scenario).
+
+@available(iOS 13.0, *)
+final class AuthRepositoryKeychainFallbackTests: XCTestCase {
+
+    private var useCase: MockSetPasswordUseCase!
+    private var sut: SetPasswordViewModel!
+    private var cancellables: Set<AnyCancellable>!
+
+    override func setUp() {
+        super.setUp()
+        useCase = MockSetPasswordUseCase()
+        sut = SetPasswordViewModel(
+            email: "user@gmail.com",
+            displayName: "Ahmed Hassan",
+            setPasswordUseCase: useCase
+        )
+        cancellables = []
+    }
+
+    func test_confirm_whenShopifyReturns_emailAlreadyTaken_setsRecoveryErrorMessage() async {
+        // Arrange — simulate the "Email has already been taken" shopify error
+        // that AuthRepository now intercepts and transforms into a recovery message.
+        useCase.result = .failure(.shopify(
+            "An account with this email already exists. " +
+            "We've sent a password reset link to user@gmail.com. " +
+            "Please check your inbox, reset your password, then sign in with email and password."
+        ))
+        sut.password = "password123"
+        sut.confirmPassword = "password123"
+
+        let expectation = expectation(description: "errorMessage published")
+        sut.$errorMessage
+            .compactMap { $0 }
+            .first()
+            .sink { _ in expectation.fulfill() }
+            .store(in: &cancellables)
+
+        // Act
+        sut.confirm()
+        await fulfillment(of: [expectation], timeout: 2)
+
+        // Assert — VM surfaces the error, completedSession stays nil
+        XCTAssertNotNil(sut.errorMessage)
+        XCTAssertTrue(sut.errorMessage?.contains("already exists") == true)
+        XCTAssertTrue(sut.errorMessage?.contains("reset link") == true)
+        XCTAssertNil(sut.completedSession)
+        XCTAssertEqual(useCase.callCount, 1)
+    }
+
+    func test_confirm_whenShopifyReturns_differentError_doesNotTriggerFallbackMessage() async {
+        // Any other Shopify error should be passed through as-is
+        useCase.result = .failure(.shopify("Invalid email or password"))
+        sut.password = "password123"
+        sut.confirmPassword = "password123"
+
+        let expectation = expectation(description: "errorMessage published")
+        sut.$errorMessage
+            .compactMap { $0 }
+            .first()
+            .sink { _ in expectation.fulfill() }
+            .store(in: &cancellables)
+
+        sut.confirm()
+        await fulfillment(of: [expectation], timeout: 2)
+
+        XCTAssertEqual(sut.errorMessage, "Invalid email or password")
+        XCTAssertNil(sut.completedSession)
+    }
+}
+
 // MARK: - LoginViewModel Tests
 
 @available(iOS 13.0, *)
