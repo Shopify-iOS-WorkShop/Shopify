@@ -15,10 +15,7 @@ struct ShopifyApp: App {
 
     var body: some Scene {
         WindowGroup {
-            let client = URLSessionNetworkClient()
-            let repo = HomeRepository(networkClient: client)
-            let viewModel = HomeViewModel(repository: repo)
-            HomeView(viewModel: viewModel)
+            ContentView()
         }
     }
 }
