@@ -7,98 +7,133 @@
 
 import SwiftUI
 import Auth
+import Home
+import ShopifyNetwork
 
-// MARK: - Auth Screen Enum
+// MARK: - App Screen
 
-private enum AuthScreen: Equatable {
+private enum AppScreen: Equatable {
+    // Auth flow screens
     case login
     case registration
     case forgotPassword
     case setPassword(email: String, displayName: String?)
+    // Post-auth
+    case home
 }
 
 // MARK: - ContentView
 
 struct ContentView: View {
 
-    @State private var currentScreen: AuthScreen = .login
+    // Start with login; session check on appear will promote to .home if valid
+    @State private var appScreen: AppScreen = .login
+    @State private var sessionChecked: Bool = false
 
-    // ViewModels kept alive for the lifetime of the auth flow
-    @StateObject private var loginViewModel = LoginViewModel()
+    // Auth ViewModels kept alive for the lifetime of the auth flow
+    @StateObject private var loginViewModel       = LoginViewModel()
     @StateObject private var registrationViewModel = RegistrationViewModel()
     @StateObject private var forgotPasswordViewModel = ForgotPasswordViewModel()
 
+    // MARK: - Repository for cold-launch session check
+    private let repository: AuthRepositoryProtocol = AuthRepositoryFactory.make()
+
     var body: some View {
         Group {
-            switch currentScreen {
-
-            // MARK: Login
-            case .login:
-                LoginView(
-                    viewModel: loginViewModel,
-                    onNavigateToSignUp: {
-                        currentScreen = .registration
-                    },
-                    onLoginSuccess: { session in
-                        // TODO: navigate to home / tab bar after login
-                        print("[Auth] Login success — token: \(session.customerAccessToken.prefix(12))…")
-                    },
-                    onForgotPassword: {
-                        currentScreen = .forgotPassword
-                    },
-                    onContinueAsGuest: {
-                        // TODO: navigate to home as guest
-                    }
-                )
-                // Listen for social sign-in returning a newUser (needs SetPassword)
-                .onReceive(loginViewModel.$pendingSocialUser.compactMap { $0 }) { result in
-                    if case .newUser(let email, let displayName, _) = result {
-                        currentScreen = .setPassword(email: email, displayName: displayName)
-                    }
-                }
-
-            // MARK: Registration
-            case .registration:
-                RegistrationView(
-                    viewModel: registrationViewModel,
-                    onNavigateToLogin: {
-                        currentScreen = .login
-                    },
-                    onContinueAsGuest: { _ in
-                        // TODO: navigate to home as guest
-                    },
-                    onRegistrationSuccess: { session in
-                        // TODO: navigate to home / tab bar after registration
-                        print("[Auth] Registration success — token: \(session.customerAccessToken.prefix(12))…")
-                    }
-                )
-                // Listen for social sign-in on registration screen returning a newUser
-                .onReceive(registrationViewModel.$pendingSocialUser.compactMap { $0 }) { result in
-                    if case .newUser(let email, let displayName, _) = result {
-                        currentScreen = .setPassword(email: email, displayName: displayName)
-                    }
-                }
-
-            // MARK: Forgot Password
-            case .forgotPassword:
-                ForgotPasswordView(
-                    viewModel: forgotPasswordViewModel,
-                    onNavigateBack: {
-                        currentScreen = .login
-                    }
-                )
-
-            // MARK: Set Password (social users)
-            case .setPassword(let email, let displayName):
-                let vm = SetPasswordViewModel(email: email, displayName: displayName)
-                SetPasswordView(viewModel: vm)
-                    .onReceive(vm.$completedSession.compactMap { $0 }) { session in
-                        // TODO: navigate to home / tab bar after social account bridging
-                        print("[Auth] SetPassword success — token: \(session.customerAccessToken.prefix(12))…")
-                    }
+            if !sessionChecked {
+                // Splash-like blank while we do the synchronous session check
+                Color(.systemBackground).ignoresSafeArea()
+            } else {
+                screenContent
             }
         }
-        .animation(.easeInOut(duration: 0.25), value: currentScreen)
+        .task {
+            // MARK: Cold-launch session restore
+            // Run once on appear — reads persisted session from UserDefaults.
+            // If valid (token non-empty AND not expired), skip the auth flow.
+            if let session = repository.currentSession(), session.isValid {
+                appScreen = .home
+            }
+            sessionChecked = true
+        }
+    }
+
+    // MARK: - Screen Router
+
+    @ViewBuilder
+    private var screenContent: some View {
+        switch appScreen {
+
+        // MARK: Login
+        case .login:
+            LoginView(
+                viewModel: loginViewModel,
+                onNavigateToSignUp: {
+                    appScreen = .registration
+                },
+                onLoginSuccess: { _ in
+                    appScreen = .home
+                },
+                onForgotPassword: {
+                    appScreen = .forgotPassword
+                },
+                onContinueAsGuest: {
+                    appScreen = .home
+                }
+            )
+            // Social sign-in → new user path
+            .onReceive(loginViewModel.$pendingSocialUser.compactMap { $0 }) { result in
+                if case .newUser(let email, let displayName, _) = result {
+                    appScreen = .setPassword(email: email, displayName: displayName)
+                }
+            }
+            // Social sign-in → existing user path (already sets completedSession)
+            .onReceive(loginViewModel.$completedSession.compactMap { $0 }) { _ in
+                appScreen = .home
+            }
+
+        // MARK: Registration
+        case .registration:
+            RegistrationView(
+                viewModel: registrationViewModel,
+                onNavigateToLogin: {
+                    appScreen = .login
+                },
+                onContinueAsGuest: { _ in
+                    appScreen = .home
+                },
+                onRegistrationSuccess: { _ in
+                    appScreen = .home
+                }
+            )
+            // Social sign-in from registration screen → new user
+            .onReceive(registrationViewModel.$pendingSocialUser.compactMap { $0 }) { result in
+                if case .newUser(let email, let displayName, _) = result {
+                    appScreen = .setPassword(email: email, displayName: displayName)
+                }
+            }
+
+        // MARK: Forgot Password
+        case .forgotPassword:
+            ForgotPasswordView(
+                viewModel: forgotPasswordViewModel,
+                onNavigateBack: {
+                    appScreen = .login
+                }
+            )
+
+        // MARK: Set Password (social users — account bridging)
+        case .setPassword(let email, let displayName):
+            let vm = SetPasswordViewModel(email: email, displayName: displayName)
+            SetPasswordView(viewModel: vm)
+                .onReceive(vm.$completedSession.compactMap { $0 }) { _ in
+                    appScreen = .home
+                }
+
+        // MARK: Home
+        case .home:
+            HomeView(viewModel: HomeViewModel(repository: HomeRepository(networkClient: URLSessionNetworkClient())))
+        }
     }
 }
 
