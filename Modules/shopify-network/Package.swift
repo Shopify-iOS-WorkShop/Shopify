@@ -27,7 +27,7 @@ let package = Package(
                 .product(name: "Apollo", package: "apollo-ios"),
                 .product(name: "ApolloAPI", package: "apollo-ios")
             ],
-            exclude: ["GraphQL/schema.graphqls"]
+            exclude: ["GraphQL/schema.graphqls", "GraphQL/Search.graphql"]
         ),
         .testTarget(
             name: "ShopifyNetworkTests",

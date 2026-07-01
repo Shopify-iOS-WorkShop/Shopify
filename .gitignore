@@ -18,3 +18,13 @@ xcuserdata/
 **/.swiftpm/xcode/
 **/Package.resolved
 Shopify.xcworkspace/xcshareddata/swiftpm/
+
+# Apollo GraphQL Generated Files
+**/Generated/
+**/ShopifyAPI/
+*.graphqls
+
+# User-specific Xcode data (Fix for team members layout state)
+**/xcuserdata/
+**/*.xcuserstate
+**/xcschemes/
