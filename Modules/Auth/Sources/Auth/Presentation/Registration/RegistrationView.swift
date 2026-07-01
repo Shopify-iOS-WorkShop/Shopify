@@ -127,18 +127,8 @@ public struct RegistrationView: View {
             .padding(.horizontal, 18)
         }
         .background(Color(.systemBackground))
-        .alert(isPresented: $viewModel.registrationSucceeded) {
-            Alert(
-                title: Text("Success"),
-                message: Text("Your account has been created successfully."),
-                dismissButton: .default(Text("OK")) {
-                    if let session = viewModel.completedSession {
-                        onRegistrationSuccess(session)
-                    } else {
-                        onNavigateToLogin()
-                    }
-                }
-            )
+        .onReceive(viewModel.$completedSession.compactMap { $0 }) { session in
+            onRegistrationSuccess(session)
         }
     }
 }

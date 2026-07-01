@@ -22,7 +22,6 @@ public final class RegistrationViewModel: ObservableObject {
     // MARK: - State
     @Published public var isLoading: Bool              = false
     @Published public var errorMessage: String?        = nil
-    @Published public var registrationSucceeded: Bool  = false
     @Published public var guestModeActivated: Bool     = false
     @Published public private(set) var completedSession: Session? = nil
     @Published public private(set) var pendingSocialUser: SocialSignInResult? = nil
@@ -88,7 +87,6 @@ public final class RegistrationViewModel: ObservableObject {
             switch result {
             case .success(let session):
                 completedSession = session
-                registrationSucceeded = true
             case .failure(let error):
                 errorMessage = error.userFacingMessage
             }
@@ -111,7 +109,6 @@ public final class RegistrationViewModel: ObservableObject {
                 switch socialResult {
                 case .existingUser(let session):
                     completedSession = session
-                    registrationSucceeded = true
                 case .newUser:
                     errorMessage = "Set a password to finish connecting your Shopify account."
                 }
