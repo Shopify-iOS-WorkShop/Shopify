@@ -5,7 +5,7 @@ public typealias AuthUserEntity = AuthUser
 
 @available(iOS 13.0.0, *)
 public enum AuthRepositoryFactory {
-    public static func make() -> AuthRepositoryInterface {
+    public static func make() -> AuthRepositoryProtocol {
         AuthRepository()
     }
 }

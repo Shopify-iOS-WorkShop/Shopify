@@ -7,48 +7,159 @@
 
 import Foundation
 
-@available(iOS 13.0.0, *)
-public final class AuthRepository: AuthRepositoryInterface {
+public final class AuthRepository: AuthRepositoryProtocol {
 
     private let firebaseDataSource: FirebaseAuthDataSource
     private let googleDataSource: GoogleSignInDataSource
+    private let shopifyDataSource: ShopifyCustomerDataSource
+    private let sessionLocalDataSource: SessionLocalDataSource
+    private let keychainDataSource: KeychainDataSource
 
     public convenience init() {
         self.init(
             firebaseDataSource: FirebaseAuthDataSource(),
-            googleDataSource: GoogleSignInDataSource()
+            googleDataSource: GoogleSignInDataSource(),
+            shopifyDataSource: ShopifyCustomerDataSource(),
+            sessionLocalDataSource: SessionLocalDataSource(),
+            keychainDataSource: KeychainDataSource()
         )
     }
 
     init(
         firebaseDataSource: FirebaseAuthDataSource = .init(),
-        googleDataSource: GoogleSignInDataSource = .init()
+        googleDataSource: GoogleSignInDataSource = .init(),
+        shopifyDataSource: ShopifyCustomerDataSource = .init(),
+        sessionLocalDataSource: SessionLocalDataSource = .init(),
+        keychainDataSource: KeychainDataSource = .init()
     ) {
         self.firebaseDataSource = firebaseDataSource
         self.googleDataSource = googleDataSource
+        self.shopifyDataSource = shopifyDataSource
+        self.sessionLocalDataSource = sessionLocalDataSource
+        self.keychainDataSource = keychainDataSource
     }
 
-    public func login(email: String, password: String) async throws -> AuthUser {
-        try await firebaseDataSource.login(email: email, password: password)
+    public func signIn(email: String, password: String) async -> Result<Session, AuthError> {
+        do {
+            let user = try await firebaseDataSource.signIn(email: email, password: password)
+            let session = try await shopifyDataSource.createAccessToken(
+                credentials: ShopifyCustomerCredentials(email: email, password: password),
+                firebaseUID: user.uid
+            )
+            try sessionLocalDataSource.save(session)
+            return .success(session)
+        } catch {
+            return .failure(mapError(error))
+        }
     }
 
-    public func register(email: String, password: String, name: String) async throws -> AuthUser {
-        try await firebaseDataSource.register(email: email, password: password, name: name)
+    public func signUp(email: String, password: String, firstName: String, lastName: String) async -> Result<Session, AuthError> {
+        do {
+            let user = try await firebaseDataSource.signUp(
+                email: email,
+                password: password,
+                firstName: firstName,
+                lastName: lastName
+            )
+            try await firebaseDataSource.sendVerificationEmail()
+            let customerId = try await shopifyDataSource.createCustomer(
+                credentials: ShopifyCustomerCredentials(email: email, password: password),
+                name: ShopifyCustomerName(firstName: firstName, lastName: lastName)
+            )
+            let session = try await shopifyDataSource.createAccessToken(
+                credentials: ShopifyCustomerCredentials(email: email, password: password),
+                firebaseUID: user.uid,
+                customerId: customerId
+            )
+            try sessionLocalDataSource.save(session)
+            return .success(session)
+        } catch {
+            sessionLocalDataSource.clear()
+            return .failure(mapError(error))
+        }
     }
 
-    public func signInWithGoogle() async throws -> AuthUser {
-        try await googleDataSource.signIn()
+    public func signInWithSocial(provider: AuthProvider) async -> Result<SocialSignInResult, AuthError> {
+        guard provider == .google else {
+            return .failure(.authentication("Apple sign-in is not implemented yet."))
+        }
+
+        do {
+            let socialUser = try await googleDataSource.signIn()
+            guard let savedPassword = keychainDataSource.password(for: socialUser.email) else {
+                return .success(.newUser(
+                    email: socialUser.email,
+                    displayName: socialUser.displayName,
+                    provider: provider
+                ))
+            }
+
+            let session = try await shopifyDataSource.createAccessToken(
+                credentials: ShopifyCustomerCredentials(email: socialUser.email, password: savedPassword),
+                firebaseUID: socialUser.authUser.uid
+            )
+            try sessionLocalDataSource.save(session)
+            return .success(.existingUser(session))
+        } catch {
+            return .failure(mapError(error))
+        }
     }
 
-    public func signOut() throws {
-        try firebaseDataSource.signOut()
+    public func setPasswordForSocialUser(email: String, password: String, firstName: String, lastName: String) async -> Result<Session, AuthError> {
+        do {
+            guard let currentUser = firebaseDataSource.currentUser else {
+                throw AuthError.authentication("Social sign-in session expired. Please try again.")
+            }
+
+            let customerId = try await shopifyDataSource.createCustomer(
+                credentials: ShopifyCustomerCredentials(email: email, password: password),
+                name: ShopifyCustomerName(firstName: firstName, lastName: lastName)
+            )
+            let session = try await shopifyDataSource.createAccessToken(
+                credentials: ShopifyCustomerCredentials(email: email, password: password),
+                firebaseUID: currentUser.uid,
+                customerId: customerId
+            )
+            try keychainDataSource.savePassword(password, for: email)
+            try sessionLocalDataSource.save(session)
+            return .success(session)
+        } catch {
+            sessionLocalDataSource.clear()
+            return .failure(mapError(error))
+        }
     }
 
-    public func sendVerificationEmail() async throws {
-        try await firebaseDataSource.sendVerificationEmail()
+    public func signOut() async -> Result<Void, AuthError> {
+        do {
+            if let session = sessionLocalDataSource.fetch(), session.isValid {
+                try await shopifyDataSource.deleteAccessToken(session.customerAccessToken)
+            }
+            try firebaseDataSource.signOut()
+            sessionLocalDataSource.clear()
+            return .success(())
+        } catch {
+            return .failure(mapError(error))
+        }
     }
 
-    public var currentUser: AuthUser? {
-        firebaseDataSource.currentUser
+    public func recoverPassword(email: String) async -> Result<Void, AuthError> {
+        do {
+            try await shopifyDataSource.recoverPassword(email: email)
+            return .success(())
+        } catch {
+            return .failure(mapError(error))
+        }
+    }
+
+    public func currentSession() -> Session? {
+        sessionLocalDataSource.fetch()
+    }
+
+    private func mapError(_ error: Error) -> AuthError {
+        if let authError = error as? AuthError {
+            return authError
+        }
+
+        return .authentication(error.localizedDescription)
     }
 }
