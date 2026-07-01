@@ -24,21 +24,23 @@ public final class RegistrationViewModel: ObservableObject {
     @Published public var errorMessage: String?        = nil
     @Published public var registrationSucceeded: Bool  = false
     @Published public var guestModeActivated: Bool     = false
+    @Published public private(set) var completedSession: Session? = nil
+    @Published public private(set) var pendingSocialUser: SocialSignInResult? = nil
     @Published public private(set) var activeSession: UserSession? = nil
 
     // MARK: - Dependencies
-    private let registerUseCase: RegisterUseCase
-    private let googleSignInUseCase: GoogleSignInUseCase
-    private let continueAsGuestUseCase: ContinueAsGuestUseCase
+    private let signUpUseCase: SignUpUseCaseProtocol
+    private let signInWithSocialUseCase: SignInWithSocialUseCaseProtocol
+    private let continueAsGuestUseCase: ContinueAsGuestUseCaseProtocol
 
     // MARK: - Init
     public init(
-        registerUseCase: RegisterUseCase,
-        googleSignInUseCase: GoogleSignInUseCase,
-        continueAsGuestUseCase: ContinueAsGuestUseCase
+        signUpUseCase: SignUpUseCaseProtocol,
+        signInWithSocialUseCase: SignInWithSocialUseCaseProtocol,
+        continueAsGuestUseCase: ContinueAsGuestUseCaseProtocol
     ) {
-        self.registerUseCase = registerUseCase
-        self.googleSignInUseCase = googleSignInUseCase
+        self.signUpUseCase = signUpUseCase
+        self.signInWithSocialUseCase = signInWithSocialUseCase
         self.continueAsGuestUseCase = continueAsGuestUseCase
     }
 
@@ -46,7 +48,7 @@ public final class RegistrationViewModel: ObservableObject {
     public var isFormValid: Bool {
         isNameValid &&
         isValidEmail(email) &&
-        password.count >= 6 &&
+        password.count >= 8 &&
         password == confirmPassword
     }
 
@@ -57,7 +59,7 @@ public final class RegistrationViewModel: ObservableObject {
 
     public var passwordLengthError: String? {
         guard !password.isEmpty else { return nil }
-        return password.count >= 6 ? nil : "Password must be at least 6 characters"
+        return password.count >= 8 ? nil : "Password must be at least 8 characters"
     }
 
     public var emailValidationError: String? {
@@ -73,18 +75,22 @@ public final class RegistrationViewModel: ObservableObject {
         errorMessage = nil
 
         Task { @MainActor in
-            do {
-                _ = try await registerUseCase.execute(
-                    email: email.trimmingCharacters(in: .whitespaces),
-                    password: password,
-                    name: registrationName
-                )
+            let nameParts = resolvedNameParts
+            let result = await signUpUseCase.execute(
+                email: email.trimmingCharacters(in: .whitespacesAndNewlines),
+                password: password,
+                confirmPassword: confirmPassword,
+                firstName: nameParts.firstName,
+                lastName: nameParts.lastName
+            )
 
-                isLoading = false
+            isLoading = false
+            switch result {
+            case .success(let session):
+                completedSession = session
                 registrationSucceeded = true
-            } catch {
-                isLoading = false
-                errorMessage = error.localizedDescription
+            case .failure(let error):
+                errorMessage = error.userFacingMessage
             }
         }
     }
@@ -93,17 +99,46 @@ public final class RegistrationViewModel: ObservableObject {
     public func signInWithGoogle() {
         isLoading = true
         errorMessage = nil
+        pendingSocialUser = nil
         
         Task { @MainActor in
-            do {
-                _ = try await googleSignInUseCase.execute()
-                isLoading = false
-                registrationSucceeded = true
-            } catch {
-                isLoading = false
-                errorMessage = error.localizedDescription
+            let result = await signInWithSocialUseCase.execute(provider: .google)
+
+            isLoading = false
+            switch result {
+            case .success(let socialResult):
+                pendingSocialUser = socialResult
+                switch socialResult {
+                case .existingUser(let session):
+                    completedSession = session
+                    registrationSucceeded = true
+                case .newUser:
+                    errorMessage = "Set a password to finish connecting your Shopify account."
+                }
+            case .failure(let error):
+                errorMessage = error.userFacingMessage
             }
         }
+    }
+
+    public convenience init(
+        registerUseCase: SignUpUseCase,
+        googleSignInUseCase: SignInWithSocialUseCase,
+        continueAsGuestUseCase: ContinueAsGuestUseCase
+    ) {
+        self.init(
+            signUpUseCase: registerUseCase,
+            signInWithSocialUseCase: googleSignInUseCase,
+            continueAsGuestUseCase: continueAsGuestUseCase
+        )
+    }
+
+    public convenience init(repository: AuthRepositoryProtocol = AuthRepositoryFactory.make()) {
+        self.init(
+            signUpUseCase: SignUpUseCase(repository: repository),
+            signInWithSocialUseCase: SignInWithSocialUseCase(repository: repository),
+            continueAsGuestUseCase: ContinueAsGuestUseCase()
+        )
     }
 
     // MARK: - Guest Mode Action
@@ -125,8 +160,8 @@ public final class RegistrationViewModel: ObservableObject {
             errorMessage = "Please enter a valid email address."
             return false
         }
-        if password.count < 6 {
-            errorMessage = "Password must be at least 6 characters."
+        if password.count < 8 {
+            errorMessage = "Password must be at least 8 characters."
             return false
         }
         if password != confirmPassword {
@@ -156,5 +191,21 @@ public final class RegistrationViewModel: ObservableObject {
         }
 
         return "\(firstName.trimmingCharacters(in: .whitespaces)) \(lastName.trimmingCharacters(in: .whitespaces))"
+    }
+
+    private var resolvedNameParts: (firstName: String, lastName: String) {
+        let trimmedFirstName = firstName.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedLastName = lastName.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !trimmedFirstName.isEmpty || !trimmedLastName.isEmpty {
+            return (trimmedFirstName, trimmedLastName)
+        }
+
+        let parts = registrationName
+            .split(separator: " ", omittingEmptySubsequences: true)
+            .map(String.init)
+        return (
+            parts.first ?? "",
+            parts.dropFirst().joined(separator: " ")
+        )
     }
 }
