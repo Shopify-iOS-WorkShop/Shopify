@@ -10,9 +10,10 @@ import Auth
 
 // MARK: - Auth Screen Enum
 
-private enum AuthScreen {
+private enum AuthScreen: Equatable {
     case login
     case registration
+    case forgotPassword
 }
 
 // MARK: - ContentView
@@ -24,6 +25,7 @@ struct ContentView: View {
     // ViewModels created once and kept alive by ContentView
     @StateObject private var loginViewModel = LoginViewModel()
     @StateObject private var registrationViewModel = RegistrationViewModel()
+    @StateObject private var forgotPasswordViewModel = ForgotPasswordViewModel()
 
     var body: some View {
         Group {
@@ -39,7 +41,7 @@ struct ContentView: View {
                         print("[Auth] Login success — token: \(session.customerAccessToken.prefix(12))…")
                     },
                     onForgotPassword: {
-                        // TODO: push ForgotPasswordView
+                        currentScreen = .forgotPassword
                     },
                     onContinueAsGuest: {
                         // TODO: navigate to home as guest
@@ -58,6 +60,14 @@ struct ContentView: View {
                     onRegistrationSuccess: { session in
                         // TODO: navigate to home / tab bar after registration
                         print("[Auth] Registration success — token: \(session.customerAccessToken.prefix(12))…")
+                    }
+                )
+
+            case .forgotPassword:
+                ForgotPasswordView(
+                    viewModel: forgotPasswordViewModel,
+                    onNavigateBack: {
+                        currentScreen = .login
                     }
                 )
             }

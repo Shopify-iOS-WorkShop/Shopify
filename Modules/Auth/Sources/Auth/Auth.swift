@@ -16,3 +16,10 @@ public typealias AppRegistrationView = RegistrationView
 
 @available(iOS 13.0.0, *)
 public typealias AppRegistrationViewModel = RegistrationViewModel
+
+@available(iOS 13.0.0, *)
+public typealias AppForgotPasswordView = ForgotPasswordView
+
+@available(iOS 13.0.0, *)
+public typealias AppForgotPasswordViewModel = ForgotPasswordViewModel
+
