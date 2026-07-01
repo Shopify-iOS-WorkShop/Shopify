@@ -23,3 +23,8 @@ public typealias AppForgotPasswordView = ForgotPasswordView
 @available(iOS 13.0.0, *)
 public typealias AppForgotPasswordViewModel = ForgotPasswordViewModel
 
+@available(iOS 13.0.0, *)
+public typealias AppSetPasswordView = SetPasswordView
+
+@available(iOS 13.0.0, *)
+public typealias AppSetPasswordViewModel = SetPasswordViewModel
