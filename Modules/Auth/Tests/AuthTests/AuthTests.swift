@@ -9,8 +9,8 @@ final class AuthTests: XCTestCase {
         viewModel.firstName = "Ahmed"
         viewModel.lastName = "Hassan"
         viewModel.email = "ahmed@example.com"
-        viewModel.password = "123456"
-        viewModel.confirmPassword = "123456"
+        viewModel.password = "12345678"
+        viewModel.confirmPassword = "12345678"
 
         XCTAssertTrue(viewModel.isFormValid)
         XCTAssertNil(viewModel.passwordMatchError)
@@ -24,8 +24,8 @@ final class AuthTests: XCTestCase {
         viewModel.firstName = "Ahmed"
         viewModel.lastName = "Hassan"
         viewModel.email = "ahmed@example.com"
-        viewModel.password = "123456"
-        viewModel.confirmPassword = "654321"
+        viewModel.password = "12345678"
+        viewModel.confirmPassword = "87654321"
 
         XCTAssertFalse(viewModel.isFormValid)
         XCTAssertEqual(viewModel.passwordMatchError, "Passwords do not match")
@@ -46,51 +46,59 @@ final class AuthTests: XCTestCase {
     private func makeRegistrationViewModel() -> RegistrationViewModel {
         let repository = AuthRepositoryMock()
         return RegistrationViewModel(
-            registerUseCase: RegisterUseCase(repository: repository),
-            googleSignInUseCase: GoogleSignInUseCase(repository: repository),
+            signUpUseCase: SignUpUseCase(repository: repository),
+            signInWithSocialUseCase: SignInWithSocialUseCase(repository: repository),
             continueAsGuestUseCase: ContinueAsGuestUseCase()
         )
     }
 }
 
-private final class AuthRepositoryMock: AuthRepositoryInterface {
-    var currentUser: AuthUser?
+private final class AuthRepositoryMock: AuthRepositoryProtocol {
+    var currentSessionValue: Session?
 
-    func login(email: String, password: String) async throws -> AuthUser {
-        makeUser(email: email)
+    func signUp(email: String, password: String, firstName: String, lastName: String) async -> Result<Session, AuthError> {
+        let session = makeSession()
+        currentSessionValue = session
+        return .success(session)
     }
 
-    func register(email: String, password: String, name: String) async throws -> AuthUser {
-        makeUser(email: email, displayName: name)
+    func signIn(email: String, password: String) async -> Result<Session, AuthError> {
+        let session = makeSession()
+        currentSessionValue = session
+        return .success(session)
     }
 
-    func signInWithGoogle() async throws -> AuthUser {
-        makeUser(email: "google@example.com", providerID: "google.com")
+    func signInWithSocial(provider: AuthProvider) async -> Result<SocialSignInResult, AuthError> {
+        let session = makeSession()
+        currentSessionValue = session
+        return .success(.existingUser(session))
     }
 
-    func signOut() throws {
-        currentUser = nil
+    func setPasswordForSocialUser(email: String, password: String, firstName: String, lastName: String) async -> Result<Session, AuthError> {
+        let session = makeSession()
+        currentSessionValue = session
+        return .success(session)
     }
 
-    func sendVerificationEmail() async throws {}
+    func signOut() async -> Result<Void, AuthError> {
+        currentSessionValue = nil
+        return .success(())
+    }
 
-    private func makeUser(
-        email: String,
-        displayName: String? = nil,
-        providerID: String = "password"
-    ) -> AuthUser {
-        let user = AuthUser(
-            uid: "mock-user-id",
-            email: email,
-            displayName: displayName,
-            photoURL: nil,
-            isEmailVerified: false,
-            phoneNumber: nil,
-            providerID: providerID,
-            creationDate: nil,
-            lastSignInDate: nil
+    func recoverPassword(email: String) async -> Result<Void, AuthError> {
+        .success(())
+    }
+
+    func currentSession() -> Session? {
+        currentSessionValue
+    }
+
+    private func makeSession() -> Session {
+        Session(
+            customerAccessToken: "mock-token",
+            expiresAt: Date().addingTimeInterval(3600),
+            customerId: "gid://shopify/Customer/1",
+            firebaseUID: "mock-user-id"
         )
-        currentUser = user
-        return user
     }
 }
