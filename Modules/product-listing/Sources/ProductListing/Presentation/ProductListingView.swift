@@ -1,42 +1,30 @@
-//
-//  File.swift
-//  
-//
-//  Created by Mazen Amr on 29/06/2026.
-//
 import Foundation
 import SwiftUI
 
 public struct ProductListingView: View {
     public let title: String
-    
+    @ObservedObject public var viewModel: ProductListingViewModel
     @State private var selectedFilter: String = "All"
-    
-    private let filters = ["All", "Price ↑", "Price ↓", "Accessories", "Shoes", "T-Shirts"]
+    @State private var showingFilterDrawer = false
     
     private let columns = [
         GridItem(.flexible(), spacing: 16),
         GridItem(.flexible(), spacing: 16)
     ]
-    
-    private let dummyProducts: [Product] = [
-        Product(id: "1", title: "Silk Drape Blouse", vendor: "AURELIA STUDIO", price: 124.00, rating: 4.5, imageURL: nil),
-        Product(id: "2", title: "Linen Box Top", vendor: "MODERN OAK", price: 89.50, rating: 4.8, imageURL: nil),
-        Product(id: "3", title: "Pleated Cotton Shirt", vendor: "ECO VERVE", price: 110.00, rating: 4.2, imageURL: nil),
-        Product(id: "4", title: "Lace Trim Silk Cami", vendor: "LUNA COLLECTIVE", price: 75.00, rating: 4.9, imageURL: nil)
-    ]
-    
-    public init(title: String) {
+    public init(title: String, viewModel: ProductListingViewModel) {
         self.title = title
+        self.viewModel = viewModel
     }
     
     public var body: some View {
         VStack(spacing: 0) {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 10) {
-                    ForEach(filters, id: \.self) { filter in
+                    ForEach(viewModel.dynamicFilters, id: \.self) { filter in
                         Button(action: {
                             selectedFilter = filter
+                            viewModel.selectedFilter = filter 
+                            viewModel.applyFilters()
                         }) {
                             Text(filter)
                                 .font(.system(size: 13, weight: .medium))
@@ -56,11 +44,23 @@ public struct ProductListingView: View {
                 Text("Sort by:")
                     .font(.system(size: 13))
                     .foregroundColor(DS.textSec)
-                
-                Button(action: {
-                }) {
+
+                Menu {
+                    Button("None") {
+                        viewModel.selectedSortOption = .none
+                        viewModel.applyFilters()
+                    }
+                    Button("Price: Low to High") {
+                        viewModel.selectedSortOption = .priceAsc
+                        viewModel.applyFilters()
+                    }
+                    Button("Price: High to Low") {
+                        viewModel.selectedSortOption = .priceDesc
+                        viewModel.applyFilters()
+                    }
+                } label: {
                     HStack(spacing: 4) {
-                        Text("Price")
+                        Text(viewModel.selectedSortOption == .none ? "None" : viewModel.selectedSortOption.rawValue)
                             .font(.system(size: 13, weight: .bold))
                             .foregroundColor(DS.textPri)
                         
@@ -71,12 +71,17 @@ public struct ProductListingView: View {
                 }
                 
                 Spacer()
+
+                Text("\(viewModel.filteredProducts.count) results")
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundColor(DS.textSec)
             }
             .padding(.horizontal, 16)
             .padding(.bottom, 12)
+            
             ScrollView(showsIndicators: false) {
                 LazyVGrid(columns: columns, spacing: 16) {
-                    ForEach(dummyProducts) { product in
+                    ForEach(viewModel.filteredProducts) { product in
                         ProductCardView(product: product)
                     }
                 }
@@ -84,17 +89,24 @@ public struct ProductListingView: View {
                 .padding(.bottom, 20)
             }
         }
+        .task {
+            await viewModel.fetchProducts()
+        }
         .navigationTitle(title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
-            
+                    showingFilterDrawer = true
                 }) {
                     Image(systemName: "line.3.horizontal.decrease")
                         .foregroundColor(DS.textPri)
                 }
             }
+        }
+        .sheet(isPresented: $showingFilterDrawer) {
+            FilterDrawerSheet(viewModel: viewModel)
+                .presentationDetents([.medium, .large])
         }
     }
 }
