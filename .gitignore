@@ -1,4 +1,6 @@
 **/ShopifyConfig.swift
+**/Secrets.xcconfig
+**/Secrets.plist
 
 # Firebase / local secrets
 **/GoogleService-Info.plist
@@ -18,7 +20,12 @@ xcuserdata/
 **/.swiftpm/xcode/
 **/Package.resolved
 Shopify.xcworkspace/xcshareddata/swiftpm/
-Modules/Auth/.swiftpm/xcode/xcuserdata/mazenamr.xcuserdatad/xcschemes/xcschememanagement.plist
-Modules/Common/.swiftpm/xcode/xcuserdata/mazenamr.xcuserdatad/xcschemes/xcschememanagement.plist
-Shopify.xcodeproj/xcuserdata/mazenamr.xcuserdatad/xcschemes/xcschememanagement.plist
-Shopify.xcworkspace/xcuserdata/mazenamr.xcuserdatad/UserInterfaceState.xcuserstate
+# Apollo GraphQL Generated Files
+**/Generated/
+**/ShopifyAPI/
+*.graphqls
+
+# User-specific Xcode data & Schemes
+**/xcuserdata/
+**/*.xcuserstate
+**/xcschemes/

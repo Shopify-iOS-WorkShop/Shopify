@@ -15,15 +15,18 @@ public struct RegistrationView: View {
     @ObservedObject var viewModel: RegistrationViewModel
     var onNavigateToLogin: () -> Void
     var onContinueAsGuest: (UserSession) -> Void
+    var onRegistrationSuccess: (Session) -> Void
 
     public init(
         viewModel: RegistrationViewModel,
         onNavigateToLogin: @escaping () -> Void,
-        onContinueAsGuest: @escaping (UserSession) -> Void = { _ in }
+        onContinueAsGuest: @escaping (UserSession) -> Void = { _ in },
+        onRegistrationSuccess: @escaping (Session) -> Void = { _ in }
     ) {
         self.viewModel = viewModel
         self.onNavigateToLogin = onNavigateToLogin
         self.onContinueAsGuest = onContinueAsGuest
+        self.onRegistrationSuccess = onRegistrationSuccess
     }
 
     public var body: some View {
@@ -124,12 +127,8 @@ public struct RegistrationView: View {
             .padding(.horizontal, 18)
         }
         .background(Color(.systemBackground))
-        .alert(isPresented: $viewModel.registrationSucceeded) {
-            Alert(
-                title: Text("Success"),
-                message: Text("Your account has been created successfully."),
-                dismissButton: .default(Text("OK"), action: onNavigateToLogin)
-            )
+        .onReceive(viewModel.$completedSession.compactMap { $0 }) { session in
+            onRegistrationSuccess(session)
         }
     }
 }
