@@ -28,7 +28,7 @@ let package = Package(
             name: "Auth",
             dependencies: [
                 "Common",
-                "ShopifyNetwork",
+                .product(name: "ShopifyNetwork", package: "shopify-network"),
                 .product(name: "FirebaseAuth", package: "firebase-ios-sdk"),
                 .product(name: "GoogleSignIn", package: "GoogleSignIn-iOS")
             ]
