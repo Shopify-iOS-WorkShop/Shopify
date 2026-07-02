@@ -10,6 +10,7 @@ let package = Package(
     dependencies: [
         .package(path: "../Common"),
         .package(path: "../shopify-network"),
+        .package(path: "../DataPersistence"),
         .package(
             url: "https://github.com/apollographql/apollo-ios",
             from: "1.9.0"
@@ -21,6 +22,7 @@ let package = Package(
             dependencies: [
                 .product(name: "Common", package: "Common"),
                 .product(name: "ShopifyNetwork", package: "shopify-network"),
+                .product(name: "DataPersistence", package: "DataPersistence"),
                 .product(name: "ApolloAPI", package: "apollo-ios"),
             ],
             path: "Sources/Cart"
