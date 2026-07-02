@@ -10,10 +10,16 @@ import UIKit
 import GoogleSignIn
 import FirebaseAuth
 
+struct SocialAuthUser {
+    let authUser: AuthUser
+    let email: String
+    let displayName: String?
+}
+
 final class GoogleSignInDataSource {
 
     @MainActor
-    func signIn() async throws -> AuthUser {
+    func signIn() async throws -> SocialAuthUser {
         try configureGoogleSignInIfNeeded()
 
         guard
@@ -37,7 +43,16 @@ final class GoogleSignInDataSource {
         )
 
         let firebaseResult = try await Auth.auth().signIn(with: credential)
-        return firebaseResult.user.toDomain()
+        let authUser = firebaseResult.user.toDomain()
+        guard let email = authUser.email, !email.isEmpty else {
+            throw AuthDataError.missingEmail
+        }
+
+        return SocialAuthUser(
+            authUser: authUser,
+            email: email,
+            displayName: authUser.displayName
+        )
     }
 
     private func configureGoogleSignInIfNeeded() throws {
@@ -62,6 +77,7 @@ enum AuthDataError: LocalizedError {
     case missingRootViewController
     case missingGoogleToken
     case missingGoogleClientID
+    case missingEmail
 
     var errorDescription: String? {
         switch self {
@@ -71,6 +87,8 @@ enum AuthDataError: LocalizedError {
             return "Google sign-in token is missing."
         case .missingGoogleClientID:
             return "Google Sign-In client ID is missing from GoogleService-Info.plist."
+        case .missingEmail:
+            return "The social account did not provide an email address."
         }
     }
 }

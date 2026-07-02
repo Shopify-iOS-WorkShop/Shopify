@@ -1,4 +1,6 @@
 **/ShopifyConfig.swift
+**/Secrets.xcconfig
+**/Secrets.plist
 
 # Firebase / local secrets
 **/GoogleService-Info.plist
