@@ -6,11 +6,12 @@
 //
 
 import SwiftUI
-import Auth
-import Home
+import Common
 import ShopifyNetwork
+import Home
+import Auth
 
-ً
+
 private enum AppScreen: Equatable {
     case login
     case registration
@@ -27,11 +28,23 @@ struct ContentView: View {
 
     @StateObject private var loginViewModel       = LoginViewModel()
     @StateObject private var registrationViewModel = RegistrationViewModel()
-    @StateObject private var forgotPasswordViewModel = ForgoًtPasswordViewModel()
+    @StateObject private var forgotPasswordViewModel = ForgotPasswordViewModel()
 
     private let repository: AuthRepositoryProtocol = AuthRepositoryFactory.make()
 
     var body: some View {
+//        CommonCatalogGridView(type: .brands)
+//        CommonCatalogGridView(type: .categories)
+//        HomeView(viewModel: HomeViewModel(repository: HomeRepository(networkClient: URLSessionNetworkClient())))
+//    }
+//    
+//    
+//    struct ContentView_Previews: PreviewProvider {
+//        static var previews: some View {
+//            ContentView()
+//        }
+//    }
+
         Group {
             if !sessionChecked {
                 // Splash-like blank while we do the synchronous session check
