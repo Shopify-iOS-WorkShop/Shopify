@@ -6,11 +6,16 @@
 //
 
 import SwiftUI
+import Common
+import ShopifyNetwork
+import Home
 
 struct ContentView: View {
     
     var body: some View {
-        
+//        CommonCatalogGridView(type: .brands)
+//        CommonCatalogGridView(type: .categories)
+//        HomeView(viewModel: HomeViewModel(repository: HomeRepository(networkClient: URLSessionNetworkClient())))
     }
     
     
@@ -19,3 +24,4 @@ struct ContentView: View {
             ContentView()
         }
     }
+}
