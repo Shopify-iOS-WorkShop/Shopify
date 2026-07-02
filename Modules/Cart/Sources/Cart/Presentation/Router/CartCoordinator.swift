@@ -14,8 +14,8 @@ public final class CartCoordinator {
     public init() {}
 
     // Temporary placeholder for the CartView until it's implemented in task/cart-ui
-    public func start() -> some View {
-        Text("Cart View Placeholder")
+    public func start(viewModel: CartViewModel) -> some View {
+        CartView(viewModel: viewModel)
     }
 
     public func navigateTo(_ route: CartRoute, currentCheckoutUrl: URL? = nil) {
