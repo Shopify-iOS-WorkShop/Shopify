@@ -147,7 +147,7 @@ final class ShopifyCustomerDataSource {
     }
 }
 
-private struct AuthShopifyGraphQLEndpoint: Endpoint {
+struct AuthShopifyGraphQLEndpoint: Endpoint {
     let configuration: ShopifyStorefrontConfiguration
     let storefrontToken: String
     let body: Data?
@@ -176,23 +176,22 @@ private struct AuthShopifyGraphQLEndpoint: Endpoint {
     }
 }
 
-private struct ShopifyStorefrontConfiguration {
+struct ShopifyStorefrontConfiguration {
     let hostname: String
     let apiVersion: String
     let storefrontToken: String
 
     static var current: ShopifyStorefrontConfiguration {
         let info = Bundle.main.infoDictionary ?? [:]
+        
+        let token = info["SHOPIFY_STOREFRONT_TOKEN"] as? String ?? ""
+        let finalToken = token.hasPrefix("$(") ? "" : token
+        
         return ShopifyStorefrontConfiguration(
             hostname: info["SHOPIFY_HOSTNAME"] as? String ?? "mad46-ios-team5.myshopify.com",
             apiVersion: info["SHOPIFY_API_VERSION"] as? String ?? "2025-01",
-            storefrontToken: Self.configuredValue(info["SHOPIFY_STOREFRONT_TOKEN"] as? String)
+            storefrontToken: finalToken
         )
-    }
-
-    private static func configuredValue(_ value: String?) -> String {
-        guard let value, !value.hasPrefix("$(") else { return "" }
-        return value
     }
 }
 
