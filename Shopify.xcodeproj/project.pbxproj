@@ -13,6 +13,7 @@
 		6DB16D892FF537B6004925EF /* Apollo in Frameworks */ = {isa = PBXBuildFile; productRef = 6DB16D882FF537B6004925EF /* Apollo */; };
 		6DB16D8B2FF537B6004925EF /* ApolloAPI in Frameworks */ = {isa = PBXBuildFile; productRef = 6DB16D8A2FF537B6004925EF /* ApolloAPI */; };
 		6DB16D8F2FF54133004925EF /* ShopifyNetwork in Frameworks */ = {isa = PBXBuildFile; productRef = 6DB16D8E2FF54133004925EF /* ShopifyNetwork */; };
+		6DBB6C442FF69B4C00E3E198 /* search in Frameworks */ = {isa = PBXBuildFile; productRef = 6DBB6C432FF69B4C00E3E198 /* search */; };
 		6DD877782FF15EF500D94255 /* Common in Frameworks */ = {isa = PBXBuildFile; productRef = 6DD877772FF15EF500D94255 /* Common */; };
 		78BFEC8B2FEFCB6800358550 /* ShopifyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78BFEC8A2FEFCB6800358550 /* ShopifyApp.swift */; };
 		78BFEC8D2FEFCB6800358550 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78BFEC8C2FEFCB6800358550 /* ContentView.swift */; };
@@ -40,6 +41,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				31A157822FF01A740080AC8E /* Home in Frameworks */,
+				6DBB6C442FF69B4C00E3E198 /* search in Frameworks */,
 				6DD877782FF15EF500D94255 /* Common in Frameworks */,
 				C47A3B342FF1CBC600857006 /* GoogleSignInSwift in Frameworks */,
 				6DB16D8B2FF537B6004925EF /* ApolloAPI in Frameworks */,
@@ -127,6 +129,7 @@
 				6DB16D882FF537B6004925EF /* Apollo */,
 				6DB16D8A2FF537B6004925EF /* ApolloAPI */,
 				6DB16D8E2FF54133004925EF /* ShopifyNetwork */,
+				6DBB6C432FF69B4C00E3E198 /* search */,
 			);
 			productName = Shopify;
 			productReference = 78BFEC872FEFCB6800358550 /* Shopify.app */;
@@ -432,6 +435,10 @@
 		6DB16D8E2FF54133004925EF /* ShopifyNetwork */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ShopifyNetwork;
+		};
+		6DBB6C432FF69B4C00E3E198 /* search */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = search;
 		};
 		6DD877772FF15EF500D94255 /* Common */ = {
 			isa = XCSwiftPackageProductDependency;

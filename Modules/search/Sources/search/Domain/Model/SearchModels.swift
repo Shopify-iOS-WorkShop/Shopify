@@ -1,6 +1,6 @@
 import Foundation
 
-public struct SearchProductVariant: Identifiable {
+public struct SearchProductVariant: Identifiable, Sendable {
     public let id: String
     public let title: String
     public let availableForSale: Bool
@@ -18,7 +18,7 @@ public struct SearchProductVariant: Identifiable {
     }
 }
 
-public struct SearchProduct: Identifiable {
+public struct SearchProduct: Identifiable, Sendable {
     public let id: String
     public let title: String
     public let vendor: String
@@ -41,7 +41,7 @@ public struct SearchProduct: Identifiable {
     }
 }
 
-public struct SearchCollection: Identifiable {
+public struct SearchCollection: Identifiable, Sendable {
     public let id: String
     public let title: String
     public let handle: String
@@ -55,7 +55,7 @@ public struct SearchCollection: Identifiable {
     }
 }
 
-public struct PageInfo {
+public struct PageInfo: Sendable {
     public let hasNextPage: Bool
     public let endCursor: String?
     

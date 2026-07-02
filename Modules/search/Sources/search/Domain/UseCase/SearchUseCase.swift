@@ -1,6 +1,6 @@
 import Foundation
 
-public class SearchUseCase {
+public final class SearchUseCase: Sendable {
     private let repository: SearchRepositoryProtocol
     
     public init(repository: SearchRepositoryProtocol) {
