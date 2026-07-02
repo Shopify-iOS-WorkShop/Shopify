@@ -4,8 +4,9 @@
 //
 //  Created by Mazen Amr on 29/06/2026.
 //
-
 import Foundation
+import SwiftUI
+
 @MainActor
 public class ProductListingViewModel: ObservableObject {
     private var allProducts: [Product] = []
@@ -14,61 +15,45 @@ public class ProductListingViewModel: ObservableObject {
     @Published public var filterCriteria = FilterCriteria()
     @Published public var selectedFilter: String = "All"
     @Published public var selectedSortOption: SortOption = .none
-    public var availableVendors: [String] {
-        Array(Set(allProducts.map { $0.vendor })).sorted()
-    }
-    
-    public var dynamicFilters: [String] {
-        let types = Array(Set(allProducts.map { $0.productType.uppercased() }))
-            .filter { !$0.isEmpty }
-            .sorted()
-        
-        return ["All"] + types
-    }
-        public func applyFilters() {
-            var results = allProducts.filter { product in
-                var isMatch = true
-                if let min = filterCriteria.minPrice, product.price < min { isMatch = false }
-                if let max = filterCriteria.maxPrice, product.price > max { isMatch = false }
-                if !filterCriteria.selectedVendors.isEmpty {
-                    if !filterCriteria.selectedVendors.contains(product.vendor) { isMatch = false }
-                }
-                if filterCriteria.inStockOnly && !product.isInStock {
-                    isMatch = false
-                }
-                
-                return isMatch
-            }
-            
-            if selectedFilter != "All" {
-                results = results.filter { $0.productType.caseInsensitiveCompare(selectedFilter) == .orderedSame }
-            }
-        
-        switch selectedSortOption {
-            case .priceAsc:
-                results.sort { $0.price < $1.price }
-            case .priceDesc:
-                results.sort { $0.price > $1.price }
-            case .none:
-                break
-            }
-            filteredProducts = results
-        }
-    
-    public func clearFilters() {
-        filterCriteria = FilterCriteria()
-        applyFilters()
-    }
+    @Published public var availableVendors: [String] = []
+    @Published public var dynamicFilters: [String] = ["All"]
+    @Published public var isLoading: Bool = false
+    @Published public var errorMessage: String?
     
     public let context: ListingContext
     private let repository: ProductListingRepositoryProtocol
-
-    public init(context: ListingContext, repository: ProductListingRepositoryProtocol) {
+    private let filterUseCase: FilterProductsUseCase
+    
+    public init(
+        context: ListingContext,
+        repository: ProductListingRepositoryProtocol,
+        filterUseCase: FilterProductsUseCase = FilterProductsUseCase()
+    ) {
         self.context = context
         self.repository = repository
+        self.filterUseCase = filterUseCase
     }
-
+    
+    public func applyFilters() {
+        filteredProducts = filterUseCase.execute(
+            products: allProducts,
+            criteria: filterCriteria,
+            selectedCategory: selectedFilter,
+            sortOption: selectedSortOption
+        )
+    }
+    
+    public func clearFilters() {
+        filterCriteria = FilterCriteria()
+        selectedFilter = "All"
+        selectedSortOption = .none
+        applyFilters()
+    }
+    
     public func fetchProducts() async {
+        isLoading = true
+        errorMessage = nil
+        
         do {
             switch context {
             case .allProducts:
@@ -76,10 +61,24 @@ public class ProductListingViewModel: ObservableObject {
             case .collection(let id, _):
                 allProducts = try await repository.fetchProductsForCollection(id: id)
             }
-            
+            setupFilterOptions(from: allProducts)
             applyFilters()
+            
         } catch {
+            errorMessage = error.localizedDescription 
             print("Network Error: \(error)")
         }
+        
+        isLoading = false
+    }
+    
+    private func setupFilterOptions(from products: [Product]) {
+        availableVendors = Array(Set(products.map { $0.vendor })).sorted()
+        
+        let types = Array(Set(products.map { $0.productType.uppercased() }))
+            .filter { !$0.isEmpty }
+            .sorted()
+        
+        dynamicFilters = ["All"] + types
     }
 }
