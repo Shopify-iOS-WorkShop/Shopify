@@ -42,9 +42,7 @@ struct ContentView: View {
             }
         }
         .task {
-            // MARK: Cold-launch session restore
-            // Run once on appear — reads persisted session from UserDefaults.
-            // If valid (token non-empty AND not expired), skip the auth flow.
+           
             if let session = repository.currentSession(), session.isValid {
                 appScreen = .home
             }
