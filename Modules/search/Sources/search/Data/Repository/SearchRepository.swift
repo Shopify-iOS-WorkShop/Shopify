@@ -2,7 +2,7 @@ import Foundation
 import ShopifyNetwork
 import Apollo
 
-public class SearchRepository: SearchRepositoryProtocol {
+public final class SearchRepository: SearchRepositoryProtocol, @unchecked Sendable {
     private let client: GraphQLClientProtocol
     
     public init(client: GraphQLClientProtocol = GraphQLClient.shared) {

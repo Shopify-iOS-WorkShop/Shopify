@@ -6,11 +6,12 @@
 //
 
 import SwiftUI
+import search
 
 struct ContentView: View {
     
     var body: some View {
-        
+        SearchView()
     }
     
     
@@ -19,3 +20,4 @@ struct ContentView: View {
             ContentView()
         }
     }
+}
