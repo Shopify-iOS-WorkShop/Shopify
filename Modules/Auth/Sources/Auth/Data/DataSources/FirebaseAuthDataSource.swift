@@ -10,15 +10,15 @@ import FirebaseAuth
 
 final class FirebaseAuthDataSource {
 
-    func login(email: String, password: String) async throws -> AuthUser {
+    func signIn(email: String, password: String) async throws -> AuthUser {
         let result = try await Auth.auth().signIn(withEmail: email, password: password)
         return result.user.toDomain()
     }
 
-    func register(email: String, password: String, name: String) async throws -> AuthUser {
+    func signUp(email: String, password: String, firstName: String, lastName: String) async throws -> AuthUser {
         let result = try await Auth.auth().createUser(withEmail: email, password: password)
         let changeRequest = result.user.createProfileChangeRequest()
-        changeRequest.displayName = name
+        changeRequest.displayName = "\(firstName) \(lastName)".trimmingCharacters(in: .whitespacesAndNewlines)
         try await changeRequest.commitChanges()
         return result.user.toDomain()
     }
