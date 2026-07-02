@@ -26,11 +26,9 @@ public class GraphQLClient: GraphQLClientProtocol {
         
         let cache = InMemoryNormalizedCache()
         let store = ApolloStore(cache: cache)
-        let provider = DefaultInterceptorProvider.shared
+        let provider = DefaultInterceptorProvider(store: store)
         let requestChainTransport = RequestChainNetworkTransport(
-            urlSession: URLSession(configuration: .default),
             interceptorProvider: provider,
-            store: store,
             endpointURL: url,
             additionalHeaders: [
                 "X-Shopify-Storefront-Access-Token": ShopifyConfig.storefrontToken,

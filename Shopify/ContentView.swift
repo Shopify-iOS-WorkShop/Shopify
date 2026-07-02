@@ -33,18 +33,6 @@ struct ContentView: View {
     private let repository: AuthRepositoryProtocol = AuthRepositoryFactory.make()
 
     var body: some View {
-//        CommonCatalogGridView(type: .brands)
-//        CommonCatalogGridView(type: .categories)
-//        HomeView(viewModel: HomeViewModel(repository: HomeRepository(networkClient: URLSessionNetworkClient())))
-//    }
-//    
-//    
-//    struct ContentView_Previews: PreviewProvider {
-//        static var previews: some View {
-//            ContentView()
-//        }
-//    }
-
         Group {
             if !sessionChecked {
                 // Splash-like blank while we do the synchronous session check

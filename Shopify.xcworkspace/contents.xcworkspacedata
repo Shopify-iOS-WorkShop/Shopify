@@ -5,6 +5,12 @@
       location = "group:Modules/product-details">
    </FileRef>
    <FileRef
+      location = "group:Modules/DataPersistence">
+   </FileRef>
+   <FileRef
+      location = "group:Modules/product-listing">
+   </FileRef>
+   <FileRef
       location = "group:Modules/home">
    </FileRef>
    <FileRef

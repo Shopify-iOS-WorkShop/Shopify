@@ -7,9 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		31A157822FF01A740080AC8E /* Home in Frameworks */ = {isa = PBXBuildFile; productRef = 31A157812FF01A740080AC8E /* Home */; };
-		31B58BB52FF4433600845705 /* ProductDetails in Frameworks */ = {isa = PBXBuildFile; productRef = 31B58BB42FF4433600845705 /* ProductDetails */; };
-		39EBC5CB2FF5B303009F5DA1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 39EBC5CA2FF5B303009F5DA1 /* GoogleService-Info.plist */; };
+        31A157822FF01A740080AC8E /* Home in Frameworks */ = {isa = PBXBuildFile; productRef = 31A157812FF01A740080AC8E /* Home */; };
+        31B58BB52FF4433600845705 /* ProductDetails in Frameworks */ = {isa = PBXBuildFile; productRef = 31B58BB42FF4433600845705 /* ProductDetails */; };
+        31FB03F32FF2FD2F00EE8817 /* ProductListing in Frameworks */ = {isa = PBXBuildFile; productRef = 31FB03F22FF2FD2F00EE8817 /* ProductListing */; };
+        39EBC5CB2FF5B303009F5DA1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 39EBC5CA2FF5B303009F5DA1 /* GoogleService-Info.plist */; };
 		6DB16D892FF537B6004925EF /* Apollo in Frameworks */ = {isa = PBXBuildFile; productRef = 6DB16D882FF537B6004925EF /* Apollo */; };
 		6DB16D8B2FF537B6004925EF /* ApolloAPI in Frameworks */ = {isa = PBXBuildFile; productRef = 6DB16D8A2FF537B6004925EF /* ApolloAPI */; };
 		6DB16D8F2FF54133004925EF /* ShopifyNetwork in Frameworks */ = {isa = PBXBuildFile; productRef = 6DB16D8E2FF54133004925EF /* ShopifyNetwork */; };
@@ -25,7 +26,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		39EBC5CA2FF5B303009F5DA1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+        39EBC5CA2FF5B303009F5DA1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		78BFEC872FEFCB6800358550 /* Shopify.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Shopify.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		78BFEC8A2FEFCB6800358550 /* ShopifyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopifyApp.swift; sourceTree = "<group>"; };
 		78BFEC8C2FEFCB6800358550 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -40,6 +41,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				31A157822FF01A740080AC8E /* Home in Frameworks */,
+				31FB03F32FF2FD2F00EE8817 /* ProductListing in Frameworks */,
 				6DD877782FF15EF500D94255 /* Common in Frameworks */,
 				C47A3B342FF1CBC600857006 /* GoogleSignInSwift in Frameworks */,
 				6DB16D8B2FF537B6004925EF /* ApolloAPI in Frameworks */,
@@ -118,6 +120,7 @@
 			name = Shopify;
 			packageProductDependencies = (
 				31A157812FF01A740080AC8E /* Home */,
+				31FB03F22FF2FD2F00EE8817 /* ProductListing */,
 				6DD877772FF15EF500D94255 /* Common */,
 				C47A3B292FF1C30E00857006 /* Auth */,
 				C47A3B2C2FF1CB6F00857006 /* FirebaseAuth */,
@@ -177,7 +180,7 @@
 			files = (
 				78BFEC922FEFCB6A00358550 /* Preview Assets.xcassets in Resources */,
 				78BFEC8F2FEFCB6A00358550 /* Assets.xcassets in Resources */,
-				39EBC5CB2FF5B303009F5DA1 /* GoogleService-Info.plist in Resources */,
+                39EBC5CB2FF5B303009F5DA1 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -321,8 +324,14 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Shopify/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = NO;
+				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Shopify/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -345,8 +354,14 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Shopify/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = NO;
+				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Shopify/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -388,8 +403,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apollographql/apollo-ios.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.2.0;
+				kind = exactVersion;
+				version = 1.8.0;
 			};
 		};
 		C47A3B2B2FF1CB6F00857006 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
@@ -418,6 +433,10 @@
 		31B58BB42FF4433600845705 /* ProductDetails */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ProductDetails;
+		};
+		31FB03F22FF2FD2F00EE8817 /* ProductListing */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ProductListing;
 		};
 		6DB16D882FF537B6004925EF /* Apollo */ = {
 			isa = XCSwiftPackageProductDependency;

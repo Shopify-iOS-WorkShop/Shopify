@@ -1,10 +1,10 @@
 import SwiftUI
 import Home
 import ShopifyNetwork
+import ProductListing
 import Auth
 import Firebase
 import GoogleSignIn
-
 @main
 struct ShopifyApp: App {
     init() {
