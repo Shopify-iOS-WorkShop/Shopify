@@ -1,5 +1,7 @@
 // The Swift Programming Language
 // https://docs.swift.org/swift-book
+
+import DependencyInjection
 	
 public typealias AuthUserEntity = AuthUser
 
@@ -9,6 +11,9 @@ public enum AuthRepositoryFactory {
         AuthRepository()
     }
 }
+
+// MARK: - Dependency Injection Assembly Export
+public typealias AppAuthAssembly = AuthAssembly
 
 // MARK: - Presentation Exports
 @available(iOS 13.0.0, *)
