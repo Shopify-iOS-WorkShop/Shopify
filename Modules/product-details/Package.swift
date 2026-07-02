@@ -13,21 +13,27 @@ let package = Package(
             targets: ["ProductDetails"]
         ),
     ],
-    dependencies: [.package(path: "../shopify-network")]
-    ,
+    dependencies: [
+        .package(path: "../shopify-network"),
+        .package(path: "../DependencyInjection")
+    ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "ProductDetails",
             dependencies: [
-               // Explicitly tells SPM: "Look for the product 'ShopifyNetwork' inside the package 'shopify-network'"
-               .product(name: "ShopifyNetwork", package: "shopify-network")
+               .product(name: "ShopifyNetwork", package: "shopify-network"),
+               .product(name: "DependencyInjection", package: "DependencyInjection")
            ]
         ),
         .testTarget(
             name: "ProductDetailsTests",
-            dependencies: ["ProductDetails", .product(name: "ShopifyNetwork", package: "shopify-network")]
+            dependencies: [
+                "ProductDetails",
+                .product(name: "ShopifyNetwork", package: "shopify-network"),
+                .product(name: "DependencyInjection", package: "DependencyInjection")
+            ]
         ),
     ]
 )
