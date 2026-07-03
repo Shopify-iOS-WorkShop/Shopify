@@ -19,6 +19,7 @@
 		6D0B9DB42FF817AC00F50859 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 6D0B9DB32FF817AC00F50859 /* GoogleSignIn */; };
 		6D0B9DB62FF817B500F50859 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 6D0B9DB52FF817B500F50859 /* FirebaseAnalytics */; };
 		6DBB6C442FF69B4C00E3E198 /* search in Frameworks */ = {isa = PBXBuildFile; productRef = 6DBB6C432FF69B4C00E3E198 /* search */; };
+		7879208D2FF80BF2009EFC6F /* AppAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7879208C2FF80BF2009EFC6F /* AppAssembly.swift */; };
 		78BFEC8B2FEFCB6800358550 /* ShopifyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78BFEC8A2FEFCB6800358550 /* ShopifyApp.swift */; };
 		78BFEC8D2FEFCB6800358550 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78BFEC8C2FEFCB6800358550 /* ContentView.swift */; };
 		78BFEC8F2FEFCB6A00358550 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 78BFEC8E2FEFCB6A00358550 /* Assets.xcassets */; };
@@ -28,6 +29,7 @@
 /* Begin PBXFileReference section */
 		31D979202FF74DCE00FA3DD4 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
 		39EBC5CA2FF5B303009F5DA1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		7879208C2FF80BF2009EFC6F /* AppAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAssembly.swift; sourceTree = "<group>"; };
 		78BFEC872FEFCB6800358550 /* Shopify.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Shopify.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		78BFEC8A2FEFCB6800358550 /* ShopifyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopifyApp.swift; sourceTree = "<group>"; };
 		78BFEC8C2FEFCB6800358550 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -84,6 +86,7 @@
 		78BFEC892FEFCB6800358550 /* Shopify */ = {
 			isa = PBXGroup;
 			children = (
+				7879208C2FF80BF2009EFC6F /* AppAssembly.swift */,
 				39EBC5CA2FF5B303009F5DA1 /* GoogleService-Info.plist */,
 				78BFEC8A2FEFCB6800358550 /* ShopifyApp.swift */,
 				78BFEC8C2FEFCB6800358550 /* ContentView.swift */,
@@ -191,6 +194,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				31D979212FF74DCE00FA3DD4 /* AppCoordinator.swift in Sources */,
+				7879208D2FF80BF2009EFC6F /* AppAssembly.swift in Sources */,
 				78BFEC8D2FEFCB6800358550 /* ContentView.swift in Sources */,
 				78BFEC8B2FEFCB6800358550 /* ShopifyApp.swift in Sources */,
 			);
