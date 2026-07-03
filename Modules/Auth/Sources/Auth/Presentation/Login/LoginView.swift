@@ -10,23 +10,10 @@ import Common
 
 public struct LoginView: View {
     @ObservedObject var viewModel: LoginViewModel
-    var onNavigateToSignUp: () -> Void
-    var onLoginSuccess: (Session) -> Void
-    var onForgotPassword: () -> Void
-    var onContinueAsGuest: () -> Void
+    @Environment(AuthCoordinator.self) private var coordinator
     
-    public init(
-        viewModel: LoginViewModel,
-        onNavigateToSignUp: @escaping () -> Void,
-        onLoginSuccess: @escaping (Session) -> Void = { _ in },
-        onForgotPassword: @escaping () -> Void = {},
-        onContinueAsGuest: @escaping () -> Void = {}
-    ) {
+    public init(viewModel: LoginViewModel) {
         self.viewModel = viewModel
-        self.onNavigateToSignUp = onNavigateToSignUp
-        self.onLoginSuccess = onLoginSuccess
-        self.onForgotPassword = onForgotPassword
-        self.onContinueAsGuest = onContinueAsGuest
     }
     
     public var body: some View {
@@ -54,14 +41,13 @@ public struct LoginView: View {
 
                 HStack {
                     Spacer()
-                    Button(action: onForgotPassword) {
+                    Button(action: { coordinator.push(.forgotPassword) }) {
                         Text("Forgot Password?")
                             .font(.system(size: 14, weight: .semibold))
                             .foregroundColor(Color(red: 233 / 255.0, green: 69 / 255.0, blue: 96 / 255.0))
                     }
                 }
                 
-             
                 if let error = viewModel.errorMessage {
                     Text(error)
                         .font(.callout)
@@ -103,7 +89,7 @@ public struct LoginView: View {
                 Text("Don't have an account?")
                     .font(.system(size: 15))
                     .foregroundColor(.gray)
-                Button(action: onNavigateToSignUp) {
+                Button(action: { coordinator.push(.register) }) {
                     Text("Sign Up")
                         .font(.system(size: 15))
                         .fontWeight(.bold)
@@ -112,7 +98,7 @@ public struct LoginView: View {
             }
             .padding(.bottom, 16)
             
-            Button(action: onContinueAsGuest) {
+            Button(action: { coordinator.onContinueAsGuest?() }) {
                 Text("Continue as Guest")
                     .fontWeight(.medium)
                     .foregroundColor(.gray)
@@ -121,8 +107,8 @@ public struct LoginView: View {
             .padding(.bottom, 32)
         }
         .onReceive(viewModel.$completedSession.compactMap { $0 }) { session in
-            onLoginSuccess(session)
+            coordinator.onLoginSuccess?()
         }
+        .navigationBarHidden(true)
     }
 }
-    

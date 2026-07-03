@@ -13,20 +13,10 @@ import Common
 @available(iOS 13.0.0, *)
 public struct RegistrationView: View {
     @ObservedObject var viewModel: RegistrationViewModel
-    var onNavigateToLogin: () -> Void
-    var onContinueAsGuest: (UserSession) -> Void
-    var onRegistrationSuccess: (Session) -> Void
+    @Environment(AuthCoordinator.self) private var coordinator
 
-    public init(
-        viewModel: RegistrationViewModel,
-        onNavigateToLogin: @escaping () -> Void,
-        onContinueAsGuest: @escaping (UserSession) -> Void = { _ in },
-        onRegistrationSuccess: @escaping (Session) -> Void = { _ in }
-    ) {
+    public init(viewModel: RegistrationViewModel) {
         self.viewModel = viewModel
-        self.onNavigateToLogin = onNavigateToLogin
-        self.onContinueAsGuest = onContinueAsGuest
-        self.onRegistrationSuccess = onRegistrationSuccess
     }
 
     public var body: some View {
@@ -38,12 +28,11 @@ public struct RegistrationView: View {
                         .foregroundColor(.black)
 
                     HStack {
-                        Button(action: onNavigateToLogin) {
+                        Button(action: { coordinator.pop() }) {
                             Image(systemName: "chevron.left")
                                 .font(.system(size: 28, weight: .medium))
                                 .foregroundColor(.black)
                         }
-
                         Spacer()
                     }
                 }
@@ -110,7 +99,7 @@ public struct RegistrationView: View {
                 )
                 .padding(.top, 10)
 
-                Button(action: onNavigateToLogin) {
+                Button(action: { coordinator.pop() }) {
                     HStack(spacing: 4) {
                         Text("Already have an account?")
                             .font(.system(size: 16))
@@ -128,7 +117,8 @@ public struct RegistrationView: View {
         }
         .background(Color(.systemBackground))
         .onReceive(viewModel.$completedSession.compactMap { $0 }) { session in
-            onRegistrationSuccess(session)
+            coordinator.onLoginSuccess?()
         }
+        .navigationBarHidden(true)
     }
 }

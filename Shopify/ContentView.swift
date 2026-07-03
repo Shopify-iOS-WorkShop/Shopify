@@ -6,122 +6,64 @@
 //
 
 import SwiftUI
-import Common
 import ShopifyNetwork
 import Home
 import Auth
 
-
-private enum AppScreen: Equatable {
-    case login
-    case registration
-    case forgotPassword
-    case setPassword(email: String, displayName: String?)
-    case home
-}
-
-
 struct ContentView: View {
-
-    @State private var appScreen: AppScreen = .login
+    @State private var appCoordinator = AppCoordinator()
     @State private var sessionChecked: Bool = false
-
-    @StateObject private var loginViewModel       = LoginViewModel()
-    @StateObject private var registrationViewModel = RegistrationViewModel()
-    @StateObject private var forgotPasswordViewModel = ForgotPasswordViewModel()
-
     private let repository: AuthRepositoryProtocol = AuthRepositoryFactory.make()
 
     var body: some View {
         Group {
             if !sessionChecked {
-                // Splash-like blank while we do the synchronous session check
                 Color(.systemBackground).ignoresSafeArea()
             } else {
-                screenContent
+                if !appCoordinator.hasCompletedAuth {
+                    NavigationStack(path: $appCoordinator.authCoordinator.path) {
+                        LoginView(viewModel: LoginViewModel())
+                            .navigationDestination(for: AuthRoute.self) { route in
+                                switch route {
+                                case .login:
+                                    LoginView(viewModel: LoginViewModel())
+                                case .register:
+                                    RegistrationView(viewModel: RegistrationViewModel())
+                                case .forgotPassword:
+                                    ForgotPasswordView(viewModel: ForgotPasswordViewModel())
+                                case .setPassword(let email, let displayName):
+                                    let vm = SetPasswordViewModel(email: email, displayName: displayName)
+                                    SetPasswordView(viewModel: vm)
+                                }
+                            }
+                    }
+                    .environment(appCoordinator.authCoordinator)
+                    
+                } else {
+                    TabView {
+                        NavigationStack {
+                            HomeView(
+                                viewModel: HomeViewModel(
+                                    repository: HomeRepository(networkClient: URLSessionNetworkClient())
+                                )
+                            )
+                        }
+                        .tabItem {
+                            Label("Home", systemImage: "house")
+                        }
+                        
+                    }
+                }
             }
         }
         .task {
-            // MARK: Cold-launch session restore
-            // Run once on appear — reads persisted session from UserDefaults.
-            // If valid (token non-empty AND not expired), skip the auth flow.
             if let session = repository.currentSession(), session.isValid {
-                appScreen = .home
+                appCoordinator.hasCompletedAuth = true
             }
             sessionChecked = true
         }
     }
-
-
-    @ViewBuilder
-    private var screenContent: some View {
-        switch appScreen {
-
-        case .login:
-            LoginView(
-                viewModel: loginViewModel,
-                onNavigateToSignUp: {
-                    appScreen = .registration
-                },
-                onLoginSuccess: { _ in
-                    appScreen = .home
-                },
-                onForgotPassword: {
-                    appScreen = .forgotPassword
-                },
-                onContinueAsGuest: {
-                    appScreen = .home
-                }
-            )
-            .onReceive(loginViewModel.$pendingSocialUser.compactMap { $0 }) { result in
-                if case .newUser(let email, let displayName, _) = result {
-                    appScreen = .setPassword(email: email, displayName: displayName)
-                }
-            }
-            .onReceive(loginViewModel.$completedSession.compactMap { $0 }) { _ in
-                appScreen = .home
-            }
-
-        case .registration:
-            RegistrationView(
-                viewModel: registrationViewModel,
-                onNavigateToLogin: {
-                    appScreen = .login
-                },
-                onContinueAsGuest: { _ in
-                    appScreen = .home
-                },
-                onRegistrationSuccess: { _ in
-                    appScreen = .home
-                }
-            )
-            .onReceive(registrationViewModel.$pendingSocialUser.compactMap { $0 }) { result in
-                if case .newUser(let email, let displayName, _) = result {
-                    appScreen = .setPassword(email: email, displayName: displayName)
-                }
-            }
-
-        case .forgotPassword:
-            ForgotPasswordView(
-                viewModel: forgotPasswordViewModel,
-                onNavigateBack: {
-                    appScreen = .login
-                }
-            )
-
-        case .setPassword(let email, let displayName):
-            let vm = SetPasswordViewModel(email: email, displayName: displayName)
-            SetPasswordView(viewModel: vm)
-                .onReceive(vm.$completedSession.compactMap { $0 }) { _ in
-                    appScreen = .home
-                }
-
-        case .home:
-            HomeView(viewModel: HomeViewModel(repository: HomeRepository(networkClient: URLSessionNetworkClient())))
-        }
-    }
 }
-
 
 #Preview {
     ContentView()
