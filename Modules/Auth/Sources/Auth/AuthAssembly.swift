@@ -56,8 +56,8 @@ public class AuthAssembly: DIAssembly {
             SignInWithSocialUseCase(repository: resolver.resolve(AuthRepositoryProtocol.self)!)
         }
         
-        container.register(ContinueAsGuestUseCase.self) { resolver in
-            ContinueAsGuestUseCase(repository: resolver.resolve(AuthRepositoryProtocol.self)!)
+        container.register(ContinueAsGuestUseCase.self) { _ in
+            ContinueAsGuestUseCase()
         }
         
         container.register(RecoverPasswordUseCase.self) { resolver in
@@ -76,38 +76,25 @@ public class AuthAssembly: DIAssembly {
             ObserveSessionUseCase(repository: resolver.resolve(AuthRepositoryProtocol.self)!)
         }
         
-        container.register(AuthInputValidator.self) { _ in
-            AuthInputValidator()
-        }
-        
         // Register ViewModels
         container.register(LoginViewModel.self) { resolver in
             LoginViewModel(
                 signInUseCase: resolver.resolve(SignInUseCase.self)!,
-                signInWithSocialUseCase: resolver.resolve(SignInWithSocialUseCase.self)!,
-                continueAsGuestUseCase: resolver.resolve(ContinueAsGuestUseCase.self)!,
-                inputValidator: resolver.resolve(AuthInputValidator.self)!
+                signInWithSocialUseCase: resolver.resolve(SignInWithSocialUseCase.self)!
             )
         }
         
         container.register(RegistrationViewModel.self) { resolver in
             RegistrationViewModel(
                 signUpUseCase: resolver.resolve(SignUpUseCase.self)!,
-                inputValidator: resolver.resolve(AuthInputValidator.self)!
+                signInWithSocialUseCase: resolver.resolve(SignInWithSocialUseCase.self)!,
+                continueAsGuestUseCase: resolver.resolve(ContinueAsGuestUseCase.self)!
             )
         }
         
         container.register(ForgotPasswordViewModel.self) { resolver in
             ForgotPasswordViewModel(
-                recoverPasswordUseCase: resolver.resolve(RecoverPasswordUseCase.self)!,
-                inputValidator: resolver.resolve(AuthInputValidator.self)!
-            )
-        }
-        
-        container.register(SetPasswordViewModel.self) { resolver in
-            SetPasswordViewModel(
-                setPasswordForSocialUserUseCase: resolver.resolve(SetPasswordForSocialUserUseCase.self)!,
-                inputValidator: resolver.resolve(AuthInputValidator.self)!
+                recoverPasswordUseCase: resolver.resolve(RecoverPasswordUseCase.self)!
             )
         }
     }
