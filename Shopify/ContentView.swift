@@ -17,6 +17,7 @@ import Common
 struct ContentView: View {
     @State private var appCoordinator = AppCoordinator()
     @State private var sessionChecked: Bool = false
+    @State private var selectedTab: Tab = .home
     private let repository: AuthRepositoryProtocol = AuthRepositoryFactory.make()
 
     var body: some View {
@@ -56,22 +57,29 @@ struct ContentView: View {
     }
     @MainActor
     private var mainFlow: some View {
-        TabView {
-            NavigationStack(path: $appCoordinator.homeCoordinator.path) {
-                HomeView(
-                    viewModel: HomeViewModel(
-                        repository: HomeRepository(networkClient: URLSessionNetworkClient())
+        VStack(spacing: 0) {
+            TabView(selection: $selectedTab) {
+                NavigationStack(path: $appCoordinator.homeCoordinator.path) {
+                    HomeView(
+                        viewModel: HomeViewModel(
+                            repository: HomeRepository(networkClient: URLSessionNetworkClient())
+                        )
                     )
-                )
-                .navigationDestination(for: HomeRoute.self) { route in
-                    homeDestination(for: route)
+                    .navigationDestination(for: HomeRoute.self) { route in
+                        homeDestination(for: route)
+                    }
                 }
+                .environment(appCoordinator.homeCoordinator)
+                .tag(Tab.home).toolbar(.hidden, for: .tabBar)
+                Text("Search View").tag(Tab.search).toolbar(.hidden, for: .tabBar)
+                Text("Wishlist View").tag(Tab.wishlist).toolbar(.hidden, for: .tabBar)
+                Text("Account View").tag(Tab.account).toolbar(.hidden, for: .tabBar)
             }
-            .environment(appCoordinator.homeCoordinator)
-            .tabItem {
-                Label("Home", systemImage: "house")
-            }
+            .toolbar(.hidden, for: .tabBar)
+            
+            CustomTabBar(selectedTab: $selectedTab)
         }
+        .ignoresSafeArea(.keyboard, edges: .bottom)
     }
     
     @MainActor
