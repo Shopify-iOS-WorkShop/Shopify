@@ -10,12 +10,14 @@ import SwiftUI
 import Observation
 import Auth
 import Home
+import ProductListing
 @Observable
 public final class AppCoordinator {
     public var hasCompletedAuth: Bool = false
     
     public var authCoordinator = AuthCoordinator()
     public var homeCoordinator = HomeCoordinator()
+    public var productListingCoordinator = ProductListingCoordinator()
     public init() {
         setupCallbacks()
     }
