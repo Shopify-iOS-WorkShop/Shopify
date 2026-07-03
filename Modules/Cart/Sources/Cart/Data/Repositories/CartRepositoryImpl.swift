@@ -69,7 +69,7 @@ internal final class CartRepositoryImpl: CartRepositoryProtocol {
     
     func createCart() async -> Result<Cart, AppError> {
         do {
-            let customerToken = sessionStore.current?.shopifyAccessToken
+            let customerToken = sessionStore.current?.customerAccessToken
             let dto = try await remoteDataSource.createCart(customerAccessToken: customerToken)
             let cart = CartMapper.toDomain(from: dto)
             
@@ -178,7 +178,7 @@ internal final class CartRepositoryImpl: CartRepositoryProtocol {
     
     func attachCustomer() async -> Result<Cart, AppError> {
         guard let record = localDataSource.fetchCartRecord(ownerKey: ownerKey),
-              let customerToken = sessionStore.current?.shopifyAccessToken else {
+              let customerToken = sessionStore.current?.customerAccessToken else {
             return .failure(AppError.unknown)
         }
         do {
