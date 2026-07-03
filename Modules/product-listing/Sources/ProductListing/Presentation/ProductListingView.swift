@@ -7,10 +7,13 @@ public struct ProductListingView: View {
     @State private var selectedFilter: String = "All"
     @State private var showingFilterDrawer = false
     
+    @Environment(ProductListingCoordinator.self) private var coordinator
+    
     private let columns = [
         GridItem(.flexible(), spacing: 16),
         GridItem(.flexible(), spacing: 16)
     ]
+    
     public init(title: String, viewModel: ProductListingViewModel) {
         self.title = title
         self.viewModel = viewModel
@@ -23,7 +26,7 @@ public struct ProductListingView: View {
                     ForEach(viewModel.dynamicFilters, id: \.self) { filter in
                         Button(action: {
                             selectedFilter = filter
-                            viewModel.selectedFilter = filter 
+                            viewModel.selectedFilter = filter
                             viewModel.applyFilters()
                         }) {
                             Text(filter)
@@ -82,7 +85,12 @@ public struct ProductListingView: View {
             ScrollView(showsIndicators: false) {
                 LazyVGrid(columns: columns, spacing: 16) {
                     ForEach(viewModel.filteredProducts) { product in
-                        ProductCardView(product: product)
+                        Button(action: {
+                            coordinator.push(.productDetail(productId: Int(product.id) ?? 0))
+                        }) {
+                            ProductCardView(product: product)
+                        }
+                        .buttonStyle(.plain)
                     }
                 }
                 .padding(.horizontal, 16)

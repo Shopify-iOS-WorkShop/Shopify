@@ -7,13 +7,15 @@
 
 import Foundation
 import SwiftUI
+
 public struct SectionHeaderView: View {
     public let title: String
     public let hasViewAll: Bool
-
-    public init(title: String, hasViewAll: Bool) {
+    public let onViewAllTapped: (() -> Void)?
+    public init(title: String, hasViewAll: Bool, onViewAllTapped: (() -> Void)? = nil) {
         self.title = title
         self.hasViewAll = hasViewAll
+        self.onViewAllTapped = onViewAllTapped
     }
 
     public var body: some View {
@@ -23,9 +25,11 @@ public struct SectionHeaderView: View {
                 .foregroundColor(DS.textPri)
             Spacer()
             if hasViewAll {
-                Button("View All") {}
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundColor(DS.red)
+                Button("View All") {
+                    onViewAllTapped?()
+                }
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundColor(DS.red)
             }
         }
         .padding(.horizontal, 16)

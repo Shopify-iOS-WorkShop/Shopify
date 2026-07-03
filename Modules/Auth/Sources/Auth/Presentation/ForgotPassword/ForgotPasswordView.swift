@@ -4,27 +4,21 @@
 //
 //  Created by Agent on 02/07/2026.
 //
-
 import SwiftUI
 import Common
 
 public struct ForgotPasswordView: View {
 
     @ObservedObject var viewModel: ForgotPasswordViewModel
-    var onNavigateBack: () -> Void
+    @Environment(AuthCoordinator.self) private var coordinator
 
-    public init(
-        viewModel: ForgotPasswordViewModel,
-        onNavigateBack: @escaping () -> Void
-    ) {
+    public init(viewModel: ForgotPasswordViewModel) {
         self.viewModel = viewModel
-        self.onNavigateBack = onNavigateBack
     }
 
     public var body: some View {
         ScrollView {
             VStack(spacing: 28) {
-
                 // MARK: - Header
                 ZStack {
                     Text("Reset Password")
@@ -32,7 +26,7 @@ public struct ForgotPasswordView: View {
                         .foregroundColor(.primary)
 
                     HStack {
-                        Button(action: onNavigateBack) {
+                        Button(action: { coordinator.pop() }) {
                             Image(systemName: "chevron.left")
                                 .font(.system(size: 20, weight: .medium))
                                 .foregroundColor(.primary)
@@ -43,10 +37,8 @@ public struct ForgotPasswordView: View {
                 .padding(.top, 18)
 
                 if viewModel.isEmailSent {
-                    // MARK: - Success State
                     successView
                 } else {
-                    // MARK: - Form State
                     formView
                 }
             }
@@ -54,10 +46,10 @@ public struct ForgotPasswordView: View {
         }
         .background(Color(.systemBackground))
         .animation(.easeInOut(duration: 0.3), value: viewModel.isEmailSent)
+        .navigationBarHidden(true)
     }
 
     // MARK: - Form View
-
     private var formView: some View {
         VStack(spacing: 24) {
             VStack(spacing: 8) {
@@ -103,7 +95,6 @@ public struct ForgotPasswordView: View {
     }
 
     // MARK: - Success View
-
     private var successView: some View {
         VStack(spacing: 24) {
             Spacer().frame(height: 20)
@@ -130,7 +121,7 @@ public struct ForgotPasswordView: View {
             }
 
             PrimaryButton(title: "Back to Sign In", icon: "arrow.left") {
-                onNavigateBack()
+                coordinator.pop()
             }
             .padding(.top, 8)
         }

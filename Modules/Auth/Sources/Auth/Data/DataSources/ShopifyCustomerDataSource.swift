@@ -182,15 +182,14 @@ struct ShopifyStorefrontConfiguration {
     let storefrontToken: String
 
     static var current: ShopifyStorefrontConfiguration {
-        let info = Bundle.main.infoDictionary ?? [:]
-        
-        let token = info["SHOPIFY_STOREFRONT_TOKEN"] as? String ?? ""
-        let finalToken = token.hasPrefix("$(") ? "" : token
-        
+//        let info = Bundle.main.infoDictionary ?? [:]
+//        
+//        let token = info["SHOPIFY_STOREFRONT_TOKEN"] as? String ?? ""
+//        let finalToken = token.hasPrefix("$(") ? "" : token
         return ShopifyStorefrontConfiguration(
-            hostname: info["SHOPIFY_HOSTNAME"] as? String ?? "mad46-ios-team5.myshopify.com",
-            apiVersion: info["SHOPIFY_API_VERSION"] as? String ?? "2025-01",
-            storefrontToken: finalToken
+            hostname: ShopifyConfig.hostname,
+            apiVersion: ShopifyConfig.apiVersion,
+            storefrontToken: ShopifyConfig.storefrontToken
         )
     }
 }

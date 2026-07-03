@@ -10,19 +10,19 @@ import SwiftUI
 public struct CommonCatalogGridView: View {
     @StateObject private var viewModel: CatalogGridViewModel
     private let type: CatalogDisplayType
-    
+    public var onItemTapped: ((GridItemEntity) -> Void)?
     // Grid Setup for layout versatility
     private let columns = [
         GridItem(.adaptive(minimum: 100, maximum: 160), spacing: 16)
     ]
     
-    public init(type: CatalogDisplayType) {
-        self.type = type
-        self._viewModel = StateObject(wrappedValue: CatalogGridViewModel(type: type))
+    public init(type: CatalogDisplayType, onItemTapped: ((GridItemEntity) -> Void)? = nil) {
+            self.type = type
+            self._viewModel = StateObject(wrappedValue: CatalogGridViewModel(type: type))
+            self.onItemTapped = onItemTapped
     }
     
     public var body: some View {
-        NavigationView {
             Group {
                 if viewModel.isLoading {
                     ProgressView("Fetching Content...")
@@ -57,7 +57,7 @@ public struct CommonCatalogGridView: View {
                 await viewModel.loadCatalogData()
             }
         }
-    }
+    
 }
 
 struct CatalogCell: View {
