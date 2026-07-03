@@ -9,13 +9,13 @@ import Foundation
 import SwiftUI
 import Observation
 import Auth
-
+import Home
 @Observable
 public final class AppCoordinator {
     public var hasCompletedAuth: Bool = false
     
     public var authCoordinator = AuthCoordinator()
-    
+    public var homeCoordinator = HomeCoordinator()
     public init() {
         setupCallbacks()
     }

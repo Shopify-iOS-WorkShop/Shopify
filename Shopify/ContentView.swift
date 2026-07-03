@@ -9,7 +9,9 @@ import SwiftUI
 import ShopifyNetwork
 import Home
 import Auth
-
+import ProductListing
+import ProductDetails
+import Common
 struct ContentView: View {
     @State private var appCoordinator = AppCoordinator()
     @State private var sessionChecked: Bool = false
@@ -41,13 +43,35 @@ struct ContentView: View {
                     
                 } else {
                     TabView {
-                        NavigationStack {
+                        NavigationStack(path: $appCoordinator.homeCoordinator.path) {
                             HomeView(
                                 viewModel: HomeViewModel(
                                     repository: HomeRepository(networkClient: URLSessionNetworkClient())
                                 )
                             )
+                            .navigationDestination(for: HomeRoute.self) { route in
+                                switch route {
+                                case .productListing(let collectionId, let title):
+                                    let repo = ProductListingRepository(networkClient: URLSessionNetworkClient())
+                                    let context: ListingContext = collectionId != nil ? .collection(id: collectionId!, title: title) : .allProducts
+                                    let vm = ProductListingViewModel(context: context, repository: repo)
+                                    
+                                    ProductListingView(title: title, viewModel: vm)
+                                    
+                                case .productDetail(let productId):
+                                    ProductDetailFactory.makeView(productId: productId)
+                                
+                                case .catalog(let type):
+                                    CommonCatalogGridView(type: type) { selectedItem in
+                                        appCoordinator.homeCoordinator.push(
+                                            .productListing(collectionId: selectedItem.id, title: selectedItem.name)
+                                        )
+                                    }
+                                }
+                                
+                            }
                         }
+                        .environment(appCoordinator.homeCoordinator)
                         .tabItem {
                             Label("Home", systemImage: "house")
                         }
