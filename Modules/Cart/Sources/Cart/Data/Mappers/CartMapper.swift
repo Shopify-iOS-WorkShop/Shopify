@@ -9,13 +9,13 @@ internal enum CartMapper {
             let selectedOptions = variant.selectedOptions.map { ($0.name, $0.value) }
             
             // Assuming discountAllocations exist in CartLineFragment
-            var totalDiscountedAmount: MoneyDTO = MoneyDTO(amount: "0", currencyCode: fragment.cost.totalAmount.currencyCode)
+            var totalDiscountedAmount: MoneyDTO = MoneyDTO(amount: "0", currencyCode: fragment.cost.totalAmount.currencyCode.rawValue)
             if let allocations = node.discountAllocations {
                 for allocation in allocations {
                     let amount = allocation.discountedAmount
                     // Simplification: In a real app we might sum them accurately if they are in same currency
                     // Here we just take the last or sum if needed. We will just map it simply.
-                    totalDiscountedAmount = MoneyDTO(amount: amount.amount, currencyCode: amount.currencyCode)
+                    totalDiscountedAmount = MoneyDTO(amount: amount.amount, currencyCode: amount.currencyCode.rawValue)
                 }
             }
 
@@ -29,10 +29,10 @@ internal enum CartMapper {
                 productHandle: variant.product.handle,
                 vendor: variant.product.vendor,
                 imageURL: variant.image?.url,
-                price: MoneyDTO(amount: variant.price.amount, currencyCode: variant.price.currencyCode),
-                compareAtPrice: variant.compareAtPrice.map { MoneyDTO(amount: $0.amount, currencyCode: $0.currencyCode) },
-                subtotalAmount: MoneyDTO(amount: node.cost.subtotalAmount.amount, currencyCode: node.cost.subtotalAmount.currencyCode),
-                totalAmount: MoneyDTO(amount: node.cost.totalAmount.amount, currencyCode: node.cost.totalAmount.currencyCode),
+                price: MoneyDTO(amount: variant.price.amount, currencyCode: variant.price.currencyCode.rawValue),
+                compareAtPrice: variant.compareAtPrice.map { MoneyDTO(amount: $0.amount, currencyCode: $0.currencyCode.rawValue) },
+                subtotalAmount: MoneyDTO(amount: node.cost.subtotalAmount.amount, currencyCode: node.cost.subtotalAmount.currencyCode.rawValue),
+                totalAmount: MoneyDTO(amount: node.cost.totalAmount.amount, currencyCode: node.cost.totalAmount.currencyCode.rawValue),
                 totalDiscountedAmount: totalDiscountedAmount,
                 selectedOptions: selectedOptions,
                 availableForSale: variant.availableForSale,
@@ -50,9 +50,9 @@ internal enum CartMapper {
             totalQuantity: fragment.totalQuantity,
             note: fragment.note,
             lines: lines,
-            subtotalAmount: MoneyDTO(amount: fragment.cost.subtotalAmount.amount, currencyCode: fragment.cost.subtotalAmount.currencyCode),
-            totalAmount: MoneyDTO(amount: fragment.cost.totalAmount.amount, currencyCode: fragment.cost.totalAmount.currencyCode),
-            checkoutChargeAmount: MoneyDTO(amount: fragment.cost.checkoutChargeAmount.amount, currencyCode: fragment.cost.checkoutChargeAmount.currencyCode),
+            subtotalAmount: MoneyDTO(amount: fragment.cost.subtotalAmount.amount, currencyCode: fragment.cost.subtotalAmount.currencyCode.rawValue),
+            totalAmount: MoneyDTO(amount: fragment.cost.totalAmount.amount, currencyCode: fragment.cost.totalAmount.currencyCode.rawValue),
+            checkoutChargeAmount: MoneyDTO(amount: fragment.cost.checkoutChargeAmount.amount, currencyCode: fragment.cost.checkoutChargeAmount.currencyCode.rawValue),
             discountCodes: discountCodes
         )
     }
