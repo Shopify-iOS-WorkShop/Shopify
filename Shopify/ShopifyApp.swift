@@ -5,6 +5,7 @@ import ProductListing
 import Auth
 import Firebase
 import GoogleSignIn
+import Payment
 @main
 struct ShopifyApp: App {
     init() {
@@ -15,7 +16,8 @@ struct ShopifyApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            //ContentView()
+            CheckoutAddressView()
         }
     }
 }

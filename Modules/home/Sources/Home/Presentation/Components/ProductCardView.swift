@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import Common
 
 public struct ProductCardView: View {
     public let product: Product
