@@ -11,6 +11,7 @@ import Common
 public struct SetPasswordView: View {
 
     @ObservedObject var viewModel: SetPasswordViewModel
+    @Environment(AuthCoordinator.self) private var coordinator
 
     public init(viewModel: SetPasswordViewModel) {
         self.viewModel = viewModel
@@ -134,5 +135,9 @@ public struct SetPasswordView: View {
             .padding(.horizontal, 20)
         }
         .background(Color(.systemBackground))
+        .onReceive(viewModel.$completedSession.compactMap { $0 }) { session in
+            coordinator.onLoginSuccess?()
+        }
+        .navigationBarHidden(true)
     }
 }
