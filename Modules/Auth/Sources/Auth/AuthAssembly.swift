@@ -1,5 +1,6 @@
 import DependencyInjection
 import Swinject
+import Common
 
 // MARK: - Auth Assembly for Dependency Injection
 public class AuthAssembly: DIAssembly {
@@ -35,7 +36,8 @@ public class AuthAssembly: DIAssembly {
                 googleDataSource: resolver.resolve(GoogleSignInDataSource.self)!,
                 shopifyDataSource: resolver.resolve(ShopifyCustomerDataSource.self)!,
                 sessionLocalDataSource: resolver.resolve(SessionLocalDataSource.self)!,
-                keychainDataSource: resolver.resolve(KeychainDataSource.self)!
+                keychainDataSource: resolver.resolve(KeychainDataSource.self)!,
+                sessionStore: resolver.resolve(SessionProviding.self)!
             )
         }
         

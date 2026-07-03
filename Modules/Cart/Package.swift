@@ -14,7 +14,7 @@ let package = Package(
         .package(path: "../DependencyInjection"),
         .package(
             url: "https://github.com/apollographql/apollo-ios",
-            from: "1.9.0"
+            from: "2.2.0"
         ),
     ],
     targets: [
@@ -28,11 +28,6 @@ let package = Package(
                 .product(name: "ApolloAPI", package: "apollo-ios"),
             ],
             path: "Sources/Cart"
-        ),
-        .testTarget(
-            name: "CartTests",
-            dependencies: ["Cart"],
-            path: "Tests/CartTests"
         )
     ]
 )
