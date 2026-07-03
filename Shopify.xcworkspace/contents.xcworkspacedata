@@ -2,7 +2,16 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:Modules/search">
+   </FileRef>
+   <FileRef
       location = "group:Modules/product-details">
+   </FileRef>
+   <FileRef
+      location = "group:Modules/DataPersistence">
+   </FileRef>
+   <FileRef
+      location = "group:Modules/product-listing">
    </FileRef>
    <FileRef
       location = "group:Modules/home">
@@ -15,6 +24,9 @@
    </FileRef>
    <FileRef
       location = "group:Modules/shopify-network">
+   </FileRef>
+   <FileRef
+      location = "group:Modules/DependencyInjection">
    </FileRef>
    <FileRef
       location = "group:Shopify.xcodeproj">

@@ -1,0 +1,448 @@
+{
+  "info": {
+    "name": "Shopify JETS iOS App — Required Endpoints Only",
+    "description": "Only the endpoints required by the project spec. No GraphQL bonus. Credentials pre-configured for iOS5 team. Import into Postman and fill in the placeholder variables after running the first requests.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "apikey",       "value": "72c467f152149ba1638d5e61843c70ba",        "type": "string" },
+    { "key": "password",     "value": "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",  "type": "string" },
+    { "key": "hostname",     "value": "mad46-ios-team5.myshopify.com",            "type": "string" },
+    { "key": "api_version",  "value": "2024-01",                                 "type": "string" },
+    { "key": "customer_id",     "value": "FILL_AFTER_CREATE_CUSTOMER",           "type": "string" },
+    { "key": "product_id",      "value": "FILL_FROM_GET_ALL_PRODUCTS",           "type": "string" },
+    { "key": "collection_id",   "value": "FILL_FROM_GET_COLLECTIONS",            "type": "string" },
+    { "key": "draft_order_id",  "value": "FILL_AFTER_CREATE_CART",               "type": "string" },
+    { "key": "variant_id",      "value": "FILL_FROM_GET_VARIANTS",               "type": "string" },
+    { "key": "address_id",      "value": "FILL_FROM_GET_ADDRESSES",              "type": "string" },
+    { "key": "metafield_id",    "value": "FILL_AFTER_CREATE_WISHLIST",           "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "1. Authentication & Identity",
+      "item": [
+        {
+          "name": "Register — Create Customer (after Firebase signup)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "https://{{apikey}}:{{password}}@{{hostname}}/admin/api/{{api_version}}/customers.json",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer\": {\n    \"first_name\": \"John\",\n    \"last_name\": \"Doe\",\n    \"email\": \"john.doe@example.com\",\n    \"verified_email\": true,\n    \"send_email_welcome\": false\n  }\n}"
+            },
+            "description": "Call this AFTER Firebase creates the user. Copy the returned 'id' and save it as {{customer_id}} in your collection variables."
+          }
+        },
+        {
+          "name": "Login — Find Customer by Email",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "https://{{apikey}}:{{password}}@{{hostname}}/admin/api/{{api_version}}/customers/search.json?query=email:john.doe@example.com",
+            "description": "Called on login to retrieve the Shopify customer_id linked to the Firebase user email. Replace the email in the query param with the logged-in user's email."
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Product Catalog & Browsing",
+      "item": [
+        {
+          "name": "Get All Active Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "https://{{apikey}}:{{password}}@{{hostname}}/admin/api/{{api_version}}/products.json?status=active&limit=50",
+            "description": "Home screen product feed. Returns active products. Copy any product 'id' value and save it as {{product_id}}."
+          }
+        },
+        {
+          "name": "Get Single Product Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "https://{{apikey}}:{{password}}@{{hostname}}/admin/api/{{api_version}}/products/{{product_id}}.json",
+            "description": "Product detail screen. Returns images, name, price, description. Requires {{product_id}} from 'Get All Products'."
+          }
+        },
+        {
+          "name": "Get Product Variants (Sizes & Stock Levels)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "https://{{apikey}}:{{password}}@{{hostname}}/admin/api/{{api_version}}/products/{{product_id}}/variants.json",
+            "description": "Returns all sizes/variants with inventory_quantity. Used to show available sizes on product detail screen AND to validate stock before add-to-cart. Copy a variant 'id' and save as {{variant_id}}."
+          }
+        },
+        {
+          "name": "Get Product Reviews & Rating (Metafields)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "https://{{apikey}}:{{password}}@{{hostname}}/admin/api/{{api_version}}/products/{{product_id}}/metafields.json",
+            "description": "Returns product-level metafields including customer reviews and ratings data for the product detail screen."
+          }
+        },
+        {
+          "name": "Get Main Categories (Custom Collections)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "https://{{apikey}}:{{password}}@{{hostname}}/admin/api/{{api_version}}/custom_collections.json",
+            "description": "Returns manually created collections (main categories e.g. Men, Women, Kids, Accessories). Copy any collection 'id' and save as {{collection_id}}."
+          }
+        },
+        {
+          "name": "Get Sub-Categories (Smart Collections)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "https://{{apikey}}:{{password}}@{{hostname}}/admin/api/{{api_version}}/smart_collections.json",
+            "description": "Returns rule-based auto collections (sub-categories e.g. Shoes, T-Shirts, Jackets)."
+          }
+        },
+        {
+          "name": "Get Products by Collection",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "https://{{apikey}}:{{password}}@{{hostname}}/admin/api/{{api_version}}/collections/{{collection_id}}/products.json",
+            "description": "Returns all products inside a specific category. Works for both custom and smart collection IDs."
+          }
+        },
+        {
+          "name": "Get All Brands (Vendors List)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "https://{{apikey}}:{{password}}@{{hostname}}/admin/api/{{api_version}}/products.json?fields=id,vendor&limit=250",
+            "description": "Returns vendor field for all products. De-duplicate the vendor values in your app to build the brands navigation list."
+          }
+        },
+        {
+          "name": "Get Products by Brand (Vendor)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "https://{{apikey}}:{{password}}@{{hostname}}/admin/api/{{api_version}}/products.json?vendor=Nike&status=active",
+            "description": "Brand detail screen — returns all products from a specific vendor. Replace 'Nike' with the tapped brand name."
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Search, Filtering & Sorting",
+      "item": [
+        {
+          "name": "Search Products by Title",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "https://{{apikey}}:{{password}}@{{hostname}}/admin/api/{{api_version}}/products.json?title=shirt&status=active",
+            "description": "Global search by product title. Replace 'shirt' with the user's search query. Note: REST only does exact match — handle partial search by filtering results client-side."
+          }
+        },
+        {
+          "name": "Filter by Main Category (Collection ID)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "https://{{apikey}}:{{password}}@{{hostname}}/admin/api/{{api_version}}/products.json?collection_id={{collection_id}}&status=active",
+            "description": "Filter products by main category. Pass the selected collection_id from the categories screen."
+          }
+        },
+        {
+          "name": "Filter by Sub-Category (Product Type)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "https://{{apikey}}:{{password}}@{{hostname}}/admin/api/{{api_version}}/products.json?product_type=Shoes&status=active",
+            "description": "Filter by sub-category. Replace 'Shoes' with the selected sub-category name."
+          }
+        },
+        {
+          "name": "Filter by Brand (Vendor)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "https://{{apikey}}:{{password}}@{{hostname}}/admin/api/{{api_version}}/products.json?vendor=Nike&status=active",
+            "description": "Filter products by a specific brand/vendor."
+          }
+        },
+        {
+          "name": "Sort by Price — Low to High",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "https://{{apikey}}:{{password}}@{{hostname}}/admin/api/{{api_version}}/products.json?status=active&order=price+asc",
+            "description": "Returns all products sorted by price ascending."
+          }
+        },
+        {
+          "name": "Sort by Price — High to Low",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "https://{{apikey}}:{{password}}@{{hostname}}/admin/api/{{api_version}}/products.json?status=active&order=price+desc",
+            "description": "Returns all products sorted by price descending."
+          }
+        },
+        {
+          "name": "Sort by Best Seller",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "https://{{apikey}}:{{password}}@{{hostname}}/admin/api/{{api_version}}/products.json?status=active&order=best_selling&limit=50",
+            "description": "Returns products sorted by best-selling criteria. Used for the Best Sellers section on the home screen."
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Wishlist — Auth Required",
+      "item": [
+        {
+          "name": "Get Wishlist",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "https://{{apikey}}:{{password}}@{{hostname}}/admin/api/{{api_version}}/customers/{{customer_id}}/metafields.json?namespace=custom",
+            "description": "Retrieves the customer's wishlist metafield. The value is a comma-separated string of product IDs. Parse it in your app to fetch the product details."
+          }
+        },
+        {
+          "name": "Create Wishlist (First Time)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "https://{{apikey}}:{{password}}@{{hostname}}/admin/api/{{api_version}}/customers/{{customer_id}}/metafields.json",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"metafield\": {\n    \"namespace\": \"custom\",\n    \"key\": \"wishlist\",\n    \"value\": \"PRODUCT_ID_HERE\",\n    \"type\": \"single_line_text_field\"\n  }\n}"
+            },
+            "description": "Called the first time a user adds to wishlist. Save the returned metafield 'id' as {{metafield_id}} — you will need it for all future wishlist updates."
+          }
+        },
+        {
+          "name": "Update Wishlist (Add or Remove Item)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "https://{{apikey}}:{{password}}@{{hostname}}/admin/api/{{api_version}}/customers/{{customer_id}}/metafields/{{metafield_id}}.json",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"metafield\": {\n    \"id\": {{metafield_id}},\n    \"value\": \"111111111,222222222,333333333\",\n    \"type\": \"single_line_text_field\"\n  }\n}"
+            },
+            "description": "To add: append the new product ID to the comma-separated string. To remove: rebuild the string without that ID. Then PUT the full updated string here."
+          }
+        },
+        {
+          "name": "Clear Entire Wishlist",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "https://{{apikey}}:{{password}}@{{hostname}}/admin/api/{{api_version}}/customers/{{customer_id}}/metafields/{{metafield_id}}.json",
+            "description": "Deletes the wishlist metafield entirely. Requires confirmation dialog before calling. After delete, next add-to-wishlist must call 'Create Wishlist' again."
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Shopping Cart — Auth Required",
+      "item": [
+        {
+          "name": "Create Cart (New Draft Order)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "https://{{apikey}}:{{password}}@{{hostname}}/admin/api/{{api_version}}/draft_orders.json",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"draft_order\": {\n    \"line_items\": [\n      {\n        \"variant_id\": {{variant_id}},\n        \"quantity\": 1\n      }\n    ],\n    \"customer\": {\n      \"id\": {{customer_id}}\n    },\n    \"use_customer_default_address\": true\n  }\n}"
+            },
+            "description": "Creates the cart. variant_id comes from 'Get Product Variants'. customer_id from login. Save returned 'id' as {{draft_order_id}}. NOTE: validate inventory_quantity > 0 from variants BEFORE calling this."
+          }
+        },
+        {
+          "name": "Get Cart Contents",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "https://{{apikey}}:{{password}}@{{hostname}}/admin/api/{{api_version}}/draft_orders/{{draft_order_id}}.json",
+            "description": "Returns the full cart: all line items, quantities, prices, subtotal, and any applied discounts."
+          }
+        },
+        {
+          "name": "Update Cart (Change Quantity or Add Item)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "https://{{apikey}}:{{password}}@{{hostname}}/admin/api/{{api_version}}/draft_orders/{{draft_order_id}}.json",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"draft_order\": {\n    \"id\": {{draft_order_id}},\n    \"line_items\": [\n      {\n        \"variant_id\": {{variant_id}},\n        \"quantity\": 2\n      }\n    ]\n  }\n}"
+            },
+            "description": "Replaces the full line_items array. To add an item: include all existing items PLUS the new one. To remove: exclude it. To update quantity: change the number. Dynamic total recalculates automatically."
+          }
+        },
+        {
+          "name": "Delete Cart (Clear All Items)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "https://{{apikey}}:{{password}}@{{hostname}}/admin/api/{{api_version}}/draft_orders/{{draft_order_id}}.json",
+            "description": "Permanently deletes the draft order. MUST show a confirmation dialog before calling this — required by project spec."
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Account Settings & Localization",
+      "item": [
+        {
+          "name": "Get Customer Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "https://{{apikey}}:{{password}}@{{hostname}}/admin/api/{{api_version}}/customers/{{customer_id}}.json",
+            "description": "Account screen — returns full profile: name, email, orders count, and default address."
+          }
+        },
+        {
+          "name": "Get Order History",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "https://{{apikey}}:{{password}}@{{hostname}}/admin/api/{{api_version}}/customers/{{customer_id}}/orders.json?status=any",
+            "description": "Returns ALL past orders for the customer. status=any is required — without it, only open orders are returned and history will appear empty."
+          }
+        },
+        {
+          "name": "Get Customer Addresses",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "https://{{apikey}}:{{password}}@{{hostname}}/admin/api/{{api_version}}/customers/{{customer_id}}/addresses.json",
+            "description": "Returns all saved delivery addresses. Copy any address 'id' and save as {{address_id}} for edit/delete."
+          }
+        },
+        {
+          "name": "Add New Address",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "https://{{apikey}}:{{password}}@{{hostname}}/admin/api/{{api_version}}/customers/{{customer_id}}/addresses.json",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"address\": {\n    \"first_name\": \"John\",\n    \"last_name\": \"Doe\",\n    \"phone\": \"01012345678\",\n    \"address1\": \"123 Main St\",\n    \"city\": \"Cairo\",\n    \"province\": \"Cairo Governorate\",\n    \"country\": \"EG\",\n    \"zip\": \"12345\"\n  }\n}"
+            },
+            "description": "Adds a new delivery address. Spec requires recipient name (first_name + last_name) and mobile number (phone) — both are mandatory fields in your UI form."
+          }
+        },
+        {
+          "name": "Edit Existing Address",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "https://{{apikey}}:{{password}}@{{hostname}}/admin/api/{{api_version}}/customers/{{customer_id}}/addresses/{{address_id}}.json",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"address\": {\n    \"id\": {{address_id}},\n    \"first_name\": \"John\",\n    \"last_name\": \"Doe\",\n    \"phone\": \"01012345678\",\n    \"address1\": \"456 New St\",\n    \"city\": \"Giza\",\n    \"province\": \"Giza Governorate\",\n    \"country\": \"EG\",\n    \"zip\": \"12345\"\n  }\n}"
+            },
+            "description": "Updates an existing address. Requires {{address_id}} from 'Get Customer Addresses'."
+          }
+        },
+        {
+          "name": "Delete Address",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "https://{{apikey}}:{{password}}@{{hostname}}/admin/api/{{api_version}}/customers/{{customer_id}}/addresses/{{address_id}}.json",
+            "description": "Deletes a saved address. MUST show confirmation dialog before calling — required by project spec."
+          }
+        },
+        {
+          "name": "Get Countries List (for Address Form Dropdown)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "https://{{apikey}}:{{password}}@{{hostname}}/admin/api/{{api_version}}/countries.json",
+            "description": "Returns all countries enabled in the store with their provinces/states. Use to populate the country and city dropdowns in the Add/Edit Address form. Required by spec: fetch valid country listings dynamically."
+          }
+        },
+        {
+          "name": "Get Exchange Rates (External — NOT Shopify)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "https://open.er-api.com/v6/latest/EGP",
+            "description": "External currency exchange API (open.er-api.com — free, no key needed). Returns live rates relative to EGP. Change base currency as needed. This is NOT a Shopify endpoint — it satisfies the spec requirement for real-time exchange rate integration."
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Checkout & Payment",
+      "item": [
+        {
+          "name": "Verify Discount / Coupon Code",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "https://{{apikey}}:{{password}}@{{hostname}}/admin/api/{{api_version}}/discount_codes/lookup.json?code=SUMMER2024",
+            "description": "Validates a coupon code entered by the user. Returns discount details (value, type, expiry). Replace SUMMER2024 with the user-entered code. Returns 404 if code does not exist."
+          }
+        },
+        {
+          "name": "Apply Discount Code to Cart",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "https://{{apikey}}:{{password}}@{{hostname}}/admin/api/{{api_version}}/draft_orders/{{draft_order_id}}.json",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"draft_order\": {\n    \"id\": {{draft_order_id}},\n    \"applied_discount\": {\n      \"description\": \"Promo code discount\",\n      \"value_type\": \"percentage\",\n      \"value\": \"10.0\",\n      \"amount\": \"10.00\",\n      \"title\": \"SUMMER2024\"\n    }\n  }\n}"
+            },
+            "description": "Applies a verified coupon to the draft order. value_type is 'percentage' or 'fixed_amount'. The total recalculates automatically. Call 'Get Cart Contents' after to show updated price."
+          }
+        },
+        {
+          "name": "Checkout — Cash on Delivery (COD)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "https://{{apikey}}:{{password}}@{{hostname}}/admin/api/{{api_version}}/draft_orders/{{draft_order_id}}/complete.json",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"payment_pending\": true\n}"
+            },
+            "description": "Converts the draft order (cart) into a real order for Cash on Delivery. payment_pending=true means payment is collected on delivery. Spec requires an upper cash limit — validate the cart total in your app BEFORE calling this. send_receipt triggers the confirmation email."
+          }
+        },
+        {
+          "name": "Checkout — Online Payment (Paid)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "https://{{apikey}}:{{password}}@{{hostname}}/admin/api/{{api_version}}/draft_orders/{{draft_order_id}}/complete.json",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"payment_pending\": false\n}"
+            },
+            "description": "Converts the draft order into a real paid order. payment_pending=false marks the order as already paid online. Use this after your online payment gateway confirms the transaction."
+          }
+        },
+        {
+          "name": "Get Order Confirmation Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "https://{{apikey}}:{{password}}@{{hostname}}/admin/api/{{api_version}}/customers/{{customer_id}}/orders.json?status=any&limit=1",
+            "description": "Fetches the latest order to display the confirmation screen (order ID, items, total, delivery address). limit=1 returns the most recent order."
+          }
+        }
+      ]
+    }
+  ]
+}

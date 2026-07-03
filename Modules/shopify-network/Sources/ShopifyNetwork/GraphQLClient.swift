@@ -28,7 +28,7 @@ public class GraphQLClient: GraphQLClientProtocol {
         let store = ApolloStore(cache: cache)
         let provider = DefaultInterceptorProvider.shared
         let requestChainTransport = RequestChainNetworkTransport(
-            urlSession: URLSession(configuration: .default),
+            urlSession: URLSession.shared,
             interceptorProvider: provider,
             store: store,
             endpointURL: url,

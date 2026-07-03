@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "Common",
     platforms: [
-        .iOS(.v15)
+        .iOS(.v17)
     ],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
@@ -16,15 +16,28 @@ let package = Package(
             targets: ["Common"]
         ),
     ],
+    dependencies: [
+        .package(path: "../shopify-network"),
+        .package(path: "../DependencyInjection")
+    ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "Common"
+            name: "Common",
+            dependencies: [
+                .product(name: "DependencyInjection", package: "DependencyInjection"),
+                // Explicitly tells SPM: "Look for the product 'ShopifyNetwork' inside the package 'shopify-network'"
+                .product(name: "ShopifyNetwork", package: "shopify-network")
+            ]
         ),
         .testTarget(
             name: "CommonTests",
-            dependencies: ["Common"]
+            dependencies: [
+                "Common",
+                .product(name: "DependencyInjection", package: "DependencyInjection"),
+                .product(name: "ShopifyNetwork", package: "shopify-network")
+            ]
         ),
     ]
 )

@@ -1,4 +1,4 @@
-// swift-tools-version: 5.5
+// swift-tools-version: 5.9
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "Auth",
     platforms: [
-        .iOS(.v15)
+        .iOS(.v17)
     ],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
@@ -19,7 +19,8 @@ let package = Package(
         .package(url: "https://github.com/firebase/firebase-ios-sdk.git", .upToNextMajor(from: "10.0.0")),
         .package(url: "https://github.com/google/GoogleSignIn-iOS.git", .upToNextMajor(from: "7.0.0")),
         .package(path: "../Common"),
-        .package(path: "../shopify-network")
+        .package(path: "../shopify-network"),
+        .package(path: "../DependencyInjection")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -29,6 +30,7 @@ let package = Package(
             dependencies: [
                 "Common",
                 .product(name: "ShopifyNetwork", package: "shopify-network"),
+                .product(name: "DependencyInjection", package: "DependencyInjection"),
                 .product(name: "FirebaseAuth", package: "firebase-ios-sdk"),
                 .product(name: "GoogleSignIn", package: "GoogleSignIn-iOS")
             ]
