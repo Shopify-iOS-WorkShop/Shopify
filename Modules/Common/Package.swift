@@ -15,9 +15,10 @@ let package = Package(
             name: "Common",
             targets: ["Common"]
         ),
-    ]
-    ,dependencies: [
-        .package(path: "../shopify-network")
+    ],
+    dependencies: [
+        .package(path: "../shopify-network"),
+        .package(path: "../DependencyInjection")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -25,13 +26,18 @@ let package = Package(
         .target(
             name: "Common",
             dependencies: [
+                .product(name: "DependencyInjection", package: "DependencyInjection"),
                 // Explicitly tells SPM: "Look for the product 'ShopifyNetwork' inside the package 'shopify-network'"
                 .product(name: "ShopifyNetwork", package: "shopify-network")
             ]
         ),
         .testTarget(
             name: "CommonTests",
-            dependencies: ["Common",.product(name: "ShopifyNetwork", package: "shopify-network")]
+            dependencies: [
+                "Common",
+                .product(name: "DependencyInjection", package: "DependencyInjection"),
+                .product(name: "ShopifyNetwork", package: "shopify-network")
+            ]
         ),
     ]
 )

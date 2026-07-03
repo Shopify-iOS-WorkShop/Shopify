@@ -11,9 +11,10 @@ let package = Package(
         .library(
             name: "Home",
             targets: ["Home"]),
-    ]
-    ,dependencies: [
+    ],
+    dependencies: [
         .package(path: "../shopify-network"),
+        .package(path: "../DependencyInjection"),
         .package(path: "../Common")
     ],
     targets: [
@@ -22,6 +23,7 @@ let package = Package(
                 dependencies: [
                     // Explicitly tells SPM: "Look for the product 'ShopifyNetwork' inside the package 'shopify-network'"
                     .product(name: "ShopifyNetwork", package: "shopify-network"),
+                    .product(name: "DependencyInjection", package: "DependencyInjection"),
                     .product(name: "Common", package: "Common")
                 ]
             ),
@@ -30,6 +32,7 @@ let package = Package(
                 dependencies: [
                     "Home",
                     .product(name: "ShopifyNetwork", package: "shopify-network"),
+                    .product(name: "DependencyInjection", package: "DependencyInjection"),
                     .product(name: "Common", package: "Common")
                 ]
             ),

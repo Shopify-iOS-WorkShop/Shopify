@@ -26,6 +26,9 @@
       location = "group:Modules/shopify-network">
    </FileRef>
    <FileRef
+      location = "group:Modules/DependencyInjection">
+   </FileRef>
+   <FileRef
       location = "group:Shopify.xcodeproj">
    </FileRef>
 </Workspace>

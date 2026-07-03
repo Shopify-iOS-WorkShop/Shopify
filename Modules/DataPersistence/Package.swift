@@ -7,10 +7,15 @@ let package = Package(
     products: [
         .library(name: "DataPersistence", targets: ["DataPersistence"])
     ],
+    dependencies: [
+        .package(path: "../DependencyInjection")
+    ],
     targets: [
         .target(
             name: "DataPersistence",
-            dependencies: [],
+            dependencies: [
+                .product(name: "DependencyInjection", package: "DependencyInjection")
+            ],
             path: "Sources/DataPersistence"
         )
     ]
