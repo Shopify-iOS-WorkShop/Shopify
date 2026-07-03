@@ -23,20 +23,24 @@ public class HomeViewModel: ObservableObject {
     }
     
     public func loadData() async {
-        isLoading = true
-        do {
-            async let fetchedProducts = repository.fetchBestSellers()
-            async let fetchedBrands = repository.fetchBrands()
-            async let fetchedCategories = repository.fetchCategories()
-        
-            self.bestSellers = try await fetchedProducts
-            self.brands = try await fetchedBrands
-            self.categories = try await fetchedCategories
-            
-        } catch {
-            self.errorMessage = error.localizedDescription
-            print("Error fetching home data: \(error)")
+            isLoading = true
+            do {
+                async let fetchedProducts = repository.fetchBestSellers()
+                async let fetchedBrands = repository.fetchBrands()
+                async let fetchedCategories = repository.fetchCategories()
+                let allProducts = try await fetchedProducts
+                self.bestSellers = Array(
+                    allProducts
+                        .filter { $0.rating >= 4.5 }
+                        .prefix(10)
+                )
+                self.brands = Array(try await fetchedBrands.prefix(8))
+                self.categories = Array(try await fetchedCategories.prefix(4))
+                
+            } catch {
+                self.errorMessage = error.localizedDescription
+                print("Error fetching home data: \(error)")
+            }
+            isLoading = false
         }
-        isLoading = false
-    }
 }

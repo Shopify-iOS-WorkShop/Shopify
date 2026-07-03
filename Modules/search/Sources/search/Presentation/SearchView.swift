@@ -6,11 +6,12 @@
 //
 import SwiftUI
 
+@MainActor
 public struct SearchView: View {
     @StateObject private var viewModel: SearchViewModel
 
-    public init(viewModel: SearchViewModel = SearchViewModel()) {
-        _viewModel = StateObject(wrappedValue: viewModel)
+    public init(viewModel: SearchViewModel? = nil) {
+        _viewModel = StateObject(wrappedValue: viewModel ?? SearchViewModel())
     }
 
     public var body: some View {
@@ -23,7 +24,9 @@ public struct SearchView: View {
                 content
             }
             .background(Color.pocketBackground.ignoresSafeArea())
+            #if os(iOS)
             .navigationBarHidden(true)
+            #endif
         }
     }
 

@@ -1,0 +1,71 @@
+warning: 'shopify-network': found 1 file(s) which are unhandled; explicitly declare them as resources or exclude from the target
+    /Users/taqieallah/iTi/Swift/Shopify/Modules/shopify-network/Sources/ShopifyNetwork/GraphQL/search.graphql
+[0/1] Planning build
+[1/1] Compiling plugin Install CLI
+Building for debugging...
+[1/2] Write swift-version--58304C5D6DBC2206.txt
+[3/10] Compiling ShopifyNetwork UrlRedirect.graphql.swift
+[4/10] Compiling ShopifyNetwork SchemaConfiguration.swift
+[5/10] Compiling ShopifyNetwork SchemaMetadata.graphql.swift
+[6/10] Compiling ShopifyNetwork Video.graphql.swift
+[7/10] Compiling ShopifyNetwork NetworkClient.swift
+[8/10] Compiling ShopifyNetwork SearchResultItem.graphql.swift
+[9/10] Emitting module ShopifyNetwork
+[10/10] Compiling ShopifyNetwork GraphQLClient.swift
+/Users/taqieallah/iTi/Swift/Shopify/Modules/shopify-network/Sources/ShopifyNetwork/GraphQLClient.swift:29:24: error: 'DefaultInterceptorProvider' initializer is inaccessible due to 'internal' protection level
+27 |         let cache = InMemoryNormalizedCache()
+28 |         let store = ApolloStore(cache: cache)
+29 |         let provider = DefaultInterceptorProvider(store: store)
+   |                        `- error: 'DefaultInterceptorProvider' initializer is inaccessible due to 'internal' protection level
+30 |         let requestChainTransport = RequestChainNetworkTransport(
+31 |             interceptorProvider: provider,
+
+Apollo.DefaultInterceptorProvider.init:2:10: note: 'init()' declared here
+1 | class DefaultInterceptorProvider {
+2 | internal init()}
+  |          `- note: 'init()' declared here
+3 | 
+
+/Users/taqieallah/iTi/Swift/Shopify/Modules/shopify-network/Sources/ShopifyNetwork/GraphQLClient.swift:29:58: error: argument passed to call that takes no arguments
+27 |         let cache = InMemoryNormalizedCache()
+28 |         let store = ApolloStore(cache: cache)
+29 |         let provider = DefaultInterceptorProvider(store: store)
+   |                                                          `- error: argument passed to call that takes no arguments
+30 |         let requestChainTransport = RequestChainNetworkTransport(
+31 |             interceptorProvider: provider,
+
+/Users/taqieallah/iTi/Swift/Shopify/Modules/shopify-network/Sources/ShopifyNetwork/GraphQLClient.swift:30:65: error: missing arguments for parameters 'urlSession', 'store' in call
+28 |         let store = ApolloStore(cache: cache)
+29 |         let provider = DefaultInterceptorProvider(store: store)
+30 |         let requestChainTransport = RequestChainNetworkTransport(
+   |                                                                 `- error: missing arguments for parameters 'urlSession', 'store' in call
+31 |             interceptorProvider: provider,
+32 |             endpointURL: url,
+
+/Users/taqieallah/iTi/Swift/Shopify/Modules/search/.build/checkouts/apollo-ios/Sources/Apollo/RequestChain/RequestChainNetworkTransport.swift:57:10: note: 'init(urlSession:interceptorProvider:store:endpointURL:additionalHeaders:apqConfig:requestBodyCreator:useGETForQueries:)' declared here
+ 55 |   ///   - sendEnhancedClientAwareness: Specifies whether client library metadata is sent in each request `extensions`
+ 56 |   ///   key. Client library metadata is the Apollo iOS library name and version. Defaults to `true`.
+ 57 |   public init(
+    |          `- note: 'init(urlSession:interceptorProvider:store:endpointURL:additionalHeaders:apqConfig:requestBodyCreator:useGETForQueries:)' declared here
+ 58 |     urlSession: any ApolloURLSession,
+ 59 |     interceptorProvider: any InterceptorProvider,
+
+/Users/taqieallah/iTi/Swift/Shopify/Modules/shopify-network/Sources/ShopifyNetwork/GraphQLClient.swift:44:20: warning: 'fetch(query:cachePolicy:context:queue:resultHandler:)' is deprecated [#DeprecatedDeclaration]
+42 |     public func fetch<Query: GraphQLQuery>(query: Query) async throws -> Query.Data {
+43 |         return try await withCheckedThrowingContinuation { continuation in
+44 |             apollo.fetch(query: query) { result in
+   |                    `- warning: 'fetch(query:cachePolicy:context:queue:resultHandler:)' is deprecated [#DeprecatedDeclaration]
+45 |                 switch result {
+46 |                 case .success(let graphQLResult):
+
+/Users/taqieallah/iTi/Swift/Shopify/Modules/shopify-network/Sources/ShopifyNetwork/GraphQLClient.swift:64:20: warning: 'perform(mutation:publishResultToStore:queue:resultHandler:)' is deprecated: renamed to 'perform(mutation:requestConfiguration:)' [#DeprecatedDeclaration]
+62 |     public func perform<Mutation: GraphQLMutation>(mutation: Mutation) async throws -> Mutation.Data {
+63 |         return try await withCheckedThrowingContinuation { continuation in
+64 |             apollo.perform(mutation: mutation) { result in
+   |                    |- warning: 'perform(mutation:publishResultToStore:queue:resultHandler:)' is deprecated: renamed to 'perform(mutation:requestConfiguration:)' [#DeprecatedDeclaration]
+   |                    `- note: use 'perform(mutation:requestConfiguration:)' instead
+65 |                 switch result {
+66 |                 case .success(let graphQLResult):
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+[11/11] Compiling ShopifyNetwork ShopifyConfig.swift
