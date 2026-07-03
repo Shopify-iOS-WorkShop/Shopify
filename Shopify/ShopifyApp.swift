@@ -4,6 +4,7 @@ import Home
 import ShopifyNetwork
 import ProductListing
 import Auth
+import Cart
 import Firebase
 import GoogleSignIn
 
@@ -14,16 +15,15 @@ struct ShopifyApp: App {
     let modelContainer: ModelContainer
     
     init() {
-        // Configure Firebase
         if FirebaseApp.app() == nil {
             FirebaseApp.configure()
         }
         
-        // Set up SwiftData
         do {
-            // TODO: Add all @Model types from modules here when they are created
-            // For now, create an empty container
-            let schema = Schema([])
+            // Register all @Model types from modules
+            let schema = Schema([
+                CartRecord.self  // Cart module SwiftData model
+            ])
             let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
             modelContainer = try ModelContainer(for: schema, configurations: [modelConfiguration])
         } catch {
