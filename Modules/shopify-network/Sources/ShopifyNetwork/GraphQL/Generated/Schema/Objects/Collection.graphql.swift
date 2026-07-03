@@ -1,0 +1,21 @@
+// @generated
+// This file was automatically generated and should not be edited.
+
+import ApolloAPI
+
+public extension ShopifyAPI.Objects {
+  /// A group of products [organized by a merchant](https://help.shopify.com/manual/products/collections) to make their store easier to browse. Collections can help customers discover related products by category, season, promotion, or other criteria.
+  ///
+  /// Query a collection's products with [filtering options](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/products-collections/filter-products) like availability, price range, vendor, and tags. Each collection includes [`SEO`](https://shopify.dev/docs/api/storefront/current/objects/SEO) information, an optional [`Image`](https://shopify.dev/docs/api/storefront/current/objects/Image), and supports custom data through [`metafields`](https://shopify.dev/docs/api/storefront/current/objects/Metafield).
+  ///
+  nonisolated static let Collection = ApolloAPI.Object(
+    typename: "Collection",
+    implementedInterfaces: [
+      ShopifyAPI.Interfaces.HasMetafields.self,
+      ShopifyAPI.Interfaces.Node.self,
+      ShopifyAPI.Interfaces.OnlineStorePublishable.self,
+      ShopifyAPI.Interfaces.Trackable.self
+    ],
+    keyFields: nil
+  )
+}

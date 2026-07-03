@@ -6,18 +6,19 @@
 //
 
 import SwiftUI
-import UIKit
-import ShopifyNetwork
-import Home
 import Auth
-import ProductListing
-import ProductDetails
 import Common
+import Home
+import search
+import ProductDetails
+import ProductListing
+import ShopifyNetwork
+import DataPersistence
 
 struct ContentView: View {
     @State private var appCoordinator = AppCoordinator()
     @State private var sessionChecked: Bool = false
-    @State private var selectedTab: Tab = .home
+    @State private var selectedTab: Common.Tab = .home
     private let repository: AuthRepositoryProtocol = AuthRepositoryFactory.make()
 
     var body: some View {
@@ -70,10 +71,10 @@ struct ContentView: View {
                     }
                 }
                 .environment(appCoordinator.homeCoordinator)
-                .tag(Tab.home).toolbar(.hidden, for: .tabBar)
-                Text("Search View").tag(Tab.search).toolbar(.hidden, for: .tabBar)
-                Text("Wishlist View").tag(Tab.wishlist).toolbar(.hidden, for: .tabBar)
-                Text("Account View").tag(Tab.account).toolbar(.hidden, for: .tabBar)
+                .tag(Common.Tab.home).toolbar(.hidden, for: .tabBar)
+                Text("Search View").tag(Common.Tab.search).toolbar(.hidden, for: .tabBar)
+                Text("Wishlist View").tag(Common.Tab.wishlist).toolbar(.hidden, for: .tabBar)
+                Text("Account View").tag(Common.Tab.account).toolbar(.hidden, for: .tabBar)
             }
             .toolbar(.hidden, for: .tabBar)
             
@@ -127,4 +128,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
+
 }

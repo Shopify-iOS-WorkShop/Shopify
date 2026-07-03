@@ -1,0 +1,21 @@
+// @generated
+// This file was automatically generated and should not be edited.
+
+import ApolloAPI
+
+public extension ShopifyAPI.Objects {
+  /// A post that belongs to a [`Blog`](https://shopify.dev/docs/api/storefront/current/objects/Blog). Each article includes content with optional HTML formatting, an excerpt for previews, [`ArticleAuthor`](https://shopify.dev/docs/api/storefront/current/objects/ArticleAuthor) information, and an associated [`Image`](https://shopify.dev/docs/api/storefront/current/objects/Image).
+  ///
+  /// Articles can be organized with tags and include [`SEO`](https://shopify.dev/docs/api/storefront/current/objects/SEO) metadata. You can manage [comments](https://shopify.dev/docs/api/storefront/current/objects/Comment) when the blog's comment policy enables them.
+  ///
+  nonisolated static let Article = ApolloAPI.Object(
+    typename: "Article",
+    implementedInterfaces: [
+      ShopifyAPI.Interfaces.HasMetafields.self,
+      ShopifyAPI.Interfaces.Node.self,
+      ShopifyAPI.Interfaces.OnlineStorePublishable.self,
+      ShopifyAPI.Interfaces.Trackable.self
+    ],
+    keyFields: nil
+  )
+}
