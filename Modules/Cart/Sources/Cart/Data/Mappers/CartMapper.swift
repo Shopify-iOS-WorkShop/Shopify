@@ -2,7 +2,7 @@ import Foundation
 import Common
 
 internal enum CartMapper {
-    static func toDTO(from fragment: CartFragment) -> CartResponseDTO {
+    static func toDTO(from fragment: CartAPI.CartFragment) -> CartResponseDTO {
         let lines: [CartLineDTO] = fragment.lines.nodes.compactMap { node in
             guard let variant = node.merchandise.asProductVariant else { return nil }
             
@@ -111,7 +111,7 @@ internal enum CartMapper {
         return Money(amountString: dto.amount, currencyCode: dto.currencyCode)
     }
 
-    static func toCart(from apolloCart: CartFragment) -> Cart {
+    static func toCart(from apolloCart: CartAPI.CartFragment) -> Cart {
         let dto = toDTO(from: apolloCart)
         return toDomain(from: dto)
     }
