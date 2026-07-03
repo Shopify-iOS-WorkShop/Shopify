@@ -67,11 +67,11 @@ public struct CartLineItemView: View {
                 
                 // Price
                 HStack {
-                    Text(line.price.formattedString())
+                    Text(line.price.formatted)
                         .fontWeight(.bold)
                     
                     if let compareAt = line.compareAtPrice, compareAt.amount > line.price.amount {
-                        Text(compareAt.formattedString())
+                        Text(compareAt.formatted)
                             .strikethrough()
                             .foregroundColor(.secondary)
                             .font(.caption)

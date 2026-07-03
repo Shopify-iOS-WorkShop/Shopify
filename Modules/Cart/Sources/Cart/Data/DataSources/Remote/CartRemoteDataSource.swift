@@ -41,8 +41,8 @@ internal final class CartRemoteDataSource: CartRemoteDataSourceProtocol {
     func addLines(cartId: String, lines: [CartLineInputDTO]) async throws -> CartResponseDTO {
         let apolloLines = lines.map { dto in
             CartAPI.CartLineInput(
-                merchandiseId: dto.variantId,
-                quantity: .some(dto.quantity)
+                quantity: .some(Int32(dto.quantity)),
+                merchandiseId: dto.variantId
             )
         }
         let mutation = CartAPI.CartLinesAddMutation(cartId: cartId, lines: apolloLines)
@@ -58,7 +58,7 @@ internal final class CartRemoteDataSource: CartRemoteDataSourceProtocol {
     }
     
     func updateLine(cartId: String, lineId: String, quantity: Int) async throws -> CartResponseDTO {
-        let line = CartAPI.CartLineUpdateInput(id: lineId, quantity: .some(quantity))
+        let line = CartAPI.CartLineUpdateInput(id: lineId, quantity: .some(Int32(quantity)))
         let mutation = CartAPI.CartLinesUpdateMutation(cartId: cartId, lines: [line])
         let data = try await client.perform(mutation: mutation)
         
@@ -87,7 +87,7 @@ internal final class CartRemoteDataSource: CartRemoteDataSourceProtocol {
     func replaceDiscountCodes(cartId: String, codes: [String]) async throws -> CartResponseDTO {
         let mutation = CartAPI.CartDiscountCodesUpdateMutation(
             cartId: cartId,
-            discountCodes: .some(codes)
+            discountCodes: codes
         )
         let data = try await client.perform(mutation: mutation)
         

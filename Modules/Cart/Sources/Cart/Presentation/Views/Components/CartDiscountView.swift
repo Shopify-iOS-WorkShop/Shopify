@@ -35,6 +35,7 @@ public struct CartDiscountView: View {
             
             HStack {
                 CustomInputField(
+                    title: "",
                     placeholder: "Enter code here",
                     text: $codeInput
                 )

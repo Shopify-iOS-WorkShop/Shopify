@@ -8,10 +8,10 @@ internal enum CartMapper {
             
             let selectedOptions = variant.selectedOptions.map { ($0.name, $0.value) }
             
-            // Assuming discountAllocations exist in CartLineFragment
+            // Calculate total discounted amount from all allocations
             var totalDiscountedAmount: MoneyDTO = MoneyDTO(amount: "0", currencyCode: fragment.cost.totalAmount.currencyCode.rawValue)
-            if let allocations = node.discountAllocations {
-                for allocation in allocations {
+            if !node.discountAllocations.isEmpty {
+                for allocation in node.discountAllocations {
                     let amount = allocation.discountedAmount
                     // Simplification: In a real app we might sum them accurately if they are in same currency
                     // Here we just take the last or sum if needed. We will just map it simply.

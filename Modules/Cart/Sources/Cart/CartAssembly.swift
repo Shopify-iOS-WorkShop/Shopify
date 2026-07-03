@@ -45,8 +45,7 @@ public class CartAssembly: DIAssembly {
         
         container.register(GetOrCreateCartUseCase.self) { resolver in
             GetOrCreateCartUseCase(
-                repository: resolver.resolve(CartRepositoryProtocol.self)!,
-                sessionStore: resolver.resolve(SessionProviding.self)!
+                repository: resolver.resolve(CartRepositoryProtocol.self)!
             )
         }
         

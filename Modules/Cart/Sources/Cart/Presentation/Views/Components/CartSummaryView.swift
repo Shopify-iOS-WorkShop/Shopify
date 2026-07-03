@@ -20,7 +20,7 @@ public struct CartSummaryView: View {
                     Text("Subtotal")
                         .foregroundColor(.secondary)
                     Spacer()
-                    Text(cost.subtotalAmount.formattedString())
+                    Text(cost.subtotalAmount.formatted)
                         .fontWeight(.medium)
                 }
                 
@@ -30,7 +30,7 @@ public struct CartSummaryView: View {
                         Text("Taxes & Charges")
                             .foregroundColor(.secondary)
                         Spacer()
-                        Text(cost.checkoutChargeAmount.formattedString())
+                        Text(cost.checkoutChargeAmount.formatted)
                             .fontWeight(.medium)
                     }
                 }
@@ -43,7 +43,7 @@ public struct CartSummaryView: View {
                         .font(.title3)
                         .fontWeight(.bold)
                     Spacer()
-                    Text(cost.totalAmount.formattedString())
+                    Text(cost.totalAmount.formatted)
                         .font(.title3)
                         .fontWeight(.bold)
                 }

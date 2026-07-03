@@ -1,5 +1,6 @@
 import SwiftUI
 import Observation
+import Common
 
 @Observable
 public final class CartViewModel {
@@ -19,55 +20,176 @@ public final class CartViewModel {
         return cart?.lines.isEmpty ?? true
     }
     
-    public init() {}
+    // MARK: - Dependencies
+    private let getOrCreateCartUseCase: GetOrCreateCartUseCase
+    private let addCartLineUseCase: AddCartLineUseCase
+    private let updateQuantityUseCase: UpdateCartLineQuantityUseCase
+    private let removeLineUseCase: RemoveCartLineUseCase
+    private let applyDiscountUseCase: ApplyDiscountCodeUseCase
+    private let removeDiscountUseCase: RemoveDiscountCodeUseCase
+    private let observeCartUseCase: ObserveCartUseCase
+    private let clearCartUseCase: ClearCartUseCase
+    private let sessionStore: SessionProviding
+    
+    public init(
+        getOrCreateCartUseCase: GetOrCreateCartUseCase,
+        addCartLineUseCase: AddCartLineUseCase,
+        updateQuantityUseCase: UpdateCartLineQuantityUseCase,
+        removeLineUseCase: RemoveCartLineUseCase,
+        applyDiscountUseCase: ApplyDiscountCodeUseCase,
+        removeDiscountUseCase: RemoveDiscountCodeUseCase,
+        observeCartUseCase: ObserveCartUseCase,
+        clearCartUseCase: ClearCartUseCase,
+        sessionStore: SessionProviding
+    ) {
+        self.getOrCreateCartUseCase = getOrCreateCartUseCase
+        self.addCartLineUseCase = addCartLineUseCase
+        self.updateQuantityUseCase = updateQuantityUseCase
+        self.removeLineUseCase = removeLineUseCase
+        self.applyDiscountUseCase = applyDiscountUseCase
+        self.removeDiscountUseCase = removeDiscountUseCase
+        self.observeCartUseCase = observeCartUseCase
+        self.clearCartUseCase = clearCartUseCase
+        self.sessionStore = sessionStore
+    }
     
     // MARK: - Lifecycle
     @MainActor
     public func onAppear() async {
-        // To be implemented in logic
+        isLoading = true
+        errorMessage = nil
+        
+        let result = await getOrCreateCartUseCase.execute()
+        switch result {
+        case .success(let fetchedCart):
+            self.cart = fetchedCart
+        case .failure(let error):
+            self.errorMessage = error.userFacingMessage
+        }
+        
+        isLoading = false
+        
+        // Start observing cart changes
+        Task {
+            for await updatedCart in observeCartUseCase.execute() {
+                await MainActor.run {
+                    self.cart = updatedCart
+                }
+            }
+        }
     }
     
     // MARK: - Actions
+    @MainActor
     public func increaseTapped(for line: CartLine) async {
-        // To be implemented in logic
+        isLoading = true
+        errorMessage = nil
+        
+        let result = await updateQuantityUseCase.execute(
+            lineId: line.id,
+            newQuantity: line.quantity + 1,
+            quantityAvailable: line.quantityAvailable
+        )
+        
+        isLoading = false
+        if case .failure(let error) = result {
+            errorMessage = error.userFacingMessage
+        }
     }
     
+    @MainActor
     public func decreaseTapped(for line: CartLine) async {
-        // To be implemented in logic
+        if line.quantity == 1 {
+            requestRemoval(for: line)
+            return
+        }
+        
+        isLoading = true
+        errorMessage = nil
+        
+        let result = await updateQuantityUseCase.execute(
+            lineId: line.id,
+            newQuantity: line.quantity - 1,
+            quantityAvailable: line.quantityAvailable
+        )
+        
+        isLoading = false
+        if case .failure(let error) = result {
+            errorMessage = error.userFacingMessage
+        }
     }
     
     public func requestRemoval(for line: CartLine) {
         pendingRemovalLineId = line.id
     }
     
+    @MainActor
     public func confirmRemoval() async {
-        // To be implemented in logic
+        guard let lineId = pendingRemovalLineId else { return }
         pendingRemovalLineId = nil
+        
+        isLoading = true
+        errorMessage = nil
+        
+        let result = await removeLineUseCase.execute(lineId: lineId)
+        
+        isLoading = false
+        if case .failure(let error) = result {
+            errorMessage = error.userFacingMessage
+        }
     }
     
     public func cancelRemoval() {
         pendingRemovalLineId = nil
     }
     
+    @MainActor
     public func applyDiscountTapped() async {
-        // To be implemented in logic
+        let code = discountCodeInput.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !code.isEmpty else { return }
+        
+        isApplyingDiscount = true
+        errorMessage = nil
+        successMessage = nil
+        
+        let result = await applyDiscountUseCase.execute(code: code)
+        
+        isApplyingDiscount = false
+        switch result {
+        case .success:
+            successMessage = "Discount '\(code)' applied!"
+            discountCodeInput = ""
+        case .failure(let error):
+            errorMessage = error.userFacingMessage
+        }
     }
     
+    @MainActor
     public func removeDiscountTapped(code: String) async {
-        // To be implemented in logic
+        isLoading = true
+        errorMessage = nil
+        
+        let result = await removeDiscountUseCase.execute(code: code)
+        
+        isLoading = false
+        if case .failure(let error) = result {
+            errorMessage = error.userFacingMessage
+        }
     }
     
     public func productTapped(line: CartLine) {
-        // To be implemented in logic
+        // Navigate to product details - handled by coordinator
     }
     
     public func requestClearCart() {
         isShowingClearCartConfirmation = true
     }
     
+    @MainActor
     public func confirmClearCart() async {
-        // To be implemented in logic
         isShowingClearCartConfirmation = false
+        await clearCartUseCase.execute()
+        cart = nil
     }
     
     public func cancelClearCart() {
@@ -75,6 +197,10 @@ public final class CartViewModel {
     }
     
     public func requestCheckout() {
-        // To be implemented in logic
+        guard sessionStore.current != nil else {
+            // Not authenticated - show sign in
+            return
+        }
+        // Navigate to checkout - handled by coordinator
     }
 }
