@@ -11,6 +11,7 @@ import Observation
 import Auth
 import Home
 import ProductListing
+import Payment
 @Observable
 public final class AppCoordinator {
     public var hasCompletedAuth: Bool = false
@@ -18,6 +19,7 @@ public final class AppCoordinator {
     public var authCoordinator = AuthCoordinator()
     public var homeCoordinator = HomeCoordinator()
     public var productListingCoordinator = ProductListingCoordinator()
+    public var checkoutAddressCoordinator = CheckoutAddressCoordinator()
     public init() {
         setupCallbacks()
     }
