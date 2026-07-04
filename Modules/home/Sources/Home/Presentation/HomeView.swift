@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 public struct HomeView: View {
     @ObservedObject var viewModel: HomeViewModel
@@ -14,8 +15,10 @@ public struct HomeView: View {
 
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 20) {
-                    FlashSaleBannerView()
-                        .padding(.horizontal, 16)
+                    AdsCarouselView(ads: viewModel.ads) { ad in
+                        handleAdTap(ad)
+                    }
+                    .padding(.horizontal, 16)
 
                     SectionHeaderView(title: "Shop by Brand", hasViewAll: true) {
                         coordinator.push(.catalog(type: .brands))
@@ -86,6 +89,18 @@ public struct HomeView: View {
             Task {
                 await viewModel.loadData()
             }
+        }
+    }
+
+    private func handleAdTap(_ ad: Ad) {
+        switch ad.destination {
+        case .product(let id):
+            guard let productId = Int(id) else { return }
+            coordinator.push(.productDetail(productId: productId))
+        case .collection(let id, let title):
+            coordinator.push(.productListing(collectionId: id, title: title))
+        case .url(let url):
+            UIApplication.shared.open(url)
         }
     }
 }
