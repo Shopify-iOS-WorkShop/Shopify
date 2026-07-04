@@ -8,7 +8,10 @@ public typealias AuthUserEntity = AuthUser
 @available(iOS 13.0.0, *)
 public enum AuthRepositoryFactory {
     public static func make() -> AuthRepositoryProtocol {
-        AuthRepository()
+        guard let repository = DIContainer.shared.resolve(AuthRepositoryProtocol.self) else {
+            fatalError("AuthRepositoryProtocol is not registered. Call AppAssembly.setup before creating auth views.")
+        }
+        return repository
     }
 }
 

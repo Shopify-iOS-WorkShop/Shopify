@@ -14,6 +14,7 @@ public final class HomeCoordinator {
     public var path = NavigationPath()
     public var onCartTapped: (() -> Void)?
     public var onMenuTapped: (() -> Void)?
+    public var cartBadgeCount: Int = 0
     
     public init() {}
     
@@ -27,3 +28,4 @@ public final class HomeCoordinator {
         }
     }
 }
+

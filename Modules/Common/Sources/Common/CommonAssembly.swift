@@ -7,6 +7,14 @@ public class CommonAssembly: DIAssembly {
     public init() {}
 
     public func assemble(container: Container) {
-        // Common shared services will be registered here as they are introduced.
+        // Register SessionStore as singleton
+        container.register(SessionStore.self) { _ in
+            SessionStore()
+        }.inObjectScope(.container)
+        
+        // Register SessionProviding protocol binding
+        container.register(SessionProviding.self) { resolver in
+            resolver.resolve(SessionStore.self)!
+        }.inObjectScope(.container)
     }
 }

@@ -7,6 +7,7 @@ import Combine
 @MainActor
 
 public final class ProductDetailViewModel: ObservableObject {
+    public typealias AddToCartAction = (_ variantId: String, _ quantity: Int) async -> String?
 
 
 
@@ -39,6 +40,9 @@ public final class ProductDetailViewModel: ObservableObject {
     @Published public private(set) var isDescriptionExpanded: Bool = true
 
     @Published public private(set) var currentImageIndex: Int = 0
+    @Published public private(set) var isAddingToCart: Bool = false
+    @Published public private(set) var addToCartMessage: String? = nil
+    @Published public private(set) var addToCartError: String? = nil
 
 
 
@@ -49,6 +53,7 @@ public final class ProductDetailViewModel: ObservableObject {
     private let useCase: FetchProductDetailUseCaseProtocol
 
     private let productId: Int
+    private let addToCartAction: AddToCartAction?
 
 
 
@@ -56,11 +61,16 @@ public final class ProductDetailViewModel: ObservableObject {
 
 
 
-    public init(productId: Int, useCase: FetchProductDetailUseCaseProtocol) {
+    public init(
+        productId: Int,
+        useCase: FetchProductDetailUseCaseProtocol,
+        addToCartAction: AddToCartAction? = nil
+    ) {
 
         self.productId = productId
 
         self.useCase = useCase
+        self.addToCartAction = addToCartAction
 
     }
 
@@ -129,11 +139,22 @@ public final class ProductDetailViewModel: ObservableObject {
 
 
     public func addToCart() {
+        guard case .success(let product) = state,
+              let variantId = product.variantId(for: selectedSize),
+              let addToCartAction else { return }
 
-        guard selectedSize != nil else { return }
+        isAddingToCart = true
+        addToCartMessage = nil
+        addToCartError = nil
 
-        // Hook into your cart use case here
-
+        Task { @MainActor in
+            if let error = await addToCartAction(variantId, quantity) {
+                addToCartError = error
+            } else {
+                addToCartMessage = "Added to cart"
+            }
+            isAddingToCart = false
+        }
     }
 
 

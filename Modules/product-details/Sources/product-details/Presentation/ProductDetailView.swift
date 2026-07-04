@@ -264,33 +264,44 @@ public struct ProductDetailView: View {
 
                 } label: {
 
-                    Text("Add to Cart")
-
-                        .fontWeight(.semibold)
-
-                        .frame(maxWidth: .infinity)
-
-                        .padding(.vertical, 16)
-
-                        .background(viewModel.selectedSize != nil ? Color.pink : Color.gray.opacity(0.4))
-
-                        .foregroundColor(.white)
-
-                        .cornerRadius(30)
+                    Group {
+                        if viewModel.isAddingToCart {
+                            ProgressView()
+                                .tint(.white)
+                        } else {
+                            Text("Add to Cart")
+                                .fontWeight(.semibold)
+                        }
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 16)
+                    .background(viewModel.selectedSize != nil ? Color.pink : Color.gray.opacity(0.4))
+                    .foregroundColor(.white)
+                    .cornerRadius(30)
 
                 }
 
-                .disabled(viewModel.selectedSize == nil)
+                .disabled(viewModel.selectedSize == nil || viewModel.isAddingToCart)
 
             }
-
-            .padding(.horizontal, 20)
-
-            .padding(.vertical, 16)
-
-            .background(Color(.systemBackground))
+            if let message = viewModel.addToCartMessage {
+                Text(message)
+                    .font(.caption)
+                    .foregroundColor(.green)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.bottom, 8)
+            } else if let error = viewModel.addToCartError {
+                Text(error)
+                    .font(.caption)
+                    .foregroundColor(.red)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.bottom, 8)
+            }
 
         }
+        .padding(.horizontal, 20)
+        .padding(.vertical, 16)
+        .background(Color(.systemBackground))
 
     }
 

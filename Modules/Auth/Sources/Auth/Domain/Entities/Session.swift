@@ -1,4 +1,5 @@
 import Foundation
+import Common
 
 public struct Session: Codable, Equatable {
     public let customerAccessToken: String
@@ -15,5 +16,15 @@ public struct Session: Codable, Equatable {
 
     public var isValid: Bool {
         !customerAccessToken.isEmpty && expiresAt > Date()
+    }
+    
+    /// Converts Auth.Session to Common.Session for cross-module session observability
+    public func toCommonSession() -> Common.Session {
+        return Common.Session(
+            firebaseUID: firebaseUID,
+            customerAccessToken: customerAccessToken,
+            customerId: customerId,
+            expiresAt: expiresAt
+        )
     }
 }

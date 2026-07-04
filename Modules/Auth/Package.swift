@@ -20,7 +20,7 @@ let package = Package(
         .package(url: "https://github.com/google/GoogleSignIn-iOS.git", .upToNextMajor(from: "7.0.0")),
         .package(path: "../Common"),
         .package(path: "../shopify-network"),
-        .package(path: "../DependencyInjection")
+        .package(path: "../DependencyInjection"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.

@@ -1,4 +1,5 @@
-//
+ 
+ //
 //  File.swift
 //  
 //
@@ -19,7 +20,6 @@ public class HomeRepository: HomeRepositoryProtocol {
         let response: ShopifyProductResponse = try await networkClient.request(endpoint: HomeEndpoint.getProducts)
         return response.products.map { $0.toDomain() }
     }
-    
     public func fetchBrands() async throws -> [Brand] {
         let response: SmartCollectionResponse = try await networkClient.request(endpoint: HomeEndpoint.getSmartCollections)
         return response.smart_collections.map { $0.toBrand() }

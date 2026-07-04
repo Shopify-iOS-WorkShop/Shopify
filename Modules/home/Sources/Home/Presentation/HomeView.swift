@@ -1,11 +1,11 @@
 import SwiftUI
 
 public struct HomeView: View {
-    @StateObject private var viewModel: HomeViewModel
+    @ObservedObject var viewModel: HomeViewModel
     @Environment(HomeCoordinator.self) private var coordinator
 
     public init(viewModel: HomeViewModel) {
-        _viewModel = StateObject(wrappedValue: viewModel)
+        self.viewModel = viewModel
     }
 
     public var body: some View {
@@ -64,14 +64,28 @@ public struct HomeView: View {
                 Button(action: {
                     coordinator.onCartTapped?()
                 }) {
-                    Image(systemName: "cart")
-                        .foregroundColor(DS.textPri)
-                        .font(.system(size: 18, weight: .medium))
+                    ZStack(alignment: .topTrailing) {
+                        Image(systemName: "cart")
+                            .foregroundColor(DS.textPri)
+                            .font(.system(size: 18, weight: .medium))
+                        
+                        if coordinator.cartBadgeCount > 0 {
+                            Text("\(coordinator.cartBadgeCount)")
+                                .font(.system(size: 10, weight: .bold))
+                                .foregroundColor(.white)
+                                .frame(minWidth: 16, minHeight: 16)
+                                .background(Color.pink)
+                                .clipShape(Circle())
+                                .offset(x: 10, y: -8)
+                        }
+                    }
                 }
             }
         }
-        .task {
-            await viewModel.loadData()
+        .onAppear {
+            Task {
+                await viewModel.loadData()
+            }
         }
     }
 }
