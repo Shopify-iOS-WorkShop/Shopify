@@ -1,30 +1,29 @@
 // swift-tools-version: 5.9
-// The swift-tools-version declares the minimum version of Swift required to build this package.
-
 import PackageDescription
 
 let package = Package(
-    name: "favorites",
-    platforms: [
-        .iOS(.v15),
-        .macOS(.v12)
-    ],
+    name: "Favorites",
+    platforms: [.iOS(.v17)],
     products: [
-        // Products define the executables and libraries a package produces, making them visible to other packages.
-        .library(
-            name: "favorites",
-            targets: ["favorites"]
-        ),
+        .library(name: "Favorites", targets: ["Favorites"])
+    ],
+    dependencies: [
+        .package(path: "../DataPersistence"),
+        .package(path: "../DependencyInjection")
     ],
     targets: [
-        // Targets are the basic building blocks of a package, defining a module or a test suite.
-        // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "favorites"
+            name: "Favorites",
+            dependencies: [
+                .product(name: "DataPersistence", package: "DataPersistence"),
+                .product(name: "DependencyInjection", package: "DependencyInjection")
+            ],
+            path: "Sources/favorites"
         ),
         .testTarget(
-            name: "favoritesTests",
-            dependencies: ["favorites"]
-        ),
+            name: "FavoritesTests",
+            dependencies: ["Favorites"],
+            path: "Tests/FavoritesTests"
+        )
     ]
 )
