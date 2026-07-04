@@ -23,7 +23,7 @@ public struct CheckoutStepper: View {
         .padding(.horizontal, 20)
     }
 
-    private func stepView(step: Step, label: String, activeTextColor: Color = DS.textPri) -> some View {
+    private func stepView(step: Step, label: String, activeTextColor: Color = DS.red) -> some View {
         VStack(spacing: 8) {
             ZStack {
                 Circle()

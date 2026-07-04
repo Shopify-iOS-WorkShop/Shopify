@@ -17,7 +17,8 @@ struct ShopifyApp: App {
     var body: some Scene {
         WindowGroup {
             //ContentView()
-            CheckoutAddressView()
+            //CheckoutAddressView()
+            PaymentMethodView()
         }
     }
 }
