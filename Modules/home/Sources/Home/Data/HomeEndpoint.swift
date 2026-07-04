@@ -1,8 +1,8 @@
 //
-//  File.swift
-//  
+//  HomeEndpoint.swift
+//  Home
 //
-//  Created by Mazen Amr on 27/06/2026.
+//  Uses Admin REST API for products and collections
 //
 
 import Foundation
@@ -15,28 +15,31 @@ enum HomeEndpoint: Endpoint {
     case getCustomCollections
     
     var baseURL: String {
-        return "https://\(ShopifyConfig.apiKey):\(ShopifyConfig.accessToken)@\(ShopifyConfig.hostname)/admin/api/\(ShopifyConfig.apiVersion)"
+        return "https://\(ShopifyConfig.hostname)/admin/api/\(ShopifyConfig.apiVersion)"
     }
     
     var path: String {
-            switch self {
-            case .getProducts:
-                return "/products.json"
-            case .getProductDetails(let id):
-                return "/products/\(id).json"
-            case .getSmartCollections:
-                return "/smart_collections.json"
-            case .getCustomCollections:
-                return "/custom_collections.json"
-            }
+        switch self {
+        case .getProducts:
+            return "/products.json"
+        case .getProductDetails(let id):
+            return "/products/\(id).json"
+        case .getSmartCollections:
+            return "/smart_collections.json"
+        case .getCustomCollections:
+            return "/custom_collections.json"
         }
+    }
     
     var method: String {
         return "GET"
     }
     
     var headers: [String: String]? {
-        return ["Content-Type": "application/json"]
+        return [
+            "X-Shopify-Access-Token": ShopifyConfig.accessToken,
+            "Content-Type": "application/json"
+        ]
     }
     
     var queryItems: [URLQueryItem]? {

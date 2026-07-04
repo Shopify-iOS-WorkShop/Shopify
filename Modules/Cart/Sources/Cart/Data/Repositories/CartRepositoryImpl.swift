@@ -39,27 +39,37 @@ internal final class CartRepositoryImpl: CartRepositoryProtocol {
     }
     
     func fetchCart() async -> Result<Cart, AppError> {
-        guard let record = localDataSource.fetchCartRecord(ownerKey: ownerKey) else {
+        let record = await MainActor.run {
+            localDataSource.fetchCartRecord(ownerKey: ownerKey)
+        }
+        
+        guard let record else {
             return .failure(AppError.graphQL(["No cart found"]))
         }
         
         let age = Date().timeIntervalSince(record.cartIdCreatedAt)
         if age > 9 * 24 * 60 * 60 {
-            try? localDataSource.deleteCartRecord(ownerKey: ownerKey)
+            await MainActor.run {
+                try? localDataSource.deleteCartRecord(ownerKey: ownerKey)
+            }
             return .failure(AppError.graphQL(["Cart has likely expired"]))
         }
         
         do {
             let dto = try await remoteDataSource.fetchCart(id: record.cartId)
             let cart = CartMapper.toDomain(from: dto)
-            try? localDataSource.updateCachedQuantity(cart.totalQuantity, ownerKey: ownerKey)
-            try? localDataSource.updateCachedCheckoutUrl(cart.checkoutUrl.absoluteString, ownerKey: ownerKey)
+            await MainActor.run {
+                try? localDataSource.updateCachedQuantity(cart.totalQuantity, ownerKey: ownerKey)
+                try? localDataSource.updateCachedCheckoutUrl(cart.checkoutUrl.absoluteString, ownerKey: ownerKey)
+            }
             cartPublisher.send(cart)
             return .success(cart)
         } catch let error as AppError {
             if case .graphQL(let messages) = error,
                messages.first?.contains("not found") == true || messages.first?.contains("expired") == true {
-                try? localDataSource.deleteCartRecord(ownerKey: ownerKey)
+                await MainActor.run {
+                    try? localDataSource.deleteCartRecord(ownerKey: ownerKey)
+                }
             }
             return .failure(error)
         } catch {
@@ -81,7 +91,11 @@ internal final class CartRepositoryImpl: CartRepositoryProtocol {
                 totalQuantity: cart.totalQuantity,
                 updatedAt: Date()
             )
-            try localDataSource.saveCartRecord(record)
+            
+            try await MainActor.run {
+                try localDataSource.saveCartRecord(record)
+            }
+            
             cartPublisher.send(cart)
             return .success(cart)
         } catch let error as AppError {
@@ -92,14 +106,23 @@ internal final class CartRepositoryImpl: CartRepositoryProtocol {
     }
     
     func addLines(_ lines: [CartLineInput]) async -> Result<Cart, AppError> {
-        guard let record = localDataSource.fetchCartRecord(ownerKey: ownerKey) else {
+        let record = await MainActor.run {
+            localDataSource.fetchCartRecord(ownerKey: ownerKey)
+        }
+        
+        guard let record else {
             return .failure(AppError.unknown)
         }
+        
         do {
             let dtos = lines.map { CartLineInputDTO(variantId: $0.variantId, quantity: $0.quantity) }
             let dto = try await remoteDataSource.addLines(cartId: record.cartId, lines: dtos)
             let cart = CartMapper.toDomain(from: dto)
-            try? localDataSource.updateCachedQuantity(cart.totalQuantity, ownerKey: ownerKey)
+            
+            await MainActor.run {
+                try? localDataSource.updateCachedQuantity(cart.totalQuantity, ownerKey: ownerKey)
+            }
+            
             cartPublisher.send(cart)
             return .success(cart)
         } catch let error as AppError {
@@ -110,13 +133,22 @@ internal final class CartRepositoryImpl: CartRepositoryProtocol {
     }
     
     func updateLine(lineId: String, quantity: Int) async -> Result<Cart, AppError> {
-        guard let record = localDataSource.fetchCartRecord(ownerKey: ownerKey) else {
+        let record = await MainActor.run {
+            localDataSource.fetchCartRecord(ownerKey: ownerKey)
+        }
+        
+        guard let record else {
             return .failure(AppError.unknown)
         }
+        
         do {
             let dto = try await remoteDataSource.updateLine(cartId: record.cartId, lineId: lineId, quantity: quantity)
             let cart = CartMapper.toDomain(from: dto)
-            try? localDataSource.updateCachedQuantity(cart.totalQuantity, ownerKey: ownerKey)
+            
+            await MainActor.run {
+                try? localDataSource.updateCachedQuantity(cart.totalQuantity, ownerKey: ownerKey)
+            }
+            
             cartPublisher.send(cart)
             return .success(cart)
         } catch let error as AppError {
@@ -127,13 +159,22 @@ internal final class CartRepositoryImpl: CartRepositoryProtocol {
     }
     
     func removeLines(_ lineIds: [String]) async -> Result<Cart, AppError> {
-        guard let record = localDataSource.fetchCartRecord(ownerKey: ownerKey) else {
+        let record = await MainActor.run {
+            localDataSource.fetchCartRecord(ownerKey: ownerKey)
+        }
+        
+        guard let record else {
             return .failure(AppError.unknown)
         }
+        
         do {
             let dto = try await remoteDataSource.removeLines(cartId: record.cartId, lineIds: lineIds)
             let cart = CartMapper.toDomain(from: dto)
-            try? localDataSource.updateCachedQuantity(cart.totalQuantity, ownerKey: ownerKey)
+            
+            await MainActor.run {
+                try? localDataSource.updateCachedQuantity(cart.totalQuantity, ownerKey: ownerKey)
+            }
+            
             cartPublisher.send(cart)
             return .success(cart)
         } catch let error as AppError {
@@ -144,9 +185,14 @@ internal final class CartRepositoryImpl: CartRepositoryProtocol {
     }
     
     func applyDiscountCode(_ code: String) async -> Result<Cart, AppError> {
-        guard let record = localDataSource.fetchCartRecord(ownerKey: ownerKey) else {
+        let record = await MainActor.run {
+            localDataSource.fetchCartRecord(ownerKey: ownerKey)
+        }
+        
+        guard let record else {
             return .failure(AppError.unknown)
         }
+        
         do {
             let dto = try await remoteDataSource.replaceDiscountCodes(cartId: record.cartId, codes: [code])
             let cart = CartMapper.toDomain(from: dto)
@@ -160,9 +206,14 @@ internal final class CartRepositoryImpl: CartRepositoryProtocol {
     }
     
     func removeDiscountCode(_ code: String) async -> Result<Cart, AppError> {
-        guard let record = localDataSource.fetchCartRecord(ownerKey: ownerKey) else {
+        let record = await MainActor.run {
+            localDataSource.fetchCartRecord(ownerKey: ownerKey)
+        }
+        
+        guard let record else {
             return .failure(AppError.unknown)
         }
+        
         do {
             // Removing a discount code is done by replacing discount codes with an empty array
             let dto = try await remoteDataSource.replaceDiscountCodes(cartId: record.cartId, codes: [])
@@ -177,10 +228,15 @@ internal final class CartRepositoryImpl: CartRepositoryProtocol {
     }
     
     func attachCustomer() async -> Result<Cart, AppError> {
-        guard let record = localDataSource.fetchCartRecord(ownerKey: ownerKey),
-              let customerToken = sessionStore.current?.customerAccessToken else {
+        let (record, customerToken) = await MainActor.run {
+            (localDataSource.fetchCartRecord(ownerKey: ownerKey),
+             sessionStore.current?.customerAccessToken)
+        }
+        
+        guard let record, let customerToken else {
             return .failure(AppError.unknown)
         }
+        
         do {
             let dto = try await remoteDataSource.attachCustomer(cartId: record.cartId, customerAccessToken: customerToken)
             let cart = CartMapper.toDomain(from: dto)
@@ -194,7 +250,9 @@ internal final class CartRepositoryImpl: CartRepositoryProtocol {
     }
     
     func clearCart() async {
-        try? localDataSource.deleteCartRecord(ownerKey: ownerKey)
+        await MainActor.run {
+            try? localDataSource.deleteCartRecord(ownerKey: ownerKey)
+        }
         cartPublisher.send(nil)
     }
 }

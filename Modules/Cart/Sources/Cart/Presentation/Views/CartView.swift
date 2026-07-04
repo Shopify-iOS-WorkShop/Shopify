@@ -3,9 +3,11 @@ import Common
 
 public struct CartView: View {
     @State var viewModel: CartViewModel
+    var onGoShopping: (() -> Void)?
     
-    public init(viewModel: CartViewModel) {
+    public init(viewModel: CartViewModel, onGoShopping: (() -> Void)? = nil) {
         self.viewModel = viewModel
+        self.onGoShopping = onGoShopping
     }
     
     public var body: some View {
@@ -15,8 +17,7 @@ public struct CartView: View {
                     ProgressView("Loading cart...")
                 } else if viewModel.isEmpty {
                     EmptyCartView(onShopTapped: {
-                        // This usually goes through the coordinator, but here we can just pop
-                        // For a real app, we might fire a callback to the coordinator
+                        onGoShopping?()
                     })
                 } else {
                     cartContentView
@@ -61,7 +62,9 @@ public struct CartView: View {
             titleVisibility: .visible
         ) {
             Button("Remove", role: .destructive) {
-                Task { await viewModel.confirmRemoval() }
+                if let id = viewModel.pendingRemovalLineId {
+                    Task { await viewModel.confirmRemoval(lineId: id) }
+                }
             }
             Button("Cancel", role: .cancel) {
                 viewModel.cancelRemoval()

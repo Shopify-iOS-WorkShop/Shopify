@@ -19,6 +19,13 @@ enum ProductDetailMapper {
 
 
         let reviews = mockReviews()
+        let variants = (product.variants ?? []).map {
+            ProductDetailVariantEntity(
+                id: "gid://shopify/ProductVariant/\($0.id)",
+                title: $0.title,
+                quantityAvailable: $0.inventoryQuantity
+            )
+        }
 
 
 
@@ -41,6 +48,8 @@ enum ProductDetailMapper {
             images: (product.images ?? []).map(\.src),
 
             sizes: sizes.isEmpty ? ["OS"] : sizes,
+
+            variants: variants,
 
             reviews: reviews,
 

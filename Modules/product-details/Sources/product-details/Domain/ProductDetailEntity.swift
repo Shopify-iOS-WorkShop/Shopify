@@ -22,6 +22,8 @@ public struct ProductDetailEntity {
 
     public let sizes: [String]
 
+    public let variants: [ProductDetailVariantEntity]
+
     public let reviews: [ReviewEntity]
 
     public let isFavorite: Bool
@@ -48,6 +50,8 @@ public struct ProductDetailEntity {
 
         sizes: [String],
 
+        variants: [ProductDetailVariantEntity],
+
         reviews: [ReviewEntity],
 
         isFavorite: Bool = false
@@ -72,12 +76,36 @@ public struct ProductDetailEntity {
 
         self.sizes = sizes
 
+        self.variants = variants
+
         self.reviews = reviews
 
         self.isFavorite = isFavorite
 
     }
 
+    public func variantId(for size: String?) -> String? {
+        guard let size, !size.isEmpty else {
+            return variants.first?.id
+        }
+
+        return variants.first { variant in
+            let components = variant.title.components(separatedBy: " / ").map { $0.trimmingCharacters(in: .whitespaces) }
+            return components.contains { $0.caseInsensitiveCompare(size) == .orderedSame }
+        }?.id ?? variants.first?.id
+    }
+}
+
+public struct ProductDetailVariantEntity {
+    public let id: String
+    public let title: String
+    public let quantityAvailable: Int?
+
+    public init(id: String, title: String, quantityAvailable: Int?) {
+        self.id = id
+        self.title = title
+        self.quantityAvailable = quantityAvailable
+    }
 }
 
 

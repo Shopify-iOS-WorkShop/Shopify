@@ -28,7 +28,9 @@ public class CartAssembly: DIAssembly {
         // Local Data Source
         container.register(CartLocalDataSourceProtocol.self) { resolver in
             let dbClient = resolver.resolve(LocalDatabaseClientProtocol.self)!
-            return CartLocalDataSource(dbClient: dbClient)
+            return MainActor.assumeIsolated {
+                CartLocalDataSource(dbClient: dbClient)
+            }
         }
         
         // MARK: - Repository

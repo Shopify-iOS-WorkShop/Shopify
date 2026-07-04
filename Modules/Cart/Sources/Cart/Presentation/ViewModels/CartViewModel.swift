@@ -57,6 +57,10 @@ public final class CartViewModel {
     @MainActor
     public func onAppear() async {
         isLoading = true
+        
+        // MARK: - Simulator Network Bug Workaround
+        try? await Task.sleep(nanoseconds: 500_000_000)
+        
         errorMessage = nil
         
         let result = await getOrCreateCartUseCase.execute()
@@ -124,8 +128,7 @@ public final class CartViewModel {
     }
     
     @MainActor
-    public func confirmRemoval() async {
-        guard let lineId = pendingRemovalLineId else { return }
+    public func confirmRemoval(lineId: String) async {
         pendingRemovalLineId = nil
         
         isLoading = true
@@ -179,6 +182,25 @@ public final class CartViewModel {
     
     public func productTapped(line: CartLine) {
         // Navigate to product details - handled by coordinator
+    }
+    
+    /// The total number of items in the cart, used for badge display.
+    public var cartItemCount: Int {
+        cart?.lines.count ?? 0
+    }
+    
+    /// Adds a line item to the cart. Called externally (e.g., from Product Details).
+    /// Returns an error string if it fails, or nil on success.
+    @MainActor
+    public func addLine(variantId: String, quantity: Int) async -> String? {
+        let result = await addCartLineUseCase.execute(variantId: variantId, quantity: quantity)
+        switch result {
+        case .success(let updatedCart):
+            self.cart = updatedCart
+            return nil
+        case .failure(let error):
+            return error.userFacingMessage
+        }
     }
     
     public func requestClearCart() {

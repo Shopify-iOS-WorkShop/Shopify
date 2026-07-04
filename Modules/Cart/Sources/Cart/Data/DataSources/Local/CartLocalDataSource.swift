@@ -2,6 +2,7 @@ import Foundation
 import SwiftData
 import DataPersistence
 
+@MainActor
 internal final class CartLocalDataSource: CartLocalDataSourceProtocol {
     private let dbClient: LocalDatabaseClientProtocol
     

@@ -1,5 +1,6 @@
 import Foundation
 
+@MainActor
 internal protocol CartLocalDataSourceProtocol {
     func saveCartRecord(_ record: CartRecord) throws
     func fetchCartRecord(ownerKey: String) -> CartRecord?
