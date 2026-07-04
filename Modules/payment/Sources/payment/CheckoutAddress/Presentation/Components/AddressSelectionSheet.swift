@@ -10,7 +10,8 @@ import SwiftUI
 import Common
 
 struct AddressSelectionSheet: View {
-    var addresses: [MockAddress]
+    var addresses: [Address]
+    var onSelect: ((Address) -> Void)?
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
@@ -75,6 +76,7 @@ struct AddressSelectionSheet: View {
             VStack(spacing: 16) {
                 ForEach(addresses) { address in
                     Button(action: {
+                        onSelect?(address)
                         dismiss()
                     }) {
                         HStack(alignment: .top, spacing: 12) {
