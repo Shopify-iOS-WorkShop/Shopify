@@ -14,7 +14,8 @@ let package = Package(
     ]
     ,dependencies: [
         .package(path: "../shopify-network"),
-        .package(path: "../Common")
+        .package(path: "../Common"),
+        .package(path: "../Auth")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -23,14 +24,16 @@ let package = Package(
             name: "Payment",
             dependencies: [
                 .product(name: "ShopifyNetwork", package: "shopify-network"),
-                .product(name: "Common", package: "Common")
+                .product(name: "Common", package: "Common"),
+                .product(name: "Auth", package: "Auth")
             ]),
         .testTarget(
             name: "PaymentTests",
             dependencies: [
                 "Payment",
                 .product(name: "ShopifyNetwork", package: "shopify-network"),
-                .product(name: "Common", package: "Common")
+                .product(name: "Common", package: "Common"),
+                .product(name: "Auth", package: "Auth"),
             ]),
     ]
 )
