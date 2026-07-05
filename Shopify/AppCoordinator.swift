@@ -11,22 +11,29 @@ import Observation
 import Auth
 import Home
 import ProductListing
+import Settings
+
 @Observable
 public final class AppCoordinator {
     public var hasCompletedAuth: Bool = false
-    
-    public var authCoordinator = AuthCoordinator()
-    public var homeCoordinator = HomeCoordinator()
+
+    /// Raised when a guest user taps a restricted action (add to cart, wishlist).
+    /// ContentView watches this to present a "Sign In" alert.
+    public var showGuestSignInPrompt: Bool = false
+
+    public var authCoordinator           = AuthCoordinator()
+    public var homeCoordinator           = HomeCoordinator()
     public var productListingCoordinator = ProductListingCoordinator()
+    public var settingsCoordinator       = SettingsCoordinator()
+
     public init() {
         setupCallbacks()
     }
-    
+
     private func setupCallbacks() {
         authCoordinator.onLoginSuccess = { [weak self] in
             self?.hasCompletedAuth = true
         }
-        
         authCoordinator.onContinueAsGuest = { [weak self] in
             self?.hasCompletedAuth = true
         }

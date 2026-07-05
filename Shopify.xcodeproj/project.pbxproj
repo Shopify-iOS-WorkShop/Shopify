@@ -19,6 +19,7 @@
 		6D0B9DB42FF817AC00F50859 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 6D0B9DB32FF817AC00F50859 /* GoogleSignIn */; };
 		6D0B9DB62FF817B500F50859 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 6D0B9DB52FF817B500F50859 /* FirebaseAnalytics */; };
 		6DBB6C442FF69B4C00E3E198 /* search in Frameworks */ = {isa = PBXBuildFile; productRef = 6DBB6C432FF69B4C00E3E198 /* search */; };
+		7877C91E2FF9D099008CDE88 /* Settings in Frameworks */ = {isa = PBXBuildFile; productRef = 7877C91D2FF9D099008CDE88 /* Settings */; };
 		7879208D2FF80BF2009EFC6F /* AppAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7879208C2FF80BF2009EFC6F /* AppAssembly.swift */; };
 		78BFEC8B2FEFCB6800358550 /* ShopifyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78BFEC8A2FEFCB6800358550 /* ShopifyApp.swift */; };
 		78BFEC8D2FEFCB6800358550 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78BFEC8C2FEFCB6800358550 /* ContentView.swift */; };
@@ -53,6 +54,7 @@
 				6D0B9DAE2FF8179100F50859 /* ProductDetails in Frameworks */,
 				6D0B9DAC2FF8178A00F50859 /* Home in Frameworks */,
 				6D0B9DA82FF8177B00F50859 /* Common in Frameworks */,
+				7877C91E2FF9D099008CDE88 /* Settings in Frameworks */,
 				6D0B9DB62FF817B500F50859 /* FirebaseAnalytics in Frameworks */,
 				6D0B9DB42FF817AC00F50859 /* GoogleSignIn in Frameworks */,
 			);
@@ -136,6 +138,7 @@
 				6D0B9DB32FF817AC00F50859 /* GoogleSignIn */,
 				6D0B9DB52FF817B500F50859 /* FirebaseAnalytics */,
 				78DCBFF72FF8218100C552AF /* Cart */,
+				7877C91D2FF9D099008CDE88 /* Settings */,
 			);
 			productName = Shopify;
 			productReference = 78BFEC872FEFCB6800358550 /* Shopify.app */;
@@ -466,6 +469,10 @@
 		6DBB6C432FF69B4C00E3E198 /* search */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = search;
+		};
+		7877C91D2FF9D099008CDE88 /* Settings */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Settings;
 		};
 		78DCBFF72FF8218100C552AF /* Cart */ = {
 			isa = XCSwiftPackageProductDependency;
