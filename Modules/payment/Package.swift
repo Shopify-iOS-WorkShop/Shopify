@@ -15,7 +15,8 @@ let package = Package(
     ,dependencies: [
         .package(path: "../shopify-network"),
         .package(path: "../Common"),
-        .package(path: "../Auth")
+        .package(path: "../Auth"),
+        .package(url: "https://github.com/stripe/stripe-ios", from: "24.0.0")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -24,9 +25,12 @@ let package = Package(
             name: "Payment",
             dependencies: [
                 .product(name: "ShopifyNetwork", package: "shopify-network"),
+                .product(name: "ShopifyAdminNetwork", package: "shopify-network"),
                 .product(name: "Common", package: "Common"),
-                .product(name: "Auth", package: "Auth")
-            ]),
+                .product(name: "Auth", package: "Auth"),
+                .product(name: "StripePayments", package: "stripe-ios")
+            ]
+        ),
         .testTarget(
             name: "PaymentTests",
             dependencies: [

@@ -4,18 +4,16 @@
 //
 //  Created by Mazen Amr on 04/07/2026.
 //
-
 import Foundation
 import SwiftUI
 import Common
 
 public struct PaymentMethodView: View {
-    @State private var selectedMethod: PaymentType = .online
-    @State private var cardNumber: String = ""
-    @State private var expiry: String = ""
-    @State private var cvv: String = ""
+    @StateObject private var viewModel: PaymentMethodViewModel
     
-    public init() {}
+    public init(viewModel: PaymentMethodViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
     
     public var body: some View {
         ScrollView {
@@ -27,17 +25,17 @@ public struct PaymentMethodView: View {
                     .font(.system(size: 20, weight: .bold))
                 
                 HStack(spacing: 12) {
-                    PaymentMethodButton(title: "Online Payment", icon: "creditcard", type: .online, selectedMethod: $selectedMethod)
-                    PaymentMethodButton(title: "Cash on Delivery", icon: "banknote", type: .cod, selectedMethod: $selectedMethod)
+                    PaymentMethodButton(title: "Online Payment", icon: "creditcard", type: .online, selectedMethod: $viewModel.selectedMethod)
+                    PaymentMethodButton(title: "Cash on Delivery", icon: "banknote", type: .cod, selectedMethod: $viewModel.selectedMethod)
                 }
                 
-                if selectedMethod == .online {
+                if viewModel.selectedMethod == .online {
                     VStack(spacing: 16) {
-                        CardInputField(title: "CARD NUMBER", placeholder: "0000 0000 0000 0000", text: $cardNumber, icon: "creditcard")
+                        CardInputField(title: "CARD NUMBER", placeholder: "0000 0000 0000 0000", text: $viewModel.cardNumber, icon: "creditcard")
                         
                         HStack(spacing: 16) {
-                            CardInputField(title: "EXPIRY (MM/YY)", placeholder: "12/26", text: $expiry)
-                            CardInputField(title: "CVV", placeholder: "***", text: $cvv)
+                            CardInputField(title: "EXPIRY (MM/YY)", placeholder: "12/26", text: $viewModel.expiry)
+                            CardInputField(title: "CVV", placeholder: "***", text: $viewModel.cvv)
                         }
                     }
                 }
@@ -55,10 +53,31 @@ public struct PaymentMethodView: View {
         .navigationTitle("Checkout")
         .navigationBarTitleDisplayMode(.inline)
         .safeAreaInset(edge: .bottom) {
-            CheckoutBottomButton(title: "Place Order") {
-             
+            CheckoutBottomButton(title: viewModel.isLoading ? "Processing..." : "Place Order") {
+                Task {
+                    await viewModel.processPayment()
+                }
             }
+            .disabled(viewModel.isLoading)
         }
         .onTapGesture { UIApplication.shared.endEditing() }
+        
+        .alert("Payment Successful! 🎉", isPresented: $viewModel.orderSuccess) {
+            Button("Awesome", role: .cancel) {
+            }
+        } message: {
+            Text("Your order was successfully placed.")
+        }
+        
+        .alert("Payment Failed", isPresented: Binding<Bool>(
+            get: { viewModel.errorMessage != nil },
+            set: { if !$0 { viewModel.errorMessage = nil } }
+        )) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            if let errorMessage = viewModel.errorMessage {
+                Text(errorMessage)
+            }
+        }
     }
 }
