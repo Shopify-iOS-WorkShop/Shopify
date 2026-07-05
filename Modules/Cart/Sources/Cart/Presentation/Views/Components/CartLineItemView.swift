@@ -27,11 +27,15 @@ public struct CartLineItemView: View {
         HStack(alignment: .top, spacing: 12) {
             // Product Image
             if let imageURL = line.imageURL {
-                AsyncImage(url: imageURL) { image in
-                    image.resizable()
+                CachedAsyncImage(url: imageURL) { image in
+                    image
+                        .resizable()
                         .aspectRatio(contentMode: .fill)
                 } placeholder: {
                     Color.gray.opacity(0.2)
+                        .overlay {
+                            ProgressView()
+                        }
                 }
                 .frame(width: 80, height: 80)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
@@ -40,6 +44,10 @@ public struct CartLineItemView: View {
                 RoundedRectangle(cornerRadius: 8)
                     .fill(Color.gray.opacity(0.2))
                     .frame(width: 80, height: 80)
+                    .overlay {
+                        Image(systemName: "photo")
+                            .foregroundColor(.gray)
+                    }
                     .onTapGesture(perform: onProductTap)
             }
             

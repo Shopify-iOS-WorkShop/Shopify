@@ -14,13 +14,12 @@ import ProductListing
 import Settings
 import Favorites
 import search
+import Cart
 
 @Observable
 public final class AppCoordinator {
     public var hasCompletedAuth: Bool = false
 
-    /// Raised when a guest user taps a restricted action (add to cart, wishlist).
-    /// ContentView watches this to present a "Sign In" alert.
     public var showGuestSignInPrompt: Bool = false
 
     public var authCoordinator = AuthCoordinator()
@@ -29,6 +28,7 @@ public final class AppCoordinator {
     public var settingsCoordinator = SettingsCoordinator()
     public var favoritesCoordinator = FavoritesCoordinator()
     public var searchCoordinator = SearchCoordinator()
+    public var cartCoordinator = CartCoordinator()
 
     public init() {
         setupCallbacks()

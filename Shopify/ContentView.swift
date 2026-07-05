@@ -187,23 +187,26 @@ struct ContentView: View {
                 .toolbar(.hidden, for: .tabBar)
 
                 // Cart tab
-                Group {
-                    if let cartViewModel {
-                        CartView(
-                            viewModel: cartViewModel,
-                            onGoShopping: { selectedTab = .home },
-                            onProductTapped: { productId in
-                                let rawId = productId.components(separatedBy: "/").last ?? productId
-                                if let idInt = Int(rawId) {
-                                    appCoordinator.homeCoordinator.push(.productDetail(productId: idInt))
-                                    selectedTab = .home
+                NavigationStack(path: $appCoordinator.cartCoordinator.navigationPath) {
+                    Group {
+                        if let cartViewModel {
+                            CartView(
+                                viewModel: cartViewModel,
+                                onGoShopping: { selectedTab = .home },
+                                onProductTapped: { productId in
+                                    let rawId = productId.components(separatedBy: "/").last ?? productId
+                                    appCoordinator.cartCoordinator.navigationPath.append(
+                                        CartRoute.productDetails(productId: rawId, handle: "")
+                                    )
                                 }
-                            }
-                        )
-                    } else {
-                        ProgressView()
+                            )
+                        } else {
+                            ProgressView()
+                        }
                     }
+                    .navigationDestination(for: CartRoute.self) { cartDestination(for: $0) }
                 }
+                .environment(appCoordinator.cartCoordinator)
                 .tag(Common.Tab.cart)
                 .toolbar(.hidden, for: .tabBar)
 
@@ -389,6 +392,51 @@ struct ContentView: View {
                 )
             )
             .environment(appCoordinator.productListingCoordinator)
+        }
+    }
+
+    @MainActor
+    @ViewBuilder
+    private func cartDestination(for route: CartRoute) -> some View {
+        switch route {
+        case .productDetails(let productId, _):
+            if let idInt = Int(productId) {
+                ProductDetailFactory.makeView(
+                    productId: idInt,
+                    checkIsFavorite: { [weak favoritesViewModel] id in
+                        favoritesViewModel?.isFavorite(productId: id) ?? false
+                    },
+                    onToggleFavorite: { [weak favoritesViewModel] id, title, vendor, price, rating, imageURL in
+                        guard let vm = favoritesViewModel else { return }
+                        if vm.isFavorite(productId: id) {
+                            vm.remove(productId: id)
+                        } else {
+                            vm.add(product: FavoriteProduct(
+                                id: id,
+                                title: title,
+                                vendor: vendor,
+                                price: price,
+                                rating: rating,
+                                imageURL: imageURL.flatMap(URL.init(string:)),
+                                productType: "",
+                                isInStock: true
+                            ))
+                        }
+                    },
+                    onAddToCart: { [cartViewModel] variantId, quantity in
+                        guard sessionStore.current != nil else {
+                            appCoordinator.showGuestSignInPrompt = true
+                            return nil
+                        }
+                        guard let cartViewModel else { return "Cart not initialized" }
+                        return await cartViewModel.addLine(variantId: variantId, quantity: quantity)
+                    }
+                )
+            } else {
+                Text("Invalid product ID")
+            }
+        case .checkout, .signInRequired, .cart:
+            EmptyView()
         }
     }
 

@@ -13,27 +13,25 @@ public struct CartView: View {
     }
     
     public var body: some View {
-        NavigationStack {
-            Group {
-                if viewModel.isLoading && viewModel.cart == nil {
-                    ProgressView("Loading cart...")
-                } else if viewModel.isEmpty {
-                    EmptyCartView(onShopTapped: {
-                        onGoShopping?()
-                    })
-                } else {
-                    cartContentView
-                }
+        Group {
+            if viewModel.isLoading && viewModel.cart == nil {
+                ProgressView("Loading cart...")
+            } else if viewModel.isEmpty {
+                EmptyCartView(onShopTapped: {
+                    onGoShopping?()
+                })
+            } else {
+                cartContentView
             }
-            .navigationTitle("Cart")
-            .toolbar {
-                if !viewModel.isEmpty {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button("Clear") {
-                            viewModel.requestClearCart()
-                        }
-                        .foregroundStyle(.red)
+        }
+        .navigationTitle("Cart")
+        .toolbar {
+            if !viewModel.isEmpty {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Clear") {
+                        viewModel.requestClearCart()
                     }
+                    .foregroundStyle(.red)
                 }
             }
         }
