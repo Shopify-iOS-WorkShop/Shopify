@@ -31,12 +31,6 @@
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>SHOPIFY_API_VERSION</key>
-	<string>2025-01</string>
-	<key>SHOPIFY_HOSTNAME</key>
-	<string>mad46-ios-team5.myshopify.com</string>
-	<key>SHOPIFY_STOREFRONT_TOKEN</key>
-	<string>$(SHOPIFY_STOREFRONT_TOKEN)</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

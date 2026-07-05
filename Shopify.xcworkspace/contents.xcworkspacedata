@@ -5,6 +5,15 @@
       location = "group:Modules/payment">
    </FileRef>
    <FileRef
+      location = "group:Modules/favorites">
+   </FileRef>
+   <FileRef
+      location = "group:Modules/Cart">
+   </FileRef>
+   <FileRef
+      location = "group:Modules/search">
+   </FileRef>
+   <FileRef
       location = "group:Modules/product-details">
    </FileRef>
    <FileRef
@@ -24,6 +33,9 @@
    </FileRef>
    <FileRef
       location = "group:Modules/shopify-network">
+   </FileRef>
+   <FileRef
+      location = "group:Modules/DependencyInjection">
    </FileRef>
    <FileRef
       location = "group:Shopify.xcodeproj">

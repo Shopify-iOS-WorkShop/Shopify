@@ -20,8 +20,9 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/apollographql/apollo-ios.git",
-            .upToNextMajor(from: "1.8.0")
+            from: "2.2.0"
         ),
+        .package(path: "../DependencyInjection")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -30,7 +31,8 @@ let package = Package(
             name: "ShopifyNetwork",
             dependencies: [
                 .product(name: "Apollo", package: "apollo-ios"),
-                .product(name: "ApolloAPI", package: "apollo-ios")
+                .product(name: "ApolloAPI", package: "apollo-ios"),
+                .product(name: "DependencyInjection", package: "DependencyInjection")
             ],
             exclude: ["GraphQL/schema.graphqls"]
         ),
@@ -44,6 +46,10 @@ let package = Package(
         ),
         .testTarget(
             name: "ShopifyNetworkTests",
-            dependencies: ["ShopifyNetwork"]),
+            dependencies: [
+                "ShopifyNetwork",
+                .product(name: "DependencyInjection", package: "DependencyInjection")
+            ]
+        ),
     ]
 )

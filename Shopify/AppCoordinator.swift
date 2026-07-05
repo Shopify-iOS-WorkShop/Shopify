@@ -12,25 +12,33 @@ import Auth
 import Home
 import ProductListing
 import Payment
+import Favorites
+
 @Observable
 public final class AppCoordinator {
     public var hasCompletedAuth: Bool = false
-    
+
     public var authCoordinator = AuthCoordinator()
     public var homeCoordinator = HomeCoordinator()
     public var productListingCoordinator = ProductListingCoordinator()
     public var checkoutAddressCoordinator = CheckoutAddressCoordinator()
+    public var favoritesCoordinator = FavoritesCoordinator()
+
     public init() {
         setupCallbacks()
     }
-    
+
     private func setupCallbacks() {
         authCoordinator.onLoginSuccess = { [weak self] in
             self?.hasCompletedAuth = true
         }
-        
+
         authCoordinator.onContinueAsGuest = { [weak self] in
             self?.hasCompletedAuth = true
+        }
+
+        favoritesCoordinator.onNavigateToDetail = { [weak self] productId in
+            self?.homeCoordinator.push(.productDetail(productId: productId))
         }
     }
 }

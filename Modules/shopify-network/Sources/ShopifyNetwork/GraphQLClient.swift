@@ -26,9 +26,11 @@ public class GraphQLClient: GraphQLClientProtocol {
         
         let cache = InMemoryNormalizedCache()
         let store = ApolloStore(cache: cache)
-        let provider = DefaultInterceptorProvider(store: store)
+        let provider = DefaultInterceptorProvider.shared
         let requestChainTransport = RequestChainNetworkTransport(
+            urlSession: URLSession.shared,
             interceptorProvider: provider,
+            store: store,
             endpointURL: url,
             additionalHeaders: [
                 "X-Shopify-Storefront-Access-Token": ShopifyConfig.storefrontToken,
@@ -41,7 +43,7 @@ public class GraphQLClient: GraphQLClientProtocol {
     
     public func fetch<Query: GraphQLQuery>(query: Query) async throws -> Query.Data {
         return try await withCheckedThrowingContinuation { continuation in
-            apollo.fetch(query: query) { result in
+            apollo.fetch(query: query, cachePolicy: .fetchIgnoringCacheData) { result in
                 switch result {
                 case .success(let graphQLResult):
                     if let errors = graphQLResult.errors, !errors.isEmpty {

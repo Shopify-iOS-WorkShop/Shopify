@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Common
 
 public final class AuthRepository: AuthRepositoryProtocol {
 
@@ -14,15 +15,10 @@ public final class AuthRepository: AuthRepositoryProtocol {
     private let shopifyDataSource: ShopifyCustomerDataSource
     private let sessionLocalDataSource: SessionLocalDataSource
     private let keychainDataSource: KeychainDataSource
+    private let sessionStore: SessionProviding  // SessionStore from Common
 
     public convenience init() {
-        self.init(
-            firebaseDataSource: FirebaseAuthDataSource(),
-            googleDataSource: GoogleSignInDataSource(),
-            shopifyDataSource: ShopifyCustomerDataSource(),
-            sessionLocalDataSource: SessionLocalDataSource(),
-            keychainDataSource: KeychainDataSource()
-        )
+        fatalError("Use DI-injected initializer with SessionStore")
     }
 
     init(
@@ -30,13 +26,15 @@ public final class AuthRepository: AuthRepositoryProtocol {
         googleDataSource: GoogleSignInDataSource = .init(),
         shopifyDataSource: ShopifyCustomerDataSource = .init(),
         sessionLocalDataSource: SessionLocalDataSource = .init(),
-        keychainDataSource: KeychainDataSource = .init()
+        keychainDataSource: KeychainDataSource = .init(),
+        sessionStore: SessionProviding
     ) {
         self.firebaseDataSource = firebaseDataSource
         self.googleDataSource = googleDataSource
         self.shopifyDataSource = shopifyDataSource
         self.sessionLocalDataSource = sessionLocalDataSource
         self.keychainDataSource = keychainDataSource
+        self.sessionStore = sessionStore
     }
 
     public func signIn(email: String, password: String) async -> Result<Session, AuthError> {
@@ -46,18 +44,23 @@ public final class AuthRepository: AuthRepositoryProtocol {
                 credentials: ShopifyCustomerCredentials(email: email, password: password),
                 firebaseUID: user.uid
             )
-            
             let numericId = try await shopifyDataSource.fetchCustomerId(accessToken: tempSession.customerAccessToken)
-            print(numericId)
-            let finalSession = Session(
-                customerAccessToken: tempSession.customerAccessToken,
-                expiresAt: tempSession.expiresAt,
-                customerId: numericId,
-                firebaseUID: user.uid
-            )
-            
-            try sessionLocalDataSource.save(finalSession)
-            return .success(finalSession)
+                        print(numericId)
+                        let finalSession = Session(
+                            customerAccessToken: tempSession.customerAccessToken,
+                            expiresAt: tempSession.expiresAt,
+                            customerId: numericId,
+                            firebaseUID: user.uid
+                        )
+                        
+                        try sessionLocalDataSource.save(finalSession)
+                        
+                        // Update SessionStore for other modules to observe
+                        if let sessionStore = sessionStore as? SessionStore {
+                            sessionStore.updateSession(finalSession.toCommonSession())
+                        }
+                        
+                        return .success(finalSession)
         } catch {
             return .failure(mapError(error))
         }
@@ -82,9 +85,21 @@ public final class AuthRepository: AuthRepositoryProtocol {
                 customerId: customerId
             )
             try sessionLocalDataSource.save(session)
+            
+            // Update SessionStore for other modules to observe
+            if let sessionStore = sessionStore as? SessionStore {
+                sessionStore.updateSession(session.toCommonSession())
+            }
+            
             return .success(session)
         } catch {
             sessionLocalDataSource.clear()
+            
+            // Clear SessionStore on failure
+            if let sessionStore = sessionStore as? SessionStore {
+                sessionStore.clearSession()
+            }
+            
             return .failure(mapError(error))
         }
     }
@@ -109,6 +124,12 @@ public final class AuthRepository: AuthRepositoryProtocol {
                 firebaseUID: socialUser.authUser.uid
             )
             try sessionLocalDataSource.save(session)
+            
+            // Update SessionStore for other modules to observe
+            if let sessionStore = sessionStore as? SessionStore {
+                sessionStore.updateSession(session.toCommonSession())
+            }
+            
             return .success(.existingUser(session))
         } catch {
             return .failure(mapError(error))
@@ -134,6 +155,12 @@ public final class AuthRepository: AuthRepositoryProtocol {
                 )
                 try keychainDataSource.savePassword(password, for: email)
                 try sessionLocalDataSource.save(session)
+                
+                // Update SessionStore for other modules to observe
+                if let sessionStore = sessionStore as? SessionStore {
+                    sessionStore.updateSession(session.toCommonSession())
+                }
+                
                 return .success(session)
 
             } catch AuthError.shopify(let message)
@@ -154,6 +181,12 @@ public final class AuthRepository: AuthRepositoryProtocol {
             }
         } catch {
             sessionLocalDataSource.clear()
+            
+            // Clear SessionStore on failure
+            if let sessionStore = sessionStore as? SessionStore {
+                sessionStore.clearSession()
+            }
+            
             return .failure(mapError(error))
         }
     }
@@ -165,6 +198,12 @@ public final class AuthRepository: AuthRepositoryProtocol {
             }
             try firebaseDataSource.signOut()
             sessionLocalDataSource.clear()
+            
+            // Clear SessionStore for other modules to observe
+            if let sessionStore = sessionStore as? SessionStore {
+                sessionStore.clearSession()
+            }
+            
             return .success(())
         } catch {
             return .failure(mapError(error))
