@@ -13,4 +13,5 @@ public struct ShopifyConfig {
     public static let hostname = "mad46-ios-team5.myshopify.com"
     public static let apiVersion = "2024-01"
     public static let storefrontToken = "8842c04427c5f8a6e967f204266cd8bf"
+    public static let stripeTestKey = "pk_test_51TpkRyE6KCwMz8eNTTPnOMhVTWIIbu9hyShzhJP4OWIzeCfyf3icoLeLHTdAUhz9PyXozovIyZUeUbt9O1xWbnIv00lYLzTmb7"
 }

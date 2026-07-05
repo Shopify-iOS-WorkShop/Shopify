@@ -7,7 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		31091F202FF9941000EA2C1C /* Stripe in Frameworks */ = {isa = PBXBuildFile; productRef = 31091F1F2FF9941000EA2C1C /* Stripe */; };
+		31091F222FF9941000EA2C1C /* StripeApplePay in Frameworks */ = {isa = PBXBuildFile; productRef = 31091F212FF9941000EA2C1C /* StripeApplePay */; };
+		31091F322FF9941000EA2C1C /* StripePayments in Frameworks */ = {isa = PBXBuildFile; productRef = 31091F312FF9941000EA2C1C /* StripePayments */; };
 		31170F7A2FF7EA880017293F /* Payment in Frameworks */ = {isa = PBXBuildFile; productRef = 31170F792FF7EA880017293F /* Payment */; };
+		315646272FFA70F6005620F2 /* ShopifyAdminNetwork in Frameworks */ = {isa = PBXBuildFile; productRef = 315646262FFA70F6005620F2 /* ShopifyAdminNetwork */; };
 		31A157822FF01A740080AC8E /* Home in Frameworks */ = {isa = PBXBuildFile; productRef = 31A157812FF01A740080AC8E /* Home */; };
 		31B58BB52FF4433600845705 /* ProductDetails in Frameworks */ = {isa = PBXBuildFile; productRef = 31B58BB42FF4433600845705 /* ProductDetails */; };
 		31D979212FF74DCE00FA3DD4 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31D979202FF74DCE00FA3DD4 /* AppCoordinator.swift */; };
@@ -43,6 +47,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				31091F202FF9941000EA2C1C /* Stripe in Frameworks */,
 				31A157822FF01A740080AC8E /* Home in Frameworks */,
 				31FB03F32FF2FD2F00EE8817 /* ProductListing in Frameworks */,
 				6DD877782FF15EF500D94255 /* Common in Frameworks */,
@@ -50,11 +55,14 @@
 				6DB16D8B2FF537B6004925EF /* ApolloAPI in Frameworks */,
 				6DB16D892FF537B6004925EF /* Apollo in Frameworks */,
 				C47A3B2A2FF1C30E00857006 /* Auth in Frameworks */,
+				315646272FFA70F6005620F2 /* ShopifyAdminNetwork in Frameworks */,
+				31091F322FF9941000EA2C1C /* StripePayments in Frameworks */,
 				6DB16D8F2FF54133004925EF /* ShopifyNetwork in Frameworks */,
 				31B58BB52FF4433600845705 /* ProductDetails in Frameworks */,
 				31170F7A2FF7EA880017293F /* Payment in Frameworks */,
 				C47A3B2D2FF1CB6F00857006 /* FirebaseAuth in Frameworks */,
 				C47A3B322FF1CBC600857006 /* GoogleSignIn in Frameworks */,
+				31091F222FF9941000EA2C1C /* StripeApplePay in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -136,6 +144,10 @@
 				6DB16D8A2FF537B6004925EF /* ApolloAPI */,
 				6DB16D8E2FF54133004925EF /* ShopifyNetwork */,
 				31170F792FF7EA880017293F /* Payment */,
+				31091F1F2FF9941000EA2C1C /* Stripe */,
+				31091F212FF9941000EA2C1C /* StripeApplePay */,
+				31091F312FF9941000EA2C1C /* StripePayments */,
+				315646262FFA70F6005620F2 /* ShopifyAdminNetwork */,
 			);
 			productName = Shopify;
 			productReference = 78BFEC872FEFCB6800358550 /* Shopify.app */;
@@ -169,6 +181,7 @@
 				C47A3B2B2FF1CB6F00857006 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				C47A3B302FF1CBC600857006 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 				6DB16D872FF537B6004925EF /* XCRemoteSwiftPackageReference "apollo-ios" */,
+				31091F1E2FF9941000EA2C1C /* XCRemoteSwiftPackageReference "stripe-ios" */,
 			);
 			productRefGroup = 78BFEC882FEFCB6800358550 /* Products */;
 			projectDirPath = "";
@@ -406,6 +419,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		31091F1E2FF9941000EA2C1C /* XCRemoteSwiftPackageReference "stripe-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/stripe/stripe-ios";
+			requirement = {
+				kind = exactVersion;
+				version = 24.0.0;
+			};
+		};
 		6DB16D872FF537B6004925EF /* XCRemoteSwiftPackageReference "apollo-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apollographql/apollo-ios.git";
@@ -433,9 +454,28 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		31091F1F2FF9941000EA2C1C /* Stripe */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 31091F1E2FF9941000EA2C1C /* XCRemoteSwiftPackageReference "stripe-ios" */;
+			productName = Stripe;
+		};
+		31091F212FF9941000EA2C1C /* StripeApplePay */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 31091F1E2FF9941000EA2C1C /* XCRemoteSwiftPackageReference "stripe-ios" */;
+			productName = StripeApplePay;
+		};
+		31091F312FF9941000EA2C1C /* StripePayments */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 31091F1E2FF9941000EA2C1C /* XCRemoteSwiftPackageReference "stripe-ios" */;
+			productName = StripePayments;
+		};
 		31170F792FF7EA880017293F /* Payment */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Payment;
+		};
+		315646262FFA70F6005620F2 /* ShopifyAdminNetwork */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ShopifyAdminNetwork;
 		};
 		31A157812FF01A740080AC8E /* Home */ = {
 			isa = XCSwiftPackageProductDependency;
