@@ -111,7 +111,7 @@ public struct FavoritesView: View {
                 .listRowSeparator(.hidden)
                 .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                     Button(role: .destructive) {
-                        // Swipe to delete — confirm before deleting
+                      
                         pendingDeleteId = product.id
                         showDeleteAlert = true
                     } label: {
