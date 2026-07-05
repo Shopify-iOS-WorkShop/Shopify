@@ -1,5 +1,27 @@
 import Foundation
 
+// MARK: - Filter
+
+public enum SearchSortOption: String, CaseIterable, Identifiable, Sendable {
+    case relevance  = "Relevance"
+    case priceLow   = "Price: Low to High"
+    case priceHigh  = "Price: High to Low"
+
+    public var id: String { rawValue }
+}
+
+public struct SearchFilter: Equatable, Sendable {
+    public var sortBy: SearchSortOption = .relevance
+    public var onlyAvailable: Bool = false
+    public var vendor: String? = nil          // nil = all vendors
+
+    public var isActive: Bool {
+        sortBy != .relevance || onlyAvailable || vendor != nil
+    }
+}
+
+// MARK: - Models
+
 public struct SearchProductVariant: Identifiable, Sendable {
     public let id: String
     public let title: String
@@ -7,8 +29,15 @@ public struct SearchProductVariant: Identifiable, Sendable {
     public let quantityAvailable: Int?
     public let price: String
     public let currencyCode: String
-    
-    public init(id: String, title: String, availableForSale: Bool, quantityAvailable: Int?, price: String, currencyCode: String) {
+
+    public init(
+        id: String,
+        title: String,
+        availableForSale: Bool,
+        quantityAvailable: Int?,
+        price: String,
+        currencyCode: String
+    ) {
         self.id = id
         self.title = title
         self.availableForSale = availableForSale
@@ -25,11 +54,20 @@ public struct SearchProduct: Identifiable, Sendable {
     public let price: String
     public let currencyCode: String
     public let imageUrl: URL?
-    
+
     public var availableForSale: Bool
     public var variants: [SearchProductVariant]
-    
-    public init(id: String, title: String, vendor: String, price: String, currencyCode: String, imageUrl: URL?, availableForSale: Bool = true, variants: [SearchProductVariant] = []) {
+
+    public init(
+        id: String,
+        title: String,
+        vendor: String,
+        price: String,
+        currencyCode: String,
+        imageUrl: URL?,
+        availableForSale: Bool = true,
+        variants: [SearchProductVariant] = []
+    ) {
         self.id = id
         self.title = title
         self.vendor = vendor
@@ -46,7 +84,7 @@ public struct SearchCollection: Identifiable, Sendable {
     public let title: String
     public let handle: String
     public let imageUrl: URL?
-    
+
     public init(id: String, title: String, handle: String, imageUrl: URL?) {
         self.id = id
         self.title = title
@@ -58,7 +96,7 @@ public struct SearchCollection: Identifiable, Sendable {
 public struct PageInfo: Sendable {
     public let hasNextPage: Bool
     public let endCursor: String?
-    
+
     public init(hasNextPage: Bool, endCursor: String?) {
         self.hasNextPage = hasNextPage
         self.endCursor = endCursor

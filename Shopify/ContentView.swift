@@ -21,6 +21,7 @@ import Cart
 struct ContentView: View {
     @State private var appCoordinator = AppCoordinator()
     @StateObject private var favoritesViewModel = AppAssembly.shared.makeFavoritesViewModel()
+    @StateObject private var searchViewModel = AppAssembly.shared.makeSearchViewModel()
     @State private var sessionChecked: Bool = false
     @State private var selectedTab: Common.Tab = .home
     @State private var cartViewModel: CartViewModel? = nil  // Initialize after session restore
@@ -108,9 +109,15 @@ struct ContentView: View {
                 .toolbar(.hidden, for: .tabBar)
 
                 // Search tab
-                SearchView()
-                    .tag(Common.Tab.search)
-                    .toolbar(.hidden, for: .tabBar)
+                NavigationStack(path: $appCoordinator.searchCoordinator.path) {
+                    SearchView(viewModel: searchViewModel)
+                        .navigationDestination(for: SearchRoute.self) { route in
+                            searchDestination(for: route)
+                        }
+                }
+                .environment(appCoordinator.searchCoordinator)
+                .tag(Common.Tab.search)
+                .toolbar(.hidden, for: .tabBar)
 
                 // Cart tab
                 if let cartViewModel {
@@ -272,7 +279,52 @@ struct ContentView: View {
             )
         }
     }
-    
+
+    @MainActor
+    @ViewBuilder
+    private func searchDestination(for route: SearchRoute) -> some View {
+        switch route {
+        case .productDetail(let productId):
+            ProductDetailFactory.makeView(
+                productId: productId,
+                checkIsFavorite: { [weak favoritesViewModel] id in
+                    favoritesViewModel?.isFavorite(productId: id) ?? false
+                },
+                onToggleFavorite: { [weak favoritesViewModel] id, title, vendor, price, rating, imageURL in
+                    guard let vm = favoritesViewModel else { return }
+                    if vm.isFavorite(productId: id) {
+                        vm.remove(productId: id)
+                    } else {
+                        vm.add(product: FavoriteProduct(
+                            id: id,
+                            title: title,
+                            vendor: vendor,
+                            price: price,
+                            rating: rating,
+                            imageURL: imageURL.flatMap(URL.init(string:)),
+                            productType: "",
+                            isInStock: true
+                        ))
+                    }
+                },
+                onAddToCart: { [cartViewModel] variantId, quantity in
+                    guard let cartViewModel else { return "Cart not initialized" }
+                    return await cartViewModel.addLine(variantId: variantId, quantity: quantity)
+                }
+            )
+        case .productListing(let collectionId, let title):
+            let context: ListingContext = .collection(id: collectionId, title: title)
+            ProductListingView(
+                title: title,
+                viewModel: ProductListingViewModel(
+                    context: context,
+                    repository: ProductListingRepository(networkClient: URLSessionNetworkClient())
+                )
+            )
+            .environment(appCoordinator.productListingCoordinator)
+        }
+    }
+
     // MARK: - Session Restoration
     
     @MainActor
