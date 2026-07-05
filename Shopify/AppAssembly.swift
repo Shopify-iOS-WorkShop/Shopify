@@ -17,6 +17,7 @@ import Home
 import ProductDetails
 import ProductListing
 import ShopifyNetwork
+import Favorites
 
 class AppAssembly {
     static let shared = AppAssembly()
@@ -51,6 +52,7 @@ class AppAssembly {
         HomeAssembly().assemble(container: container)
         ProductDetailsAssembly().assemble(container: container)
         ProductListingAssembly().assemble(container: container)
+        FavoritesAssembly().assemble(container: container)
     }
     
     
@@ -63,5 +65,10 @@ class AppAssembly {
     
     func resolveOptional<T>(_ type: T.Type) -> T? {
         return container.resolve(type)
+    }
+
+    @MainActor
+    func makeFavoritesViewModel() -> FavoritesViewModel {
+        FavoritesFactory.makeViewModel(container: container)
     }
 }

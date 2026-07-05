@@ -5,8 +5,17 @@ public struct HomeView: View {
     @ObservedObject var viewModel: HomeViewModel
     @Environment(HomeCoordinator.self) private var coordinator
 
-    public init(viewModel: HomeViewModel) {
+    public var favoritedIDs: Set<String>
+    public var onFavoriteTap: ((Product) -> Void)?
+
+    public init(
+        viewModel: HomeViewModel,
+        favoritedIDs: Set<String> = [],
+        onFavoriteTap: ((Product) -> Void)? = nil
+    ) {
         self.viewModel = viewModel
+        self.favoritedIDs = favoritedIDs
+        self.onFavoriteTap = onFavoriteTap
     }
 
     public var body: some View {
@@ -33,13 +42,17 @@ public struct HomeView: View {
                     SectionHeaderView(title: "Best Sellers", hasViewAll: true) {
                         coordinator.push(.productListing(collectionId: nil, title: "All Products"))
                     }
-                    
+
                     if viewModel.isLoading {
                         ProgressView("Loading products...")
                             .frame(maxWidth: .infinity, alignment: .center)
                     } else {
-                        BestSellersGridView(products: viewModel.bestSellers)
-                            .padding(.horizontal, 16)
+                        BestSellersGridView(
+                            products: viewModel.bestSellers,
+                            favoritedIDs: favoritedIDs,
+                            onFavoriteTap: onFavoriteTap
+                        )
+                        .padding(.horizontal, 16)
                     }
 
                     Spacer(minLength: 24)

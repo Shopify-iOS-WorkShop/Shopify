@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		31D979212FF74DCE00FA3DD4 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31D979202FF74DCE00FA3DD4 /* AppCoordinator.swift */; };
 		39EBC5CB2FF5B303009F5DA1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 39EBC5CA2FF5B303009F5DA1 /* GoogleService-Info.plist */; };
+		6D06F6F52FF946280034F8D9 /* Favorites in Frameworks */ = {isa = PBXBuildFile; productRef = 6D06F6F42FF946280034F8D9 /* Favorites */; };
 		6D0B9DA62FF8177400F50859 /* Auth in Frameworks */ = {isa = PBXBuildFile; productRef = 6D0B9DA52FF8177400F50859 /* Auth */; };
 		6D0B9DA82FF8177B00F50859 /* Common in Frameworks */ = {isa = PBXBuildFile; productRef = 6D0B9DA72FF8177B00F50859 /* Common */; };
 		6D0B9DAA2FF8178300F50859 /* DataPersistence in Frameworks */ = {isa = PBXBuildFile; productRef = 6D0B9DA92FF8178300F50859 /* DataPersistence */; };
@@ -45,6 +46,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6D0B9DA62FF8177400F50859 /* Auth in Frameworks */,
+				6D06F6F52FF946280034F8D9 /* Favorites in Frameworks */,
 				6D0B9DB02FF8179800F50859 /* ProductListing in Frameworks */,
 				6D0B9DB22FF817A100F50859 /* ShopifyNetwork in Frameworks */,
 				78DCBFF82FF8218100C552AF /* Cart in Frameworks */,
@@ -135,7 +137,11 @@
 				6D0B9DB12FF817A100F50859 /* ShopifyNetwork */,
 				6D0B9DB32FF817AC00F50859 /* GoogleSignIn */,
 				6D0B9DB52FF817B500F50859 /* FirebaseAnalytics */,
+
+				6D06F6F42FF946280034F8D9 /* Favorites */,
+
 				78DCBFF72FF8218100C552AF /* Cart */,
+
 			);
 			productName = Shopify;
 			productReference = 78BFEC872FEFCB6800358550 /* Shopify.app */;
@@ -425,6 +431,10 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		6D06F6F42FF946280034F8D9 /* Favorites */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Favorites;
+		};
 		6D0B9DA52FF8177400F50859 /* Auth */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Auth;
