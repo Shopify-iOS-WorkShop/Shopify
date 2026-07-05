@@ -7,11 +7,11 @@ import Auth
 import Cart
 import Firebase
 import GoogleSignIn
+import Favorites
 
 @main
 struct ShopifyApp: App {
     
-    // SwiftData ModelContainer - shared across the app
     let modelContainer: ModelContainer
     
     init() {
@@ -20,9 +20,9 @@ struct ShopifyApp: App {
         }
         
         do {
-            // Register all @Model types from modules
             let schema = Schema([
-                CartRecord.self  // Cart module SwiftData model
+                FavoriteItem.self,
+                CartRecord.self
             ])
             let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
             modelContainer = try ModelContainer(for: schema, configurations: [modelConfiguration])
@@ -30,7 +30,6 @@ struct ShopifyApp: App {
             fatalError("Could not create ModelContainer: \(error)")
         }
         
-        // Initialize DI with ModelContext
         _ = AppAssembly.shared.setup(with: modelContainer.mainContext)
     }
 

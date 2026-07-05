@@ -13,6 +13,7 @@ public class HomeViewModel: ObservableObject {
     @Published public var bestSellers: [Product] = []
     @Published public var brands: [Brand] = []
     @Published public var categories: [Category] = []
+    @Published public var ads: [Ad] = [Ad.fallback]
     @Published public var isLoading: Bool = false
     @Published public var errorMessage: String?
     
@@ -59,6 +60,17 @@ public class HomeViewModel: ObservableObject {
         } catch {
             messages.append("Categories: \(error.localizedDescription)")
             print("Error fetching home categories: \(error)")
+        }
+
+        do {
+            let fetchedAds = try await repository.fetchAds()
+            // Never leave the carousel empty — fall back to a static promo
+            // so the Home screen always has something to show.
+            ads = fetchedAds.isEmpty ? [Ad.fallback] : fetchedAds
+        } catch {
+            messages.append("Ads: \(error.localizedDescription)")
+            print("Error fetching home ads: \(error)")
+            ads = [Ad.fallback]
         }
 
         errorMessage = messages.isEmpty ? nil : messages.joined(separator: "\n")

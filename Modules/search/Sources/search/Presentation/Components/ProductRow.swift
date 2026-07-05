@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ProductRow: View {
     let product: SearchProduct
+    var onTap: ((SearchProduct) -> Void)?
 
     var body: some View {
         HStack(spacing: 14) {
@@ -64,5 +65,7 @@ struct ProductRow: View {
             RoundedRectangle(cornerRadius: 16, style: .continuous)
                 .stroke(Color.black.opacity(0.05), lineWidth: 1)
         )
+        .contentShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .onTapGesture { onTap?(product) }
     }
 }

@@ -115,9 +115,23 @@ navButton(systemName: "chevron.left", action: onBack)
 
 Spacer()
 
-navButton(systemName: "heart\(isFavorite ? ".fill" : "")", action: onFavorite)
+Button(action: onFavorite) {
 
-.foregroundColor(isFavorite ? .pink : .primary)
+Image(systemName: isFavorite ? "heart.fill" : "heart")
+
+.font(.system(size: 14, weight: .semibold))
+
+.foregroundColor(isFavorite ? .red : .red.opacity(0.5))
+
+.frame(width: 38, height: 38)
+
+.background(Color(.systemBackground))
+
+.clipShape(RoundedRectangle(cornerRadius: 12))
+
+.shadow(color: .black.opacity(0.08), radius: 4, y: 2)
+
+}
 
 }
 
