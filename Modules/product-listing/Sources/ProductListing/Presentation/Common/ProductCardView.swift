@@ -7,9 +7,11 @@
 
 import Foundation
 import SwiftUI
+import Common
 
 public struct ProductCardView: View {
     public let product: Product
+    @Environment(CurrencyStore.self) private var currencyStore
     @State private var isWishlisted = false
     
     public var body: some View {
@@ -71,7 +73,7 @@ public struct ProductCardView: View {
                     .fixedSize(horizontal: false, vertical: true)
                 
                 HStack(spacing: 4) {
-                    Text("$\(String(format: "%.2f", product.price))")
+                    Text(currencyStore.convert(product.price))
                         .font(.system(size: 13, weight: .bold))
                         .foregroundColor(DS.textPri)
                     

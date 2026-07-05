@@ -1,6 +1,6 @@
 //
-//  File.swift
-//  
+//  BestSellersGridView.swift
+//
 //
 //  Created by Mazen Amr on 27/06/2026.
 //
@@ -10,12 +10,12 @@ import SwiftUI
 
 public struct BestSellersGridView: View {
     public let products: [Product]
-    @Environment(HomeCoordinator.self) private var coordinator
-    private let columns = [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)]
-
     public init(products: [Product]) {
         self.products = products
     }
+
+    @Environment(HomeCoordinator.self) private var coordinator
+    private let columns = [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)]
 
     public var body: some View {
         LazyVGrid(columns: columns, spacing: 12) {
@@ -30,4 +30,3 @@ public struct BestSellersGridView: View {
         }
     }
 }
-

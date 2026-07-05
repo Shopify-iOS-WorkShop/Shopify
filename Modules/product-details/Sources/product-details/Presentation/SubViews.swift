@@ -1,4 +1,5 @@
 import SwiftUI
+import Common
 
 
 
@@ -198,6 +199,8 @@ let reviewCount: Int
 
 let price: Double
 
+@Environment(CurrencyStore.self) private var currencyStore
+
 
 
 var body: some View {
@@ -240,7 +243,7 @@ Text("(\(reviewCount) Reviews)")
 
 
 
-Text("$\(String(format: "%.2f", price))")
+Text(currencyStore.convert(price))
 
 .font(.title)
 

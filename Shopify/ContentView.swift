@@ -40,6 +40,8 @@ struct ContentView: View {
 
     private let repository: AuthRepositoryProtocol = AuthRepositoryFactory.make()
     private let sessionStore: SessionStore         = AppAssembly.shared.resolve(SessionStore.self)
+    /// Shared observable currency state — injected into all screens via environment.
+    private let currencyStore: CurrencyStore       = AppAssembly.shared.resolve(CurrencyStore.self)
 
     // MARK: - Helpers
 
@@ -184,6 +186,7 @@ struct ContentView: View {
                     .tag(Common.Tab.account)
                     .toolbar(.hidden, for: .tabBar)
             }
+            .environment(currencyStore) // Available globally to all tabs
             .toolbar(.hidden, for: .tabBar)
 
             CustomTabBar(
@@ -260,8 +263,9 @@ struct ContentView: View {
     private func restoreSession() async {
         guard let session = repository.currentSession(), session.isValid else {
             sessionStore.clearSession()
-            // Guest mode: onChange fires when hasCompletedAuth → true
-            appCoordinator.hasCompletedAuth = true
+            // No valid session — show the Login screen.
+            // hasCompletedAuth stays false (its default), so authFlow is displayed.
+            // The user can log in or tap "Continue as Guest" from the Login screen.
             return
         }
         sessionStore.updateSession(session.toCommonSession())

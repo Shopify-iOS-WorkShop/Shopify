@@ -14,7 +14,8 @@ let package = Package(
     ]
     ,dependencies: [
         .package(path: "../shopify-network"),
-        .package(path: "../DependencyInjection")
+        .package(path: "../DependencyInjection"),
+        .package(path: "../Common")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -23,7 +24,8 @@ let package = Package(
             name: "ProductListing",
             dependencies: [
                 .product(name: "ShopifyNetwork", package: "shopify-network"),
-                .product(name: "DependencyInjection", package: "DependencyInjection")
+                .product(name: "DependencyInjection", package: "DependencyInjection"),
+                .product(name: "Common", package: "Common")
             ]),
         .testTarget(
             name: "ProductListingTests",

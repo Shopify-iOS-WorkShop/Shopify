@@ -1,8 +1,13 @@
 import SwiftUI
+import Common
 
 public struct HomeView: View {
     @ObservedObject var viewModel: HomeViewModel
     @Environment(HomeCoordinator.self) private var coordinator
+    /// Shared currency store injected via .environment() in ContentView.
+    /// HomeView observes it directly — any currency change causes a re-render,
+    /// updating product prices across the entire home screen instantly.
+    @Environment(CurrencyStore.self) private var currencyStore
 
     public init(viewModel: HomeViewModel) {
         self.viewModel = viewModel
@@ -35,8 +40,10 @@ public struct HomeView: View {
                         ProgressView("Loading products...")
                             .frame(maxWidth: .infinity, alignment: .center)
                     } else {
-                        BestSellersGridView(products: viewModel.bestSellers)
-                            .padding(.horizontal, 16)
+                        BestSellersGridView(
+                            products: viewModel.bestSellers
+                        )
+                        .padding(.horizontal, 16)
                     }
 
                     Spacer(minLength: 24)

@@ -24,9 +24,9 @@ struct CustomerQueryContainer: Decodable {
 
 struct CustomerDTO: Decodable {
     let id: String
-    let firstName: String
-    let lastName: String
-    let email: String
+    let firstName: String?
+    let lastName: String?
+    let email: String?
     let phone: String?
     let defaultAddress: AddressDTO?
     let orders: OrderConnectionDTO
@@ -34,11 +34,11 @@ struct CustomerDTO: Decodable {
 
 struct AddressDTO: Decodable {
     let id: String
-    let firstName: String
-    let lastName: String
-    let address1: String
-    let city: String
-    let country: String
+    let firstName: String?
+    let lastName: String?
+    let address1: String?
+    let city: String?
+    let country: String?
     let phone: String?
 }
 
@@ -113,20 +113,20 @@ extension CustomerDTO {
         let address = defaultAddress.map { a in
             CustomerAddress(
                 id: a.id,
-                firstName: a.firstName,
-                lastName: a.lastName,
-                address1: a.address1,
-                city: a.city,
-                country: a.country,
+                firstName: a.firstName ?? "",
+                lastName: a.lastName ?? "",
+                address1: a.address1 ?? "",
+                city: a.city ?? "",
+                country: a.country ?? "",
                 phone: a.phone
             )
         }
 
         return CustomerProfile(
             id: id,
-            firstName: firstName,
-            lastName: lastName,
-            email: email,
+            firstName: firstName ?? "",
+            lastName: lastName ?? "",
+            email: email ?? "",
             phone: phone,
             defaultAddress: address,
             recentOrders: orders

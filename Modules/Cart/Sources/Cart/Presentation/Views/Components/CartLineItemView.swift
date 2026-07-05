@@ -7,6 +7,7 @@ public struct CartLineItemView: View {
     let onDecrease: () -> Void
     let onRemove: () -> Void
     let onProductTap: () -> Void
+    @Environment(CurrencyStore.self) private var currencyStore
     
     public init(
         line: CartLine,
@@ -67,11 +68,11 @@ public struct CartLineItemView: View {
                 
                 // Price
                 HStack {
-                    Text(line.price.formatted)
+                    Text(currencyStore.convert(line.price.amount))
                         .fontWeight(.bold)
                     
                     if let compareAt = line.compareAtPrice, compareAt.amount > line.price.amount {
-                        Text(compareAt.formatted)
+                        Text(currencyStore.convert(compareAt.amount))
                             .strikethrough()
                             .foregroundColor(.secondary)
                             .font(.caption)

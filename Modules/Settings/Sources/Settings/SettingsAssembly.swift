@@ -54,7 +54,8 @@ public class SettingsAssembly: DIAssembly {
             SettingsViewModel(
                 getProfileUseCase: resolver.resolve(GetCustomerProfileUseCase.self)!,
                 getExchangeRatesUseCase: resolver.resolve(GetExchangeRatesUseCase.self)!,
-                sessionStore: resolver.resolve(SessionProviding.self)!  // required for isGuest
+                sessionStore: resolver.resolve(SessionProviding.self)!,  // required for isGuest
+                currencyStore: resolver.resolve(CurrencyStore.self)!     // shared currency state
             )
         }
     }
