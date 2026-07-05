@@ -18,6 +18,7 @@ import ProductDetails
 import ProductListing
 import ShopifyNetwork
 import Favorites
+import search
 
 class AppAssembly {
     static let shared = AppAssembly()
@@ -53,6 +54,7 @@ class AppAssembly {
         ProductDetailsAssembly().assemble(container: container)
         ProductListingAssembly().assemble(container: container)
         FavoritesAssembly().assemble(container: container)
+        SearchAssembly().assemble(container: container)
     }
     
     
@@ -70,5 +72,10 @@ class AppAssembly {
     @MainActor
     func makeFavoritesViewModel() -> FavoritesViewModel {
         FavoritesFactory.makeViewModel(container: container)
+    }
+
+    @MainActor
+    func makeSearchViewModel() -> SearchViewModel {
+        SearchFactory.makeViewModel(container: container)
     }
 }
