@@ -20,7 +20,6 @@ import Settings
 
 struct ContentView: View {
 
-    // MARK: - State
 
     @State private var appCoordinator = AppCoordinator()
     @StateObject private var favoritesViewModel = AppAssembly.shared.makeFavoritesViewModel()
@@ -29,11 +28,9 @@ struct ContentView: View {
     @State private var selectedTab: Common.Tab = .home
     @State private var cartViewModel: CartViewModel? = nil
 
-    /// Mirrors AppStorage("settings_colorScheme") so the WHOLE app reacts
-    /// immediately when the user changes the theme in Settings.
+   
     @AppStorage("settings_colorScheme") private var colorSchemeRaw: Int = 0
 
-    // MARK: - Singletons from DI
 
     @StateObject private var homeViewModel: HomeViewModel =
         AppAssembly.shared.resolve(HomeViewModel.self)
@@ -44,7 +41,6 @@ struct ContentView: View {
     private let repository: AuthRepositoryProtocol = AuthRepositoryFactory.make()
     private let sessionStore: SessionStore         = AppAssembly.shared.resolve(SessionStore.self)
 
-    // MARK: - Helpers
 
     private var preferredColorScheme: ColorScheme? {
         switch colorSchemeRaw {
@@ -54,7 +50,6 @@ struct ContentView: View {
         }
     }
 
-    // MARK: - Body
 
     var body: some View {
         Group {
@@ -66,33 +61,25 @@ struct ContentView: View {
                 mainFlow
             }
         }
-        // Theme applied to the entire app; updates instantly via @AppStorage
         .preferredColorScheme(preferredColorScheme)
 
-        // ── Session restore on launch ─────────────────────────────────
         .task {
             await restoreSession()
             sessionChecked = true
         }
 
-        // ── Wire coordinator callbacks (runs once) ────────────────────
         .onAppear {
             appCoordinator.productListingCoordinator.onNavigate = { [weak appCoordinator] route in
                 if case .productDetail(let id) = route {
                     appCoordinator?.homeCoordinator.push(.productDetail(productId: id))
                 }
             }
-<<<<<<< HEAD
 
-            appCoordinator.homeCoordinator.onCartTapped = { [self] in
-=======
-            
             // Load setup for favorites
             favoritesViewModel.loadFavorites()
             
             // Wire cart icon tap in Home → switch to Cart tab
-            appCoordinator.homeCoordinator.onCartTapped = {
->>>>>>> origin/task/merge
+            appCoordinator.homeCoordinator.onCartTapped = { [self] in
                 selectedTab = .cart
             }
 
@@ -147,11 +134,7 @@ struct ContentView: View {
         }
     }
 
-<<<<<<< HEAD
     // MARK: - Auth Flow
-=======
-    // MARK: - Auth flow
->>>>>>> origin/task/merge
 
     @MainActor
     private var authFlow: some View {
@@ -162,22 +145,12 @@ struct ContentView: View {
         .environment(appCoordinator.authCoordinator)
     }
 
-<<<<<<< HEAD
     // MARK: - Main Tab Flow
-=======
-    // MARK: - Main flow
->>>>>>> origin/task/merge
 
     @MainActor
     private var mainFlow: some View {
         VStack(spacing: 0) {
             TabView(selection: $selectedTab) {
-<<<<<<< HEAD
-
-                NavigationStack(path: $appCoordinator.homeCoordinator.path) {
-                    HomeView(viewModel: homeViewModel)
-                        .navigationDestination(for: HomeRoute.self) { homeDestination(for: $0) }
-=======
                 // Home tab
                 NavigationStack(path: $appCoordinator.homeCoordinator.path) {
                     HomeView(
@@ -198,20 +171,22 @@ struct ContentView: View {
                             )
                         }
                     )
-                    .navigationDestination(for: HomeRoute.self) { route in
-                        homeDestination(for: route)
-                    }
->>>>>>> origin/task/merge
+                    .navigationDestination(for: HomeRoute.self) { homeDestination(for: $0) }
                 }
                 .environment(appCoordinator.homeCoordinator)
                 .tag(Common.Tab.home)
                 .toolbar(.hidden, for: .tabBar)
 
-<<<<<<< HEAD
-                SearchView()
-                    .tag(Common.Tab.search)
-                    .toolbar(.hidden, for: .tabBar)
+                // Search tab
+                NavigationStack(path: $appCoordinator.searchCoordinator.path) {
+                    SearchView(viewModel: searchViewModel)
+                        .navigationDestination(for: SearchRoute.self) { searchDestination(for: $0) }
+                }
+                .environment(appCoordinator.searchCoordinator)
+                .tag(Common.Tab.search)
+                .toolbar(.hidden, for: .tabBar)
 
+                // Cart tab
                 Group {
                     if let cartViewModel {
                         CartView(viewModel: cartViewModel, onGoShopping: { selectedTab = .home })
@@ -222,54 +197,17 @@ struct ContentView: View {
                 .tag(Common.Tab.cart)
                 .toolbar(.hidden, for: .tabBar)
 
-                Text("Wishlist View")
-                    .tag(Common.Tab.wishlist)
-                    .toolbar(.hidden, for: .tabBar)
-
-                SettingsView(viewModel: settingsViewModel)
-                    .environment(appCoordinator.settingsCoordinator)
-=======
-                // Search tab
-                NavigationStack(path: $appCoordinator.searchCoordinator.path) {
-                    SearchView(viewModel: searchViewModel)
-                        .navigationDestination(for: SearchRoute.self) { route in
-                            searchDestination(for: route)
-                        }
-                }
-                .environment(appCoordinator.searchCoordinator)
-                .tag(Common.Tab.search)
-                .toolbar(.hidden, for: .tabBar)
-
-                // Cart tab
-                if let cartViewModel {
-                    CartView(
-                        viewModel: cartViewModel,
-                        onGoShopping: {
-                            selectedTab = .home
-                        }
-                    )
-                    .tag(Common.Tab.cart)
-                    .toolbar(.hidden, for: .tabBar)
-                } else {
-                    ProgressView()
-                        .tag(Common.Tab.cart)
-                        .toolbar(.hidden, for: .tabBar)
-                }
-
-                // Wishlist tab
                 NavigationStack(path: $appCoordinator.favoritesCoordinator.path) {
                     FavoritesView(viewModel: favoritesViewModel)
-                        .navigationDestination(for: FavoritesRoute.self) { route in
-                            favoritesDestination(for: route)
-                        }
+                        .navigationDestination(for: FavoritesRoute.self) { favoritesDestination(for: $0) }
                 }
                 .environment(appCoordinator.favoritesCoordinator)
                 .tag(Common.Tab.wishlist)
                 .toolbar(.hidden, for: .tabBar)
 
                 // Account tab
-                Text("Account View")
->>>>>>> origin/task/merge
+                SettingsView(viewModel: settingsViewModel)
+                    .environment(appCoordinator.settingsCoordinator)
                     .tag(Common.Tab.account)
                     .toolbar(.hidden, for: .tabBar)
             }
@@ -288,7 +226,6 @@ struct ContentView: View {
         .ignoresSafeArea(.keyboard, edges: .bottom)
     }
 
-    // MARK: - Route Destinations
 
     @MainActor @ViewBuilder
     private func authDestination(for route: AuthRoute) -> some View {
