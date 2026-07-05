@@ -1,7 +1,7 @@
 import Foundation
 import SwiftData
 
-/// SwiftData persistent model representing a favorited product.
+
 @Model
 public final class FavoriteItem {
     @Attribute(.unique) public var productId: String
