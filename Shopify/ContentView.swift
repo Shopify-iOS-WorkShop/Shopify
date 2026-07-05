@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Auth
+import Address
 import Common
 import Home
 import search
@@ -139,9 +140,13 @@ struct ContentView: View {
                 .toolbar(.hidden, for: .tabBar)
 
                 // Account tab
-                Text("Account View")
-                    .tag(Common.Tab.account)
-                    .toolbar(.hidden, for: .tabBar)
+//                Text("Account View").tag(Common.Tab.account).toolbar(.hidden, for: .tabBar)
+                AddressFlowView(
+                    listViewModel: AppAssembly.shared.resolve(AddressListViewModel.self),
+                    viewModelFactory: AppAssembly.shared.resolve(AddressViewModelFactory.self)
+                )
+                .tag(Common.Tab.account)
+                .toolbar(.hidden, for: .tabBar)
             }
             .toolbar(.hidden, for: .tabBar)
 

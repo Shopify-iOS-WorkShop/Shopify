@@ -18,6 +18,7 @@ import ProductDetails
 import ProductListing
 import ShopifyNetwork
 import Favorites
+import Address
 
 class AppAssembly {
     static let shared = AppAssembly()
@@ -53,6 +54,7 @@ class AppAssembly {
         ProductDetailsAssembly().assemble(container: container)
         ProductListingAssembly().assemble(container: container)
         FavoritesAssembly().assemble(container: container)
+        AddressAssembly().assemble(container: container)
     }
     
     
