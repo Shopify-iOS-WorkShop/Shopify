@@ -1,5 +1,5 @@
 //
-//  SwiftUIView.swift
+//  SearchResultsListView.swift
 //  search
 //
 //  Created by Al3dwy on 02/07/2026.
@@ -10,6 +10,8 @@ import SwiftUI
 struct SearchResultsListView: View {
     let collections: [SearchCollection]
     let products: [SearchProduct]
+    var onProductTap: ((SearchProduct) -> Void)?
+    var onCollectionTap: ((SearchCollection) -> Void)?
 
     var body: some View {
         ScrollView {
@@ -23,7 +25,10 @@ struct SearchResultsListView: View {
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 12) {
                                 ForEach(collections) { collection in
-                                    CollectionCard(collection: collection)
+                                    CollectionCard(
+                                        collection: collection,
+                                        onTap: onCollectionTap
+                                    )
                                 }
                             }
                             .padding(.horizontal, 20)
@@ -40,7 +45,10 @@ struct SearchResultsListView: View {
 
                         VStack(spacing: 12) {
                             ForEach(products) { product in
-                                ProductRow(product: product)
+                                ProductRow(
+                                    product: product,
+                                    onTap: onProductTap
+                                )
                             }
                         }
                         .padding(.horizontal, 20)

@@ -1,6 +1,6 @@
 //
-//  File.swift
-//  
+//  BestSellersGridView.swift
+//
 //
 //  Created by Mazen Amr on 27/06/2026.
 //
@@ -10,11 +10,21 @@ import SwiftUI
 
 public struct BestSellersGridView: View {
     public let products: [Product]
+    /// Pass favoritedIDs as a value so SwiftUI re-renders when the set changes.
+    public let favoritedIDs: Set<String>
+    public let onFavoriteTap: ((Product) -> Void)?
     @Environment(HomeCoordinator.self) private var coordinator
+
     private let columns = [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)]
 
-    public init(products: [Product]) {
+    public init(
+        products: [Product],
+        favoritedIDs: Set<String> = [],
+        onFavoriteTap: ((Product) -> Void)? = nil
+    ) {
         self.products = products
+        self.favoritedIDs = favoritedIDs
+        self.onFavoriteTap = onFavoriteTap
     }
 
     public var body: some View {
@@ -23,11 +33,14 @@ public struct BestSellersGridView: View {
                 Button(action: {
                     coordinator.push(.productDetail(productId: Int(product.id) ?? 0))
                 }) {
-                    ProductCardView(product: product)
+                    ProductCardView(
+                        product: product,
+                        isFavorite: favoritedIDs.contains(product.id),
+                        onFavoriteTap: { onFavoriteTap?(product) }
+                    )
                 }
                 .buttonStyle(.plain)
             }
         }
     }
 }
-

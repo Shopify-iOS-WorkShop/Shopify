@@ -10,15 +10,26 @@ import SwiftUI
 
 public struct ProductCardView: View {
     public let product: Product
-    @State private var isWishlisted = false
-    
+    public let isFavorite: Bool
+    public let onFavoriteTap: () -> Void
+
+    public init(
+        product: Product,
+        isFavorite: Bool = false,
+        onFavoriteTap: @escaping () -> Void = {}
+    ) {
+        self.product = product
+        self.isFavorite = isFavorite
+        self.onFavoriteTap = onFavoriteTap
+    }
+
     public var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             ZStack(alignment: .topTrailing) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 12)
                         .fill(Color(hex: "#F0F0F0"))
-                    
+
                     if let url = product.imageURL {
                         AsyncImage(url: url) { phase in
                             switch phase {
@@ -44,43 +55,44 @@ public struct ProductCardView: View {
                 }
                 .frame(height: 140)
                 .clipShape(RoundedRectangle(cornerRadius: 12))
-                
-                Button(action: { isWishlisted.toggle() }) {
-                    Image(systemName: isWishlisted ? "heart.fill" : "heart")
+
+                Button(action: onFavoriteTap) {
+                    Image(systemName: isFavorite ? "heart.fill" : "heart")
                         .font(.system(size: 13, weight: .semibold))
-                        .foregroundColor(isWishlisted ? DS.red : DS.textSec)
+                        .foregroundColor(isFavorite ? DS.red : DS.textSec)
                         .frame(width: 28, height: 28)
                         .background(Color.white)
                         .clipShape(Circle())
                         .shadow(color: .black.opacity(0.08), radius: 4, x: 0, y: 2)
                 }
+                .buttonStyle(.plain)
                 .padding(8)
             }
-            
+
             VStack(alignment: .leading, spacing: 3) {
                 Text(product.vendor)
                     .font(.system(size: 10, weight: .bold))
                     .foregroundColor(DS.red)
                     .tracking(0.8)
                     .padding(.top, 8)
-                
+
                 Text(product.title)
                     .font(.system(size: 13, weight: .semibold))
                     .foregroundColor(DS.textPri)
                     .lineLimit(2)
                     .fixedSize(horizontal: false, vertical: true)
-                
+
                 HStack(spacing: 4) {
                     Text("$\(String(format: "%.2f", product.price))")
                         .font(.system(size: 13, weight: .bold))
                         .foregroundColor(DS.textPri)
-                    
+
                     Spacer()
-                    
+
                     Image(systemName: "star.fill")
                         .font(.system(size: 10))
                         .foregroundColor(DS.red)
-                    
+
                     Text(String(format: "%.1f", product.rating))
                         .font(.system(size: 11, weight: .semibold))
                         .foregroundColor(DS.red)

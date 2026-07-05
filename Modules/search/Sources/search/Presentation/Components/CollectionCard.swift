@@ -9,6 +9,7 @@ import SwiftUI
 
 struct CollectionCard: View {
     let collection: SearchCollection
+    var onTap: ((SearchCollection) -> Void)?
 
     var body: some View {
         VStack(spacing: 8) {
@@ -48,5 +49,7 @@ struct CollectionCard: View {
                 .lineLimit(1)
                 .frame(width: 96)
         }
+        .contentShape(Rectangle())
+        .onTapGesture { onTap?(collection) }
     }
 }

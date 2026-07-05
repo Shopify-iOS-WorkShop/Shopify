@@ -2,7 +2,7 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:Modules/Settings">
+      location = "group:Modules/favorites">
    </FileRef>
    <FileRef
       location = "group:Modules/Cart">

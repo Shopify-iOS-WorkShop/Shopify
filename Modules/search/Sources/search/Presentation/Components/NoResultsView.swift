@@ -36,16 +36,7 @@ struct NoResultsView: View {
                     .padding(.horizontal, 32)
             }
 
-            Button(action: onBrowseCollections) {
-                Text("Browse Collections")
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundColor(.white)
-                    .padding(.vertical, 12)
-                    .padding(.horizontal, 28)
-                    .background(Color.pocketPink)
-                    .clipShape(Capsule())
-            }
-            .padding(.top, 4)
+          
 
             Spacer()
             Spacer()

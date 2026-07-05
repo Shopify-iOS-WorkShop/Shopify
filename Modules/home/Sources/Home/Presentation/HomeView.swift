@@ -1,11 +1,21 @@
 import SwiftUI
+import UIKit
 
 public struct HomeView: View {
     @ObservedObject var viewModel: HomeViewModel
     @Environment(HomeCoordinator.self) private var coordinator
 
-    public init(viewModel: HomeViewModel) {
+    public var favoritedIDs: Set<String>
+    public var onFavoriteTap: ((Product) -> Void)?
+
+    public init(
+        viewModel: HomeViewModel,
+        favoritedIDs: Set<String> = [],
+        onFavoriteTap: ((Product) -> Void)? = nil
+    ) {
         self.viewModel = viewModel
+        self.favoritedIDs = favoritedIDs
+        self.onFavoriteTap = onFavoriteTap
     }
 
     public var body: some View {
@@ -14,8 +24,10 @@ public struct HomeView: View {
 
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 20) {
-                    FlashSaleBannerView()
-                        .padding(.horizontal, 16)
+                    AdsCarouselView(ads: viewModel.ads) { ad in
+                        handleAdTap(ad)
+                    }
+                    .padding(.horizontal, 16)
 
                     SectionHeaderView(title: "Shop by Brand", hasViewAll: true) {
                         coordinator.push(.catalog(type: .brands))
@@ -30,13 +42,17 @@ public struct HomeView: View {
                     SectionHeaderView(title: "Best Sellers", hasViewAll: true) {
                         coordinator.push(.productListing(collectionId: nil, title: "All Products"))
                     }
-                    
+
                     if viewModel.isLoading {
                         ProgressView("Loading products...")
                             .frame(maxWidth: .infinity, alignment: .center)
                     } else {
-                        BestSellersGridView(products: viewModel.bestSellers)
-                            .padding(.horizontal, 16)
+                        BestSellersGridView(
+                            products: viewModel.bestSellers,
+                            favoritedIDs: favoritedIDs,
+                            onFavoriteTap: onFavoriteTap
+                        )
+                        .padding(.horizontal, 16)
                     }
 
                     Spacer(minLength: 24)
@@ -86,6 +102,18 @@ public struct HomeView: View {
             Task {
                 await viewModel.loadData()
             }
+        }
+    }
+
+    private func handleAdTap(_ ad: Ad) {
+        switch ad.destination {
+        case .product(let id):
+            guard let productId = Int(id) else { return }
+            coordinator.push(.productDetail(productId: productId))
+        case .collection(let id, let title):
+            coordinator.push(.productListing(collectionId: id, title: title))
+        case .url(let url):
+            UIApplication.shared.open(url)
         }
     }
 }
