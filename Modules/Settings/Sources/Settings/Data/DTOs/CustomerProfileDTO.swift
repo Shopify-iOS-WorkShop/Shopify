@@ -87,7 +87,6 @@ struct LineItemImageDTO: Decodable {
     let url: String
 }
 
-// MARK: - Mapper
 
 extension CustomerDTO {
     func toDomain() -> CustomerProfile {
@@ -95,7 +94,9 @@ extension CustomerDTO {
             let node = edge.node
             let date = ISO8601DateFormatter().date(from: node.processedAt) ?? Date()
             let firstItem = node.lineItems.edges.first?.node
-            let imageURL = firstItem?.variant?.image?.url.flatMap { URL(string: $0) }
+            let imgURL = (firstItem?.variant?.image?.url).flatMap { URL(string: $0) }
+
+
             return CustomerOrder(
                 id: node.id,
                 orderNumber: node.orderNumber,
@@ -105,7 +106,7 @@ extension CustomerDTO {
                 totalAmount: node.currentTotalPrice.amount,
                 currencyCode: node.currentTotalPrice.currencyCode,
                 firstItemTitle: firstItem?.title,
-                firstItemImageURL: imageURL
+                firstItemImageURL: imgURL
             )
         }
 
