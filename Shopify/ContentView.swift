@@ -40,6 +40,8 @@ struct ContentView: View {
 
     private let repository: AuthRepositoryProtocol = AuthRepositoryFactory.make()
     private let sessionStore: SessionStore         = AppAssembly.shared.resolve(SessionStore.self)
+    
+    private let currencyStore: CurrencyStore       = AppAssembly.shared.resolve(CurrencyStore.self)
 
 
     private var preferredColorScheme: ColorScheme? {
@@ -75,15 +77,15 @@ struct ContentView: View {
                 }
             }
 
-            // Load setup for favorites
+            
             favoritesViewModel.loadFavorites()
             
-            // Wire cart icon tap in Home → switch to Cart tab
+           
             appCoordinator.homeCoordinator.onCartTapped = { [self] in
                 selectedTab = .cart
             }
 
-            // Sign Out — clear all state, return to Login (not Register)
+            
             appCoordinator.settingsCoordinator.onSignOut = { [self] in
                 _ = await repository.signOut()
                 await MainActor.run {
@@ -100,14 +102,14 @@ struct ContentView: View {
                 }
             }
 
-            // Guest "Sign In" button inside Settings tab
+            
             settingsViewModel.onSignIn = { [self] in
                 appCoordinator.authCoordinator.path = NavigationPath()
                 appCoordinator.hasCompletedAuth     = false
             }
         }
 
-        // ── Every time auth completes: land on Home, preload cart badge ──
+       
         .onChange(of: appCoordinator.hasCompletedAuth) { _, isAuthenticated in
             guard isAuthenticated else { return }
             selectedTab = .home
@@ -134,7 +136,6 @@ struct ContentView: View {
         }
     }
 
-    // MARK: - Auth Flow
 
     @MainActor
     private var authFlow: some View {
@@ -145,7 +146,6 @@ struct ContentView: View {
         .environment(appCoordinator.authCoordinator)
     }
 
-    // MARK: - Main Tab Flow
 
     @MainActor
     private var mainFlow: some View {
@@ -187,13 +187,26 @@ struct ContentView: View {
                 .toolbar(.hidden, for: .tabBar)
 
                 // Cart tab
-                Group {
-                    if let cartViewModel {
-                        CartView(viewModel: cartViewModel, onGoShopping: { selectedTab = .home })
-                    } else {
-                        ProgressView()
+                NavigationStack(path: $appCoordinator.cartCoordinator.navigationPath) {
+                    Group {
+                        if let cartViewModel {
+                            CartView(
+                                viewModel: cartViewModel,
+                                onGoShopping: { selectedTab = .home },
+                                onProductTapped: { productId in
+                                    let rawId = productId.components(separatedBy: "/").last ?? productId
+                                    appCoordinator.cartCoordinator.navigationPath.append(
+                                        CartRoute.productDetails(productId: rawId, handle: "")
+                                    )
+                                }
+                            )
+                        } else {
+                            ProgressView()
+                        }
                     }
+                    .navigationDestination(for: CartRoute.self) { cartDestination(for: $0) }
                 }
+                .environment(appCoordinator.cartCoordinator)
                 .tag(Common.Tab.cart)
                 .toolbar(.hidden, for: .tabBar)
 
@@ -211,6 +224,7 @@ struct ContentView: View {
                     .tag(Common.Tab.account)
                     .toolbar(.hidden, for: .tabBar)
             }
+            .environment(currencyStore) // Available globally to all tabs
             .toolbar(.hidden, for: .tabBar)
 
             CustomTabBar(
@@ -381,15 +395,60 @@ struct ContentView: View {
         }
     }
 
+    @MainActor
+    @ViewBuilder
+    private func cartDestination(for route: CartRoute) -> some View {
+        switch route {
+        case .productDetails(let productId, _):
+            if let idInt = Int(productId) {
+                ProductDetailFactory.makeView(
+                    productId: idInt,
+                    checkIsFavorite: { [weak favoritesViewModel] id in
+                        favoritesViewModel?.isFavorite(productId: id) ?? false
+                    },
+                    onToggleFavorite: { [weak favoritesViewModel] id, title, vendor, price, rating, imageURL in
+                        guard let vm = favoritesViewModel else { return }
+                        if vm.isFavorite(productId: id) {
+                            vm.remove(productId: id)
+                        } else {
+                            vm.add(product: FavoriteProduct(
+                                id: id,
+                                title: title,
+                                vendor: vendor,
+                                price: price,
+                                rating: rating,
+                                imageURL: imageURL.flatMap(URL.init(string:)),
+                                productType: "",
+                                isInStock: true
+                            ))
+                        }
+                    },
+                    onAddToCart: { [cartViewModel] variantId, quantity in
+                        guard sessionStore.current != nil else {
+                            appCoordinator.showGuestSignInPrompt = true
+                            return nil
+                        }
+                        guard let cartViewModel else { return "Cart not initialized" }
+                        return await cartViewModel.addLine(variantId: variantId, quantity: quantity)
+                    }
+                )
+            } else {
+                Text("Invalid product ID")
+            }
+        case .checkout, .signInRequired, .cart:
+            EmptyView()
+        }
+    }
 
-    // MARK: - Session Restoration
+
 
     @MainActor
     private func restoreSession() async {
         guard let session = repository.currentSession(), session.isValid else {
             sessionStore.clearSession()
-            // Guest mode: onChange fires when hasCompletedAuth → true
-            appCoordinator.hasCompletedAuth = true
+            // No valid session — show the Login screen.
+            // hasCompletedAuth stays false (its default), so authFlow is displayed.
+            // The user can log in or tap "Continue as Guest" from the Login screen.
             return
         }
         sessionStore.updateSession(session.toCommonSession())

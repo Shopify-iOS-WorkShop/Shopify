@@ -20,7 +20,6 @@ public struct SettingsView: View {
         )) {
             List {
 
-                // MARK: Profile Header (authenticated only)
                 if !viewModel.isGuest {
                     Section {
                         if viewModel.isLoadingProfile {
@@ -39,7 +38,6 @@ public struct SettingsView: View {
                     .listRowBackground(Color.clear)
                 }
 
-                // MARK: Guest banner
                 if viewModel.isGuest {
                     Section {
                         VStack(spacing: 12) {
@@ -71,7 +69,6 @@ public struct SettingsView: View {
                     .listRowBackground(Color.clear)
                 }
 
-                // MARK: Recent Orders (authenticated only)
                 if !viewModel.isGuest,
                    let profile = viewModel.profile,
                    !profile.recentOrders.isEmpty {
@@ -85,7 +82,6 @@ public struct SettingsView: View {
                     }
                 }
 
-                // MARK: Account (authenticated only)
                 if !viewModel.isGuest {
                     Section("Account") {
                         NavigationLink(value: SettingsRoute.editProfile) {
@@ -100,7 +96,6 @@ public struct SettingsView: View {
                     }
                 }
 
-                // MARK: Appearance (all users)
                 Section("Appearance") {
                     Picker("Theme", selection: Binding(
                         get: { viewModel.colorSchemeRaw },
@@ -114,7 +109,6 @@ public struct SettingsView: View {
                     .listRowSeparator(.hidden)
                 }
 
-                // MARK: Currency (all users)
                 Section("Currency") {
                     NavigationLink(value: SettingsRoute.currencyPicker) {
                         HStack {
@@ -138,7 +132,6 @@ public struct SettingsView: View {
                     }
                 }
 
-                // MARK: Sign Out / Sign In button
                 Section {
                     if viewModel.isGuest {
                         Button {
@@ -184,10 +177,7 @@ public struct SettingsView: View {
             if let rates = viewModel.exchangeRates {
                 CurrencyPickerView(
                     rates: rates,
-                    selected: Binding(
-                        get: { viewModel.selectedCurrency },
-                        set: { viewModel.selectedCurrency = $0 }
-                    )
+                    currencyStore: viewModel.currencyStore
                 )
             } else {
                 ProgressView()
@@ -221,7 +211,6 @@ private struct OrderHistoryView: View {
     }
 }
 
-// MARK: - Placeholder Screens
 
 private struct EditProfilePlaceholderView: View {
     var body: some View {

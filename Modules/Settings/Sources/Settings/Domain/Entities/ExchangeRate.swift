@@ -2,26 +2,15 @@
 //  ExchangeRate.swift
 //  Settings — Domain
 //
+//  ExchangeRates has been moved to the Common module so that CurrencyStore
+//  (which also lives in Common) can reference it without a circular dependency.
+//
+//  This typealias re-exports the type so all existing code in Settings that
+//  imports only Settings — and not Common explicitly — continues to compile
+//  with no changes required.
+//
 
-import Foundation
+import Common
 
-public struct ExchangeRates: Equatable {
-    public let baseCurrency: String
-    public let rates: [String: Double]
-
-    public init(baseCurrency: String, rates: [String: Double]) {
-        self.baseCurrency = baseCurrency
-        self.rates = rates
-    }
-
-    /// Converts an amount from the base currency to the target currency.
-    public func convert(_ amount: Double, to targetCurrency: String) -> Double? {
-        guard let rate = rates[targetCurrency] else { return nil }
-        return amount * rate
-    }
-
-    /// All supported currency codes sorted alphabetically.
-    public var availableCurrencies: [String] {
-        rates.keys.sorted()
-    }
-}
+// Re-export from Common so all Settings call-sites keep working.
+public typealias ExchangeRates = Common.ExchangeRates

@@ -184,13 +184,10 @@ public final class CartViewModel {
         // Navigate to product details - handled by coordinator
     }
     
-    /// The total number of items in the cart, used for badge display.
     public var cartItemCount: Int {
         cart?.lines.count ?? 0
     }
     
-    /// Adds a line item to the cart. Called externally (e.g., from Product Details).
-    /// Returns an error string if it fails, or nil on success.
     @MainActor
     public func addLine(variantId: String, quantity: Int) async -> String? {
         let result = await addCartLineUseCase.execute(variantId: variantId, quantity: quantity)

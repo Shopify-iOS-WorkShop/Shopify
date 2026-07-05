@@ -103,15 +103,11 @@ public final class ProductDetailViewModel: ObservableObject {
         Task { @MainActor in
             if let error = await addToCartAction(variantId, quantity) {
                 addToCartError = error
-            } else {
-                addToCartMessage = "Added to cart"
             }
             isAddingToCart = false
         }
     }
-    
     // MARK: - Private
-    
     private func loadProduct() async {
         state = .loading
         do {

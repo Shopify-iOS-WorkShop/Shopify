@@ -13,15 +13,21 @@ public final class SettingsViewModel {
     // MARK: - State
 
     public private(set) var profile: CustomerProfile?
-    public private(set) var exchangeRates: ExchangeRates?
     public private(set) var isLoadingProfile: Bool = false
     public private(set) var isLoadingRates: Bool = false
     public private(set) var errorMessage: String?
 
-    /// Selected display currency, persisted in UserDefaults.
-    @ObservationIgnored
-    @AppStorage("settings_selectedCurrency")
-    public var selectedCurrency: String = "USD"
+    /// Proxy to the shared CurrencyStore — writing here updates every
+    /// screen that observes CurrencyStore (Home, etc.) immediately.
+    public var selectedCurrency: String {
+        get { currencyStore.selectedCurrency }
+        set { currencyStore.selectedCurrency = newValue }
+    }
+
+    /// Exchange rates are stored in CurrencyStore so Home can read them too.
+    public var exchangeRates: ExchangeRates? {
+        get { currencyStore.exchangeRates }
+    }
 
     /// 0 = system, 1 = light, 2 = dark — persisted in UserDefaults.
     /// ContentView reads this same key via @AppStorage, so the entire app
@@ -59,17 +65,20 @@ public final class SettingsViewModel {
     private let getProfileUseCase: GetCustomerProfileUseCase
     private let getExchangeRatesUseCase: GetExchangeRatesUseCase
     private let sessionStore: SessionProviding
+    public let currencyStore: CurrencyStore
 
     // MARK: - Init
 
     public init(
         getProfileUseCase: GetCustomerProfileUseCase,
         getExchangeRatesUseCase: GetExchangeRatesUseCase,
-        sessionStore: SessionProviding
+        sessionStore: SessionProviding,
+        currencyStore: CurrencyStore
     ) {
         self.getProfileUseCase       = getProfileUseCase
         self.getExchangeRatesUseCase = getExchangeRatesUseCase
         self.sessionStore            = sessionStore
+        self.currencyStore           = currencyStore
     }
 
     // MARK: - Lifecycle
@@ -102,7 +111,10 @@ public final class SettingsViewModel {
         isLoadingRates = true
         let result = await getExchangeRatesUseCase.execute()
         isLoadingRates = false
-        if case .success(let rates) = result { exchangeRates = rates }
+        // Store rates in CurrencyStore so Home can do conversions too
+        if case .success(let rates) = result {
+            currencyStore.exchangeRates = rates
+        }
     }
 
     /// Persists the theme choice. ContentView's @AppStorage binding for the same
@@ -115,10 +127,6 @@ public final class SettingsViewModel {
     public func cancelSignOut()  { isShowingSignOutConfirmation = false }
 
     public func convert(amount: Double) -> String {
-        guard let rates = exchangeRates,
-              let converted = rates.convert(amount, to: selectedCurrency) else {
-            return String(format: "%.2f", amount)
-        }
-        return "\(selectedCurrency) \(String(format: "%.2f", converted))"
+        currencyStore.convert(amount)
     }
 }

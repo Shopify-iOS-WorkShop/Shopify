@@ -16,5 +16,10 @@ public class CommonAssembly: DIAssembly {
         container.register(SessionProviding.self) { resolver in
             resolver.resolve(SessionStore.self)!
         }.inObjectScope(.container)
+
+        // Register CurrencyStore as singleton — shared across all modules
+        container.register(CurrencyStore.self) { _ in
+            CurrencyStore()
+        }.inObjectScope(.container)
     }
 }

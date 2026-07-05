@@ -22,6 +22,14 @@ internal enum CartMapper {
                 }
             }
 
+            // Extract image URL with fallback logic
+            let imageURL = variant.image?.url ?? variant.product.featuredImage?.url
+            
+            // Debug: Log when image URL is missing
+            if imageURL == nil {
+                print("⚠️ Cart Item Missing Image - Product: \(variant.product.title), Variant: \(variant.title)")
+            }
+            
             return CartLineDTO(
                 id: node.id,
                 quantity: node.quantity,
@@ -33,7 +41,7 @@ internal enum CartMapper {
                 vendor: variant.product.vendor,
                 // Use variant image first; fall back to product featured image.
                 // Many Shopify stores only set featuredImage on the product, not per variant.
-                imageURL: variant.image?.url ?? variant.product.featuredImage?.url,
+                imageURL: imageURL,
                 price: MoneyDTO(
                     amount: variant.price.amount,
                     currencyCode: variant.price.currencyCode.rawValue
@@ -106,7 +114,25 @@ internal enum CartMapper {
 
     static func toCartLine(from dto: CartLineDTO) -> CartLine {
         let options  = dto.selectedOptions.map { ProductOption(name: $0.name, value: $0.value) }
-        let imageURL = dto.imageURL.flatMap { URL(string: $0) }
+        
+        // More robust URL parsing - handle potential encoding issues
+        var imageURL: URL? = nil
+        if let urlString = dto.imageURL {
+            // Try direct URL creation first
+            if let url = URL(string: urlString) {
+                imageURL = url
+            } else {
+                // If that fails, try encoding the string
+                if let encoded = urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+                   let url = URL(string: encoded) {
+                    imageURL = url
+                    print("✅ Fixed URL encoding for: \(urlString)")
+                } else {
+                    print("⚠️ Could not create valid URL from: \(urlString)")
+                }
+            }
+        }
+        
         return CartLine(
             id: dto.id,
             quantity: dto.quantity,

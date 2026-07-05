@@ -4,14 +4,20 @@
 //
 
 import SwiftUI
+import Common
 
+/// Currency picker that reads and writes directly from/to the shared CurrencyStore.
+/// Because CurrencyStore is @Observable, SwiftUI re-renders this view immediately
+/// when `currencyStore.selectedCurrency` changes — so the checkmark appears
+/// instantly on tap without any navigation required.
 public struct CurrencyPickerView: View {
     let rates: ExchangeRates
-    @Binding var selected: String
+    /// The shared store is observed directly — no @Binding needed.
+    @State var currencyStore: CurrencyStore
 
-    public init(rates: ExchangeRates, selected: Binding<String>) {
+    public init(rates: ExchangeRates, currencyStore: CurrencyStore) {
         self.rates = rates
-        self._selected = selected
+        self._currencyStore = State(wrappedValue: currencyStore)
     }
 
     public var body: some View {
@@ -31,7 +37,7 @@ public struct CurrencyPickerView: View {
 
                         Spacer()
 
-                        if selected == code {
+                        if currencyStore.selectedCurrency == code {
                             Image(systemName: "checkmark")
                                 .foregroundColor(Color(red: 233/255, green: 69/255, blue: 96/255))
                                 .fontWeight(.semibold)
@@ -39,7 +45,9 @@ public struct CurrencyPickerView: View {
                     }
                     .contentShape(Rectangle())
                     .onTapGesture {
-                        selected = code
+                        // Writing to @Observable property — SwiftUI tracks this
+                        // and re-renders immediately, showing the checkmark at once.
+                        currencyStore.selectedCurrency = code
                     }
                 }
             }
