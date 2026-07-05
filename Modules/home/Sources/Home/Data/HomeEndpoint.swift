@@ -1,8 +1,8 @@
 //
-//  File.swift
-//  
+//  HomeEndpoint.swift
+//  Home
 //
-//  Created by Mazen Amr on 27/06/2026.
+//  Uses Admin REST API for products and collections
 //
 
 import Foundation
@@ -13,34 +13,53 @@ enum HomeEndpoint: Endpoint {
     case getProductDetails(id: String)
     case getSmartCollections
     case getCustomCollections
+    /// Looks up a custom collection by its exact title (e.g. "SALE"), so we
+    /// can find its id without hardcoding one.
+    case getCollectionByTitle(String)
+    /// Products inside a given collection — reused to pull everything
+    /// currently sitting in the SALE collection for the ads carousel.
+    case getProductsInCollection(id: String)
     
     var baseURL: String {
-        return "https://\(ShopifyConfig.apiKey):\(ShopifyConfig.accessToken)@\(ShopifyConfig.hostname)/admin/api/\(ShopifyConfig.apiVersion)"
+        return "https://\(ShopifyConfig.hostname)/admin/api/\(ShopifyConfig.apiVersion)"
     }
     
     var path: String {
-            switch self {
-            case .getProducts:
-                return "/products.json"
-            case .getProductDetails(let id):
-                return "/products/\(id).json"
-            case .getSmartCollections:
-                return "/smart_collections.json"
-            case .getCustomCollections:
-                return "/custom_collections.json"
-            }
+        switch self {
+        case .getProducts, .getProductsInCollection:
+            return "/products.json"
+        case .getProductDetails(let id):
+            return "/products/\(id).json"
+        case .getSmartCollections:
+            return "/smart_collections.json"
+        case .getCustomCollections, .getCollectionByTitle:
+            return "/custom_collections.json"
         }
+    }
     
     var method: String {
         return "GET"
     }
     
     var headers: [String: String]? {
-        return ["Content-Type": "application/json"]
+        return [
+            "X-Shopify-Access-Token": ShopifyConfig.accessToken,
+            "Content-Type": "application/json"
+        ]
     }
     
     var queryItems: [URLQueryItem]? {
-        return nil
+        switch self {
+        case .getCollectionByTitle(let title):
+            return [URLQueryItem(name: "title", value: title)]
+        case .getProductsInCollection(let id):
+            return [
+                URLQueryItem(name: "collection_id", value: id),
+                URLQueryItem(name: "status", value: "active")
+            ]
+        default:
+            return nil
+        }
     }
     
     var body: Data? {

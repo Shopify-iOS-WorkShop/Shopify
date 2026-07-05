@@ -10,6 +10,7 @@ import SwiftData
 import DependencyInjection
 import Swinject
 import Auth
+import Cart
 import Common
 import DataPersistence
 import Home
@@ -47,6 +48,7 @@ class AppAssembly {
         DataPersistenceAssembly().assemble(container: container)
         
         AuthAssembly().assemble(container: container)
+        CartAssembly().assemble(container: container)
         HomeAssembly().assemble(container: container)
         ProductDetailsAssembly().assemble(container: container)
         ProductListingAssembly().assemble(container: container)

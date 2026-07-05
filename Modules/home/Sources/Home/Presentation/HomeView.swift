@@ -1,10 +1,10 @@
 import SwiftUI
+import UIKit
 
 public struct HomeView: View {
-    @StateObject private var viewModel: HomeViewModel
+    @ObservedObject var viewModel: HomeViewModel
     @Environment(HomeCoordinator.self) private var coordinator
 
-    /// Reactive set of favorited IDs — passed from app layer so Home doesn't depend on Favorites.
     public var favoritedIDs: Set<String>
     public var onFavoriteTap: ((Product) -> Void)?
 
@@ -13,7 +13,7 @@ public struct HomeView: View {
         favoritedIDs: Set<String> = [],
         onFavoriteTap: ((Product) -> Void)? = nil
     ) {
-        _viewModel = StateObject(wrappedValue: viewModel)
+        self.viewModel = viewModel
         self.favoritedIDs = favoritedIDs
         self.onFavoriteTap = onFavoriteTap
     }
@@ -24,8 +24,10 @@ public struct HomeView: View {
 
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 20) {
-                    FlashSaleBannerView()
-                        .padding(.horizontal, 16)
+                    AdsCarouselView(ads: viewModel.ads) { ad in
+                        handleAdTap(ad)
+                    }
+                    .padding(.horizontal, 16)
 
                     SectionHeaderView(title: "Shop by Brand", hasViewAll: true) {
                         coordinator.push(.catalog(type: .brands))
@@ -78,14 +80,40 @@ public struct HomeView: View {
                 Button(action: {
                     coordinator.onCartTapped?()
                 }) {
-                    Image(systemName: "cart")
-                        .foregroundColor(DS.textPri)
-                        .font(.system(size: 18, weight: .medium))
+                    ZStack(alignment: .topTrailing) {
+                        Image(systemName: "cart")
+                            .foregroundColor(DS.textPri)
+                            .font(.system(size: 18, weight: .medium))
+                        
+                        if coordinator.cartBadgeCount > 0 {
+                            Text("\(coordinator.cartBadgeCount)")
+                                .font(.system(size: 10, weight: .bold))
+                                .foregroundColor(.white)
+                                .frame(minWidth: 16, minHeight: 16)
+                                .background(Color.pink)
+                                .clipShape(Circle())
+                                .offset(x: 10, y: -8)
+                        }
+                    }
                 }
             }
         }
-        .task {
-            await viewModel.loadData()
+        .onAppear {
+            Task {
+                await viewModel.loadData()
+            }
+        }
+    }
+
+    private func handleAdTap(_ ad: Ad) {
+        switch ad.destination {
+        case .product(let id):
+            guard let productId = Int(id) else { return }
+            coordinator.push(.productDetail(productId: productId))
+        case .collection(let id, let title):
+            coordinator.push(.productListing(collectionId: id, title: title))
+        case .url(let url):
+            UIApplication.shared.open(url)
         }
     }
 }

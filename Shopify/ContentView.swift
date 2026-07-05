@@ -15,13 +15,17 @@ import ProductListing
 import ShopifyNetwork
 import DataPersistence
 import Favorites
+import Cart
 
 struct ContentView: View {
     @State private var appCoordinator = AppCoordinator()
     @StateObject private var favoritesViewModel = AppAssembly.shared.makeFavoritesViewModel()
     @State private var sessionChecked: Bool = false
     @State private var selectedTab: Common.Tab = .home
+    @State private var cartViewModel: CartViewModel? = nil  // Initialize after session restore
+    @StateObject private var homeViewModel: HomeViewModel = AppAssembly.shared.resolve(HomeViewModel.self)
     private let repository: AuthRepositoryProtocol = AuthRepositoryFactory.make()
+    private let sessionStore: SessionStore = AppAssembly.shared.resolve(SessionStore.self)
 
     var body: some View {
         Group {
@@ -34,9 +38,8 @@ struct ContentView: View {
             }
         }
         .task {
-            if let session = repository.currentSession(), session.isValid {
-                appCoordinator.hasCompletedAuth = true
-            }
+            // Restore session on app launch
+            await restoreSession()
             sessionChecked = true
         }
         .onAppear {
@@ -45,7 +48,14 @@ struct ContentView: View {
                     appCoordinator?.homeCoordinator.push(.productDetail(productId: id))
                 }
             }
+            
+            // Load setup for favorites
             favoritesViewModel.loadFavorites()
+            
+            // Wire cart icon tap in Home → switch to Cart tab
+            appCoordinator.homeCoordinator.onCartTapped = {
+                selectedTab = .cart
+            }
         }
     }
 
@@ -71,9 +81,7 @@ struct ContentView: View {
                 // Home tab
                 NavigationStack(path: $appCoordinator.homeCoordinator.path) {
                     HomeView(
-                        viewModel: HomeViewModel(
-                            repository: HomeRepository(networkClient: URLSessionNetworkClient())
-                        ),
+                        viewModel: homeViewModel,
                         favoritedIDs: favoritesViewModel.favoritedIDs,
                         onFavoriteTap: { product in
                             favoritesViewModel.toggleFavorite(
@@ -99,9 +107,25 @@ struct ContentView: View {
                 .toolbar(.hidden, for: .tabBar)
 
                 // Search tab
-                Text("Search View")
+                SearchView()
                     .tag(Common.Tab.search)
                     .toolbar(.hidden, for: .tabBar)
+
+                // Cart tab
+                if let cartViewModel {
+                    CartView(
+                        viewModel: cartViewModel,
+                        onGoShopping: {
+                            selectedTab = .home
+                        }
+                    )
+                    .tag(Common.Tab.cart)
+                    .toolbar(.hidden, for: .tabBar)
+                } else {
+                    ProgressView()
+                        .tag(Common.Tab.cart)
+                        .toolbar(.hidden, for: .tabBar)
+                }
 
                 // Wishlist tab
                 NavigationStack(path: $appCoordinator.favoritesCoordinator.path) {
@@ -121,9 +145,19 @@ struct ContentView: View {
             }
             .toolbar(.hidden, for: .tabBar)
 
-            CustomTabBar(selectedTab: $selectedTab)
+            CustomTabBar(
+                selectedTab: $selectedTab,
+                cartBadgeCount: cartViewModel?.cartItemCount ?? 0
+            )
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
+        .onChange(of: cartViewModel?.cartItemCount) { _, newValue in
+            appCoordinator.homeCoordinator.cartBadgeCount = newValue ?? 0
+        }
+        .task {
+            // Initialize cart badge count
+            appCoordinator.homeCoordinator.cartBadgeCount = cartViewModel?.cartItemCount ?? 0
+        }
     }
 
     // MARK: - Destinations
@@ -183,6 +217,10 @@ struct ContentView: View {
                             isInStock: true
                         ))
                     }
+                },
+                onAddToCart: { [cartViewModel] variantId, quantity in
+                    guard let cartViewModel else { return "Cart not initialized" }
+                    return await cartViewModel.addLine(variantId: variantId, quantity: quantity)
                 }
             )
 
@@ -221,9 +259,35 @@ struct ContentView: View {
                             isInStock: true
                         ))
                     }
+                },
+                onAddToCart: { [cartViewModel] variantId, quantity in
+                    guard let cartViewModel else { return "Cart not initialized" }
+                    return await cartViewModel.addLine(variantId: variantId, quantity: quantity)
                 }
             )
         }
+    }
+    
+    // MARK: - Session Restoration
+    
+    @MainActor
+    private func restoreSession() async {
+        // Get persisted session from local storage
+        guard let session = repository.currentSession(), session.isValid else {
+            appCoordinator.hasCompletedAuth = false
+            // Create cart for guest mode
+            cartViewModel = AppAssembly.shared.resolve(CartViewModel.self)
+            return
+        }
+        
+        // Update SessionStore so all modules can access the session
+        sessionStore.updateSession(session.toCommonSession())
+        
+        // NOW create CartViewModel with correct session
+        cartViewModel = AppAssembly.shared.resolve(CartViewModel.self)
+        
+        // Mark auth as completed
+        appCoordinator.hasCompletedAuth = true
     }
 }
 

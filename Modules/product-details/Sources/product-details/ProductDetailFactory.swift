@@ -8,13 +8,21 @@ public enum ProductDetailFactory {
         productId: Int,
         networkClient: NetworkClient = URLSessionNetworkClient(),
         checkIsFavorite: ((String) -> Bool)? = nil,
-        onToggleFavorite: ((String, String, String, Double, Double, String?) -> Void)? = nil
+        onToggleFavorite: ((String, String, String, Double, Double, String?) -> Void)? = nil,
+        onAddToCart: ProductDetailViewModel.AddToCartAction? = nil
     ) -> some View {
         let repository = ProductDetailRepository(networkClient: networkClient)
         let useCase = FetchProductDetailUseCase(repository: repository)
-        let viewModel = ProductDetailViewModel(productId: productId, useCase: useCase)
+        
+        let viewModel = ProductDetailViewModel(
+            productId: productId,
+            useCase: useCase,
+            addToCartAction: onAddToCart
+        )
+        
         viewModel.checkIsFavorite = checkIsFavorite
         viewModel.onToggleFavorite = onToggleFavorite
+        
         return ProductDetailView(viewModel: viewModel)
     }
 }

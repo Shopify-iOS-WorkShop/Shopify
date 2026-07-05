@@ -10,9 +10,11 @@ import SwiftUI
 
 public struct CustomTabBar: View {
     @Binding var selectedTab: Tab
+    var cartBadgeCount: Int
     
-    public init(selectedTab: Binding<Tab>) {
-            self._selectedTab = selectedTab
+    public init(selectedTab: Binding<Tab>, cartBadgeCount: Int = 0) {
+        self._selectedTab = selectedTab
+        self.cartBadgeCount = cartBadgeCount
     }
     
     public var body: some View {
@@ -20,8 +22,21 @@ public struct CustomTabBar: View {
             ForEach(Tab.allCases, id: \.self) { tab in
                 Spacer()
                 VStack(spacing: 4) {
-                    Image(systemName: selectedTab == tab ? tab.activeIcon : tab.icon)
-                        .font(.system(size: 20))
+                    ZStack(alignment: .topTrailing) {
+                        Image(systemName: selectedTab == tab ? tab.activeIcon : tab.icon)
+                            .font(.system(size: 20))
+                        
+                        // Show badge on cart tab
+                        if tab == .cart && cartBadgeCount > 0 {
+                            Text("\(cartBadgeCount)")
+                                .font(.system(size: 10, weight: .bold))
+                                .foregroundColor(.white)
+                                .frame(minWidth: 16, minHeight: 16)
+                                .background(Color.pink)
+                                .clipShape(Circle())
+                                .offset(x: 8, y: -6)
+                        }
+                    }
                     Text(tab.rawValue)
                         .font(.system(size: 11, weight: selectedTab == tab ? .bold : .medium))
                 }

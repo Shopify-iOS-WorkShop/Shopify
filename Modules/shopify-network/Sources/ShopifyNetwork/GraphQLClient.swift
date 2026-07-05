@@ -43,7 +43,7 @@ public class GraphQLClient: GraphQLClientProtocol {
     
     public func fetch<Query: GraphQLQuery>(query: Query) async throws -> Query.Data {
         return try await withCheckedThrowingContinuation { continuation in
-            apollo.fetch(query: query) { result in
+            apollo.fetch(query: query, cachePolicy: .fetchIgnoringCacheData) { result in
                 switch result {
                 case .success(let graphQLResult):
                     if let errors = graphQLResult.errors, !errors.isEmpty {
