@@ -4,8 +4,18 @@ public struct HomeView: View {
     @StateObject private var viewModel: HomeViewModel
     @Environment(HomeCoordinator.self) private var coordinator
 
-    public init(viewModel: HomeViewModel) {
+    /// Reactive set of favorited IDs — passed from app layer so Home doesn't depend on Favorites.
+    public var favoritedIDs: Set<String>
+    public var onFavoriteTap: ((Product) -> Void)?
+
+    public init(
+        viewModel: HomeViewModel,
+        favoritedIDs: Set<String> = [],
+        onFavoriteTap: ((Product) -> Void)? = nil
+    ) {
         _viewModel = StateObject(wrappedValue: viewModel)
+        self.favoritedIDs = favoritedIDs
+        self.onFavoriteTap = onFavoriteTap
     }
 
     public var body: some View {
@@ -30,13 +40,17 @@ public struct HomeView: View {
                     SectionHeaderView(title: "Best Sellers", hasViewAll: true) {
                         coordinator.push(.productListing(collectionId: nil, title: "All Products"))
                     }
-                    
+
                     if viewModel.isLoading {
                         ProgressView("Loading products...")
                             .frame(maxWidth: .infinity, alignment: .center)
                     } else {
-                        BestSellersGridView(products: viewModel.bestSellers)
-                            .padding(.horizontal, 16)
+                        BestSellersGridView(
+                            products: viewModel.bestSellers,
+                            favoritedIDs: favoritedIDs,
+                            onFavoriteTap: onFavoriteTap
+                        )
+                        .padding(.horizontal, 16)
                     }
 
                     Spacer(minLength: 24)
