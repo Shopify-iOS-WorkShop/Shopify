@@ -40,7 +40,7 @@ struct ContentView: View {
 
     private let repository: AuthRepositoryProtocol = AuthRepositoryFactory.make()
     private let sessionStore: SessionStore         = AppAssembly.shared.resolve(SessionStore.self)
-    /// Shared observable currency state — injected into all screens via environment.
+    
     private let currencyStore: CurrencyStore       = AppAssembly.shared.resolve(CurrencyStore.self)
 
 
@@ -77,15 +77,15 @@ struct ContentView: View {
                 }
             }
 
-            // Load setup for favorites
+            
             favoritesViewModel.loadFavorites()
             
-            // Wire cart icon tap in Home → switch to Cart tab
+           
             appCoordinator.homeCoordinator.onCartTapped = { [self] in
                 selectedTab = .cart
             }
 
-            // Sign Out — clear all state, return to Login (not Register)
+            
             appCoordinator.settingsCoordinator.onSignOut = { [self] in
                 _ = await repository.signOut()
                 await MainActor.run {
@@ -102,14 +102,14 @@ struct ContentView: View {
                 }
             }
 
-            // Guest "Sign In" button inside Settings tab
+            
             settingsViewModel.onSignIn = { [self] in
                 appCoordinator.authCoordinator.path = NavigationPath()
                 appCoordinator.hasCompletedAuth     = false
             }
         }
 
-        // ── Every time auth completes: land on Home, preload cart badge ──
+       
         .onChange(of: appCoordinator.hasCompletedAuth) { _, isAuthenticated in
             guard isAuthenticated else { return }
             selectedTab = .home
@@ -136,7 +136,6 @@ struct ContentView: View {
         }
     }
 
-    // MARK: - Auth Flow
 
     @MainActor
     private var authFlow: some View {
@@ -147,7 +146,6 @@ struct ContentView: View {
         .environment(appCoordinator.authCoordinator)
     }
 
-    // MARK: - Main Tab Flow
 
     @MainActor
     private var mainFlow: some View {
@@ -191,7 +189,17 @@ struct ContentView: View {
                 // Cart tab
                 Group {
                     if let cartViewModel {
-                        CartView(viewModel: cartViewModel, onGoShopping: { selectedTab = .home })
+                        CartView(
+                            viewModel: cartViewModel,
+                            onGoShopping: { selectedTab = .home },
+                            onProductTapped: { productId in
+                                let rawId = productId.components(separatedBy: "/").last ?? productId
+                                if let idInt = Int(rawId) {
+                                    appCoordinator.homeCoordinator.push(.productDetail(productId: idInt))
+                                    selectedTab = .home
+                                }
+                            }
+                        )
                     } else {
                         ProgressView()
                     }
@@ -385,7 +393,6 @@ struct ContentView: View {
     }
 
 
-    // MARK: - Session Restoration
 
     @MainActor
     private func restoreSession() async {

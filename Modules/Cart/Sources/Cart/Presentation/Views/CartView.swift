@@ -4,10 +4,12 @@ import Common
 public struct CartView: View {
     @State var viewModel: CartViewModel
     var onGoShopping: (() -> Void)?
+    var onProductTapped: ((String) -> Void)?
     
-    public init(viewModel: CartViewModel, onGoShopping: (() -> Void)? = nil) {
+    public init(viewModel: CartViewModel, onGoShopping: (() -> Void)? = nil, onProductTapped: ((String) -> Void)? = nil) {
         self.viewModel = viewModel
         self.onGoShopping = onGoShopping
+        self.onProductTapped = onProductTapped
     }
     
     public var body: some View {
@@ -82,7 +84,7 @@ public struct CartView: View {
                             onIncrease: { Task { await viewModel.increaseTapped(for: line) } },
                             onDecrease: { Task { await viewModel.decreaseTapped(for: line) } },
                             onRemove: { viewModel.requestRemoval(for: line) },
-                            onProductTap: { viewModel.productTapped(line: line) }
+                            onProductTap: { onProductTapped?(line.productId) }
                         )
                     }
                     
