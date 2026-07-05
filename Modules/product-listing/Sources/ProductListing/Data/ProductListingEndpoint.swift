@@ -14,7 +14,8 @@ public enum ProductListingEndpoint: Endpoint {
         case .allProducts:
             return "/products.json"
         case .collectionProducts(let id):
-            return "/collections/\(id)/products.json"
+            let numericId = id.components(separatedBy: "/").last ?? id
+            return "/collections/\(numericId)/products.json"
         }
     }
 

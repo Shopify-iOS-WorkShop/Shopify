@@ -16,17 +16,42 @@ import ShopifyNetwork
 import DataPersistence
 import Favorites
 import Cart
+import Settings
 
 struct ContentView: View {
+
+
     @State private var appCoordinator = AppCoordinator()
     @StateObject private var favoritesViewModel = AppAssembly.shared.makeFavoritesViewModel()
     @StateObject private var searchViewModel = AppAssembly.shared.makeSearchViewModel()
     @State private var sessionChecked: Bool = false
     @State private var selectedTab: Common.Tab = .home
-    @State private var cartViewModel: CartViewModel? = nil  // Initialize after session restore
-    @StateObject private var homeViewModel: HomeViewModel = AppAssembly.shared.resolve(HomeViewModel.self)
+    @State private var cartViewModel: CartViewModel? = nil
+
+   
+    @AppStorage("settings_colorScheme") private var colorSchemeRaw: Int = 0
+
+
+    @StateObject private var homeViewModel: HomeViewModel =
+        AppAssembly.shared.resolve(HomeViewModel.self)
+
+    @State private var settingsViewModel: SettingsViewModel =
+        AppAssembly.shared.resolve(SettingsViewModel.self)
+
     private let repository: AuthRepositoryProtocol = AuthRepositoryFactory.make()
-    private let sessionStore: SessionStore = AppAssembly.shared.resolve(SessionStore.self)
+    private let sessionStore: SessionStore         = AppAssembly.shared.resolve(SessionStore.self)
+    
+    private let currencyStore: CurrencyStore       = AppAssembly.shared.resolve(CurrencyStore.self)
+
+
+    private var preferredColorScheme: ColorScheme? {
+        switch colorSchemeRaw {
+        case 1: return .light
+        case 2: return .dark
+        default: return nil
+        }
+    }
+
 
     var body: some View {
         Group {
@@ -38,42 +63,89 @@ struct ContentView: View {
                 mainFlow
             }
         }
+        .preferredColorScheme(preferredColorScheme)
+
         .task {
-            // Restore session on app launch
             await restoreSession()
             sessionChecked = true
         }
+
         .onAppear {
             appCoordinator.productListingCoordinator.onNavigate = { [weak appCoordinator] route in
                 if case .productDetail(let id) = route {
                     appCoordinator?.homeCoordinator.push(.productDetail(productId: id))
                 }
             }
+
             
-            // Load setup for favorites
             favoritesViewModel.loadFavorites()
             
-            // Wire cart icon tap in Home → switch to Cart tab
-            appCoordinator.homeCoordinator.onCartTapped = {
+           
+            appCoordinator.homeCoordinator.onCartTapped = { [self] in
                 selectedTab = .cart
             }
+
+            
+            appCoordinator.settingsCoordinator.onSignOut = { [self] in
+                _ = await repository.signOut()
+                await MainActor.run {
+                    // Pop every NavigationStack to its root
+                    appCoordinator.homeCoordinator.path   = NavigationPath()
+                    appCoordinator.authCoordinator.path   = NavigationPath() // ensures Login, not Register
+                    appCoordinator.settingsCoordinator.popToRoot()
+                    // Clear data
+                    sessionStore.clearSession()
+                    cartViewModel = nil
+                    selectedTab   = .home
+                    // Show login screen
+                    appCoordinator.hasCompletedAuth = false
+                }
+            }
+
+            
+            settingsViewModel.onSignIn = { [self] in
+                appCoordinator.authCoordinator.path = NavigationPath()
+                appCoordinator.hasCompletedAuth     = false
+            }
+        }
+
+       
+        .onChange(of: appCoordinator.hasCompletedAuth) { _, isAuthenticated in
+            guard isAuthenticated else { return }
+            selectedTab = .home
+            appCoordinator.homeCoordinator.path = NavigationPath() // always show initial Home
+            // Recreate cart (picks up new session owner key) and load immediately
+            cartViewModel = AppAssembly.shared.resolve(CartViewModel.self)
+            Task { await cartViewModel?.onAppear() }
+        }
+
+        // ── Keep nav-bar cart badge in sync ──────────────────────────
+        .onChange(of: cartViewModel?.cartItemCount) { _, count in
+            appCoordinator.homeCoordinator.cartBadgeCount = count ?? 0
+        }
+
+        // ── Guest action prompt ───────────────────────────────────────
+        .alert("Sign In Required", isPresented: $appCoordinator.showGuestSignInPrompt) {
+            Button("Sign In") {
+                appCoordinator.authCoordinator.path = NavigationPath()
+                appCoordinator.hasCompletedAuth     = false
+            }
+            Button("Continue Browsing", role: .cancel) {}
+        } message: {
+            Text("Please sign in to add items to your cart and access your account.")
         }
     }
 
-    // MARK: - Auth flow
 
     @MainActor
     private var authFlow: some View {
         NavigationStack(path: $appCoordinator.authCoordinator.path) {
             LoginView(viewModel: LoginViewModel())
-                .navigationDestination(for: AuthRoute.self) { route in
-                    authDestination(for: route)
-                }
+                .navigationDestination(for: AuthRoute.self) { authDestination(for: $0) }
         }
         .environment(appCoordinator.authCoordinator)
     }
 
-    // MARK: - Main flow
 
     @MainActor
     private var mainFlow: some View {
@@ -99,9 +171,7 @@ struct ContentView: View {
                             )
                         }
                     )
-                    .navigationDestination(for: HomeRoute.self) { route in
-                        homeDestination(for: route)
-                    }
+                    .navigationDestination(for: HomeRoute.self) { homeDestination(for: $0) }
                 }
                 .environment(appCoordinator.homeCoordinator)
                 .tag(Common.Tab.home)
@@ -110,67 +180,68 @@ struct ContentView: View {
                 // Search tab
                 NavigationStack(path: $appCoordinator.searchCoordinator.path) {
                     SearchView(viewModel: searchViewModel)
-                        .navigationDestination(for: SearchRoute.self) { route in
-                            searchDestination(for: route)
-                        }
+                        .navigationDestination(for: SearchRoute.self) { searchDestination(for: $0) }
                 }
                 .environment(appCoordinator.searchCoordinator)
                 .tag(Common.Tab.search)
                 .toolbar(.hidden, for: .tabBar)
 
                 // Cart tab
-                if let cartViewModel {
-                    CartView(
-                        viewModel: cartViewModel,
-                        onGoShopping: {
-                            selectedTab = .home
+                NavigationStack(path: $appCoordinator.cartCoordinator.navigationPath) {
+                    Group {
+                        if let cartViewModel {
+                            CartView(
+                                viewModel: cartViewModel,
+                                onGoShopping: { selectedTab = .home },
+                                onProductTapped: { productId in
+                                    let rawId = productId.components(separatedBy: "/").last ?? productId
+                                    appCoordinator.cartCoordinator.navigationPath.append(
+                                        CartRoute.productDetails(productId: rawId, handle: "")
+                                    )
+                                }
+                            )
+                        } else {
+                            ProgressView()
                         }
-                    )
-                    .tag(Common.Tab.cart)
-                    .toolbar(.hidden, for: .tabBar)
-                } else {
-                    ProgressView()
-                        .tag(Common.Tab.cart)
-                        .toolbar(.hidden, for: .tabBar)
+                    }
+                    .navigationDestination(for: CartRoute.self) { cartDestination(for: $0) }
                 }
+                .environment(appCoordinator.cartCoordinator)
+                .tag(Common.Tab.cart)
+                .toolbar(.hidden, for: .tabBar)
 
-                // Wishlist tab
                 NavigationStack(path: $appCoordinator.favoritesCoordinator.path) {
                     FavoritesView(viewModel: favoritesViewModel)
-                        .navigationDestination(for: FavoritesRoute.self) { route in
-                            favoritesDestination(for: route)
-                        }
+                        .navigationDestination(for: FavoritesRoute.self) { favoritesDestination(for: $0) }
                 }
                 .environment(appCoordinator.favoritesCoordinator)
                 .tag(Common.Tab.wishlist)
                 .toolbar(.hidden, for: .tabBar)
 
                 // Account tab
-                Text("Account View")
+                SettingsView(viewModel: settingsViewModel)
+                    .environment(appCoordinator.settingsCoordinator)
                     .tag(Common.Tab.account)
                     .toolbar(.hidden, for: .tabBar)
             }
+            .environment(currencyStore) // Available globally to all tabs
             .toolbar(.hidden, for: .tabBar)
 
             CustomTabBar(
                 selectedTab: $selectedTab,
-                cartBadgeCount: cartViewModel?.cartItemCount ?? 0
+                cartBadgeCount: cartViewModel?.cartItemCount ?? 0,
+                onTabTapped: { tappedTab in
+                    if tappedTab == .account {
+                        appCoordinator.settingsCoordinator.popToRoot()
+                    }
+                }
             )
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
-        .onChange(of: cartViewModel?.cartItemCount) { _, newValue in
-            appCoordinator.homeCoordinator.cartBadgeCount = newValue ?? 0
-        }
-        .task {
-            // Initialize cart badge count
-            appCoordinator.homeCoordinator.cartBadgeCount = cartViewModel?.cartItemCount ?? 0
-        }
     }
 
-    // MARK: - Destinations
 
-    @MainActor
-    @ViewBuilder
+    @MainActor @ViewBuilder
     private func authDestination(for route: AuthRoute) -> some View {
         switch route {
         case .login:
@@ -184,8 +255,7 @@ struct ContentView: View {
         }
     }
 
-    @MainActor
-    @ViewBuilder
+    @MainActor @ViewBuilder
     private func homeDestination(for route: HomeRoute) -> some View {
         switch route {
         case .productListing(let collectionId, let title):
@@ -226,6 +296,11 @@ struct ContentView: View {
                     }
                 },
                 onAddToCart: { [cartViewModel] variantId, quantity in
+                    // Block guests — sessionStore is a class ref, checked at call time
+                    guard sessionStore.current != nil else {
+                        appCoordinator.showGuestSignInPrompt = true
+                        return nil
+                    }
                     guard let cartViewModel else { return "Cart not initialized" }
                     return await cartViewModel.addLine(variantId: variantId, quantity: quantity)
                 }
@@ -320,29 +395,66 @@ struct ContentView: View {
         }
     }
 
-    // MARK: - Session Restoration
-    
+    @MainActor
+    @ViewBuilder
+    private func cartDestination(for route: CartRoute) -> some View {
+        switch route {
+        case .productDetails(let productId, _):
+            if let idInt = Int(productId) {
+                ProductDetailFactory.makeView(
+                    productId: idInt,
+                    checkIsFavorite: { [weak favoritesViewModel] id in
+                        favoritesViewModel?.isFavorite(productId: id) ?? false
+                    },
+                    onToggleFavorite: { [weak favoritesViewModel] id, title, vendor, price, rating, imageURL in
+                        guard let vm = favoritesViewModel else { return }
+                        if vm.isFavorite(productId: id) {
+                            vm.remove(productId: id)
+                        } else {
+                            vm.add(product: FavoriteProduct(
+                                id: id,
+                                title: title,
+                                vendor: vendor,
+                                price: price,
+                                rating: rating,
+                                imageURL: imageURL.flatMap(URL.init(string:)),
+                                productType: "",
+                                isInStock: true
+                            ))
+                        }
+                    },
+                    onAddToCart: { [cartViewModel] variantId, quantity in
+                        guard sessionStore.current != nil else {
+                            appCoordinator.showGuestSignInPrompt = true
+                            return nil
+                        }
+                        guard let cartViewModel else { return "Cart not initialized" }
+                        return await cartViewModel.addLine(variantId: variantId, quantity: quantity)
+                    }
+                )
+            } else {
+                Text("Invalid product ID")
+            }
+        case .checkout, .signInRequired, .cart:
+            EmptyView()
+        }
+    }
+
+
+
     @MainActor
     private func restoreSession() async {
-        // Get persisted session from local storage
         guard let session = repository.currentSession(), session.isValid else {
-            appCoordinator.hasCompletedAuth = false
-            // Create cart for guest mode
-            cartViewModel = AppAssembly.shared.resolve(CartViewModel.self)
+            sessionStore.clearSession()
+            // No valid session — show the Login screen.
+            // hasCompletedAuth stays false (its default), so authFlow is displayed.
+            // The user can log in or tap "Continue as Guest" from the Login screen.
             return
         }
-        
-        // Update SessionStore so all modules can access the session
         sessionStore.updateSession(session.toCommonSession())
-        
-        // NOW create CartViewModel with correct session
-        cartViewModel = AppAssembly.shared.resolve(CartViewModel.self)
-        
-        // Mark auth as completed
+        // Authenticated: onChange will create + load cartViewModel
         appCoordinator.hasCompletedAuth = true
     }
 }
 
-#Preview {
-    ContentView()
-}
+#Preview { ContentView() }

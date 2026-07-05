@@ -21,6 +21,7 @@
 		6D0B9DB62FF817B500F50859 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 6D0B9DB52FF817B500F50859 /* FirebaseAnalytics */; };
 		6DBB6C442FF69B4C00E3E198 /* search in Frameworks */ = {isa = PBXBuildFile; productRef = 6DBB6C432FF69B4C00E3E198 /* search */; };
 		7879208D2FF80BF2009EFC6F /* AppAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7879208C2FF80BF2009EFC6F /* AppAssembly.swift */; };
+		789931162FFADBE5009F76F7 /* Settings in Frameworks */ = {isa = PBXBuildFile; productRef = 789931152FFADBE5009F76F7 /* Settings */; };
 		78BFEC8B2FEFCB6800358550 /* ShopifyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78BFEC8A2FEFCB6800358550 /* ShopifyApp.swift */; };
 		78BFEC8D2FEFCB6800358550 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78BFEC8C2FEFCB6800358550 /* ContentView.swift */; };
 		78BFEC8F2FEFCB6A00358550 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 78BFEC8E2FEFCB6A00358550 /* Assets.xcassets */; };
@@ -49,6 +50,7 @@
 				6D06F6F52FF946280034F8D9 /* Favorites in Frameworks */,
 				6D0B9DB02FF8179800F50859 /* ProductListing in Frameworks */,
 				6D0B9DB22FF817A100F50859 /* ShopifyNetwork in Frameworks */,
+				789931162FFADBE5009F76F7 /* Settings in Frameworks */,
 				78DCBFF82FF8218100C552AF /* Cart in Frameworks */,
 				6DBB6C442FF69B4C00E3E198 /* search in Frameworks */,
 				6D0B9DAA2FF8178300F50859 /* DataPersistence in Frameworks */,
@@ -137,11 +139,9 @@
 				6D0B9DB12FF817A100F50859 /* ShopifyNetwork */,
 				6D0B9DB32FF817AC00F50859 /* GoogleSignIn */,
 				6D0B9DB52FF817B500F50859 /* FirebaseAnalytics */,
-
 				6D06F6F42FF946280034F8D9 /* Favorites */,
-
 				78DCBFF72FF8218100C552AF /* Cart */,
-
+				789931152FFADBE5009F76F7 /* Settings */,
 			);
 			productName = Shopify;
 			productReference = 78BFEC872FEFCB6800358550 /* Shopify.app */;
@@ -476,6 +476,10 @@
 		6DBB6C432FF69B4C00E3E198 /* search */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = search;
+		};
+		789931152FFADBE5009F76F7 /* Settings */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Settings;
 		};
 		78DCBFF72FF8218100C552AF /* Cart */ = {
 			isa = XCSwiftPackageProductDependency;

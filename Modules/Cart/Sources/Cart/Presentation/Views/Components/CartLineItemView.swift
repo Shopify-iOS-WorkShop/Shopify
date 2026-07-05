@@ -7,6 +7,7 @@ public struct CartLineItemView: View {
     let onDecrease: () -> Void
     let onRemove: () -> Void
     let onProductTap: () -> Void
+    @Environment(CurrencyStore.self) private var currencyStore
     
     public init(
         line: CartLine,
@@ -26,11 +27,15 @@ public struct CartLineItemView: View {
         HStack(alignment: .top, spacing: 12) {
             // Product Image
             if let imageURL = line.imageURL {
-                AsyncImage(url: imageURL) { image in
-                    image.resizable()
+                CachedAsyncImage(url: imageURL) { image in
+                    image
+                        .resizable()
                         .aspectRatio(contentMode: .fill)
                 } placeholder: {
                     Color.gray.opacity(0.2)
+                        .overlay {
+                            ProgressView()
+                        }
                 }
                 .frame(width: 80, height: 80)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
@@ -39,6 +44,10 @@ public struct CartLineItemView: View {
                 RoundedRectangle(cornerRadius: 8)
                     .fill(Color.gray.opacity(0.2))
                     .frame(width: 80, height: 80)
+                    .overlay {
+                        Image(systemName: "photo")
+                            .foregroundColor(.gray)
+                    }
                     .onTapGesture(perform: onProductTap)
             }
             
@@ -67,11 +76,11 @@ public struct CartLineItemView: View {
                 
                 // Price
                 HStack {
-                    Text(line.price.formatted)
+                    Text(currencyStore.convert(line.price.amount))
                         .fontWeight(.bold)
                     
                     if let compareAt = line.compareAtPrice, compareAt.amount > line.price.amount {
-                        Text(compareAt.formatted)
+                        Text(currencyStore.convert(compareAt.amount))
                             .strikethrough()
                             .foregroundColor(.secondary)
                             .font(.caption)

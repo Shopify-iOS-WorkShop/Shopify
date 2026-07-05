@@ -11,18 +11,24 @@ import Observation
 import Auth
 import Home
 import ProductListing
+import Settings
 import Favorites
 import search
+import Cart
 
 @Observable
 public final class AppCoordinator {
     public var hasCompletedAuth: Bool = false
 
+    public var showGuestSignInPrompt: Bool = false
+
     public var authCoordinator = AuthCoordinator()
     public var homeCoordinator = HomeCoordinator()
     public var productListingCoordinator = ProductListingCoordinator()
+    public var settingsCoordinator = SettingsCoordinator()
     public var favoritesCoordinator = FavoritesCoordinator()
     public var searchCoordinator = SearchCoordinator()
+    public var cartCoordinator = CartCoordinator()
 
     public init() {
         setupCallbacks()
