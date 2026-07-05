@@ -42,12 +42,22 @@ public final class AuthRepository: AuthRepositoryProtocol {
     public func signIn(email: String, password: String) async -> Result<Session, AuthError> {
         do {
             let user = try await firebaseDataSource.signIn(email: email, password: password)
-            let session = try await shopifyDataSource.createAccessToken(
+            let tempSession = try await shopifyDataSource.createAccessToken(
                 credentials: ShopifyCustomerCredentials(email: email, password: password),
                 firebaseUID: user.uid
             )
-            try sessionLocalDataSource.save(session)
-            return .success(session)
+            
+            let numericId = try await shopifyDataSource.fetchCustomerId(accessToken: tempSession.customerAccessToken)
+            print(numericId)
+            let finalSession = Session(
+                customerAccessToken: tempSession.customerAccessToken,
+                expiresAt: tempSession.expiresAt,
+                customerId: numericId,
+                firebaseUID: user.uid
+            )
+            
+            try sessionLocalDataSource.save(finalSession)
+            return .success(finalSession)
         } catch {
             return .failure(mapError(error))
         }
