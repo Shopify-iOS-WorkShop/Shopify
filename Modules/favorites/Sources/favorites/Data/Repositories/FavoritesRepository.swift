@@ -1,18 +1,27 @@
 import Foundation
+import Common
 
 public final class FavoritesRepository: FavoritesRepositoryProtocol {
     private let localDataSource: FavoritesLocalDataSource
+    private let sessionProvider: SessionProviding
 
-    public init(localDataSource: FavoritesLocalDataSource) {
+    public init(localDataSource: FavoritesLocalDataSource, sessionProvider: SessionProviding) {
         self.localDataSource = localDataSource
+        self.sessionProvider = sessionProvider
     }
 
     public func addToFavorites(_ product: FavoriteProduct) -> Result<Void, FavoritesError> {
+        guard let userId = sessionProvider.current?.firebaseUID else {
+            return .failure(.unauthorized)
+        }
+
         if isFavorite(productId: product.id) {
             return .failure(.alreadyFavorited)
         }
 
         let item = FavoriteItem(
+            id: "\(userId)_\(product.id)",
+            userId: userId,
             productId: product.id,
             title: product.title,
             vendor: product.vendor,
@@ -32,8 +41,12 @@ public final class FavoritesRepository: FavoritesRepositoryProtocol {
     }
 
     public func removeFromFavorites(productId: String) -> Result<Void, FavoritesError> {
+        guard let userId = sessionProvider.current?.firebaseUID else {
+            return .failure(.unauthorized)
+        }
+
         do {
-            try localDataSource.delete(productId: productId)
+            try localDataSource.delete(productId: productId, userId: userId)
             return .success(())
         } catch FavoritesLocalDataSourceError.notFound {
             return .failure(.notFound)
@@ -43,8 +56,12 @@ public final class FavoritesRepository: FavoritesRepositoryProtocol {
     }
 
     public func fetchFavorites() -> Result<[FavoriteProduct], FavoritesError> {
+        guard let userId = sessionProvider.current?.firebaseUID else {
+            return .failure(.unauthorized)
+        }
+
         do {
-            let items = try localDataSource.fetchAll()
+            let items = try localDataSource.fetchAll(userId: userId)
             return .success(items.map(\.asDomain))
         } catch {
             return .failure(.fetchFailed(error.localizedDescription))
@@ -52,7 +69,10 @@ public final class FavoritesRepository: FavoritesRepositoryProtocol {
     }
 
     public func isFavorite(productId: String) -> Bool {
-        (try? localDataSource.find(productId: productId)) != nil
+        guard let userId = sessionProvider.current?.firebaseUID else {
+            return false
+        }
+        return (try? localDataSource.find(productId: productId, userId: userId)) != nil
     }
 }
 

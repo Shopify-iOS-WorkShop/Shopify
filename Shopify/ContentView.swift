@@ -96,6 +96,7 @@ struct ContentView: View {
                     // Clear data
                     sessionStore.clearSession()
                     cartViewModel = nil
+                    favoritesViewModel.clearFavorites()
                     selectedTab   = .home
                     // Show login screen
                     appCoordinator.hasCompletedAuth = false
@@ -117,6 +118,9 @@ struct ContentView: View {
             // Recreate cart (picks up new session owner key) and load immediately
             cartViewModel = AppAssembly.shared.resolve(CartViewModel.self)
             Task { await cartViewModel?.onAppear() }
+            
+            // Reload favorites to update Home view for the newly logged-in user
+            favoritesViewModel.loadFavorites()
         }
 
         // ── Keep nav-bar cart badge in sync ──────────────────────────
@@ -157,6 +161,10 @@ struct ContentView: View {
                         viewModel: homeViewModel,
                         favoritedIDs: favoritesViewModel.favoritedIDs,
                         onFavoriteTap: { product in
+                            guard sessionStore.current != nil else {
+                                appCoordinator.showGuestSignInPrompt = true
+                                return
+                            }
                             favoritesViewModel.toggleFavorite(
                                 product: FavoriteProduct(
                                     id: product.id,
@@ -238,6 +246,12 @@ struct ContentView: View {
             )
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
+        .onChange(of: selectedTab) { oldTab, newTab in
+            if newTab == .wishlist && sessionStore.current == nil {
+                appCoordinator.showGuestSignInPrompt = true
+                selectedTab = oldTab // revert
+            }
+        }
     }
 
 
@@ -279,6 +293,10 @@ struct ContentView: View {
                     favoritesViewModel?.isFavorite(productId: id) ?? false
                 },
                 onToggleFavorite: { [weak favoritesViewModel] id, title, vendor, price, rating, imageURL in
+                    guard sessionStore.current != nil else {
+                        appCoordinator.showGuestSignInPrompt = true
+                        return
+                    }
                     guard let vm = favoritesViewModel else { return }
                     if vm.isFavorite(productId: id) {
                         vm.remove(productId: id)
@@ -326,6 +344,10 @@ struct ContentView: View {
                     favoritesViewModel?.isFavorite(productId: id) ?? false
                 },
                 onToggleFavorite: { [weak favoritesViewModel] id, title, vendor, price, rating, imageURL in
+                    guard sessionStore.current != nil else {
+                        appCoordinator.showGuestSignInPrompt = true
+                        return
+                    }
                     guard let vm = favoritesViewModel else { return }
                     if vm.isFavorite(productId: id) {
                         vm.remove(productId: id)
@@ -361,6 +383,10 @@ struct ContentView: View {
                     favoritesViewModel?.isFavorite(productId: id) ?? false
                 },
                 onToggleFavorite: { [weak favoritesViewModel] id, title, vendor, price, rating, imageURL in
+                    guard sessionStore.current != nil else {
+                        appCoordinator.showGuestSignInPrompt = true
+                        return
+                    }
                     guard let vm = favoritesViewModel else { return }
                     if vm.isFavorite(productId: id) {
                         vm.remove(productId: id)
@@ -407,6 +433,10 @@ struct ContentView: View {
                         favoritesViewModel?.isFavorite(productId: id) ?? false
                     },
                     onToggleFavorite: { [weak favoritesViewModel] id, title, vendor, price, rating, imageURL in
+                        guard sessionStore.current != nil else {
+                            appCoordinator.showGuestSignInPrompt = true
+                            return
+                        }
                         guard let vm = favoritesViewModel else { return }
                         if vm.isFavorite(productId: id) {
                             vm.remove(productId: id)

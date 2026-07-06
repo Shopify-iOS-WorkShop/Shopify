@@ -54,6 +54,11 @@ public final class FavoritesViewModel: ObservableObject {
         }
     }
 
+    public func clearFavorites() {
+        favoritedIDs.removeAll()
+        state = .idle
+    }
+
     public func remove(productId: String) {
         switch removeFromFavoritesUseCase.execute(productId: productId) {
         case .success:
