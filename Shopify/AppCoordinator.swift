@@ -87,5 +87,5 @@ public final class AppCoordinator {
                     self?.homeCoordinator.push(.productListing(collectionId: collectionId, title: title))
                 }
         }
-    }
+    
 }

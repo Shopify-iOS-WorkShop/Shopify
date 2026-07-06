@@ -16,7 +16,7 @@ public final class CartViewModel {
     public private(set) var pendingRemovalLineId: String? = nil
     public var isShowingClearCartConfirmation: Bool = false
     public var onCheckoutRequested: (() -> Void)?
-    
+    public var onSignInRequired: (() -> Void)?
     public var isEmpty: Bool {
         return cart?.lines.isEmpty ?? true
     }
@@ -218,6 +218,7 @@ public final class CartViewModel {
     
     public func requestCheckout() {
         guard sessionStore.current != nil else {
+            onSignInRequired?()
             return
         }
         onCheckoutRequested?()

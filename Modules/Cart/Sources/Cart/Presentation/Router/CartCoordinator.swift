@@ -18,6 +18,9 @@ public final class CartCoordinator {
                 guard let cart = viewModel?.cart else { return }
                 self?.navigateTo(.checkout(cart: cart))
         }
+        viewModel.onSignInRequired = { [weak self] in
+            self?.navigateTo(.signInRequired)
+        }
         return CartView(viewModel: viewModel, onGoShopping: onGoShopping)
     }
 

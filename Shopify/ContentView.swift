@@ -180,7 +180,7 @@ struct ContentView: View {
                 .toolbar(.hidden, for: .tabBar)
 
                 // Cart tab
-                NavigationStack(path: $appCoordinator.cartCoordinator.navigationPath) {
+                                NavigationStack(path: $appCoordinator.cartCoordinator.navigationPath) {
                                     Group {
                                         if let cartViewModel {
                                             CartView(
@@ -193,15 +193,25 @@ struct ContentView: View {
                                                     )
                                                 }
                                             )
+                                            .onAppear {
+                                                cartViewModel.onCheckoutRequested = {
+                                                    guard let cart = cartViewModel.cart else { return }
+                                                    appCoordinator.cartCoordinator.navigateTo(.checkout(cart: cart))
+                                                }
+                                                
+                                                cartViewModel.onSignInRequired = {
+                                                    appCoordinator.showGuestSignInPrompt = true
+                                                }
+                                            }
                                         } else {
                                             ProgressView()
                                         }
                                     }
                                     .navigationDestination(for: CartRoute.self) { cartDestination(for: $0) }
-                }
-                .environment(appCoordinator.cartCoordinator)
-                .tag(Common.Tab.cart)
-                .toolbar(.hidden, for: .tabBar)
+                                }
+                                .environment(appCoordinator.cartCoordinator)
+                                .tag(Common.Tab.cart)
+                                .toolbar(.hidden, for: .tabBar)
 
                 NavigationStack(path: $appCoordinator.favoritesCoordinator.path) {
                     FavoritesView(viewModel: favoritesViewModel)
