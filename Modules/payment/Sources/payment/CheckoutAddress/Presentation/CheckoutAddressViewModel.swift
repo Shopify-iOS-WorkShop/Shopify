@@ -17,6 +17,7 @@ public class CheckoutAddressViewModel: ObservableObject {
     @Published public var mobileNumber: String = ""
     @Published public var city: String = ""
     @Published public var street: String = ""
+    @Published public var country: String = ""
     
     @Published public var isLoading: Bool = false
     @Published public var errorMessage: String?
@@ -52,6 +53,7 @@ public class CheckoutAddressViewModel: ObservableObject {
         mobileNumber = address.mobileNumber
         city = address.city
         street = address.street
+        country = address.country
     }
     
     private func hasModifications() -> Bool {
@@ -59,13 +61,25 @@ public class CheckoutAddressViewModel: ObservableObject {
         return recipientName != original.recipientName ||
                mobileNumber != original.mobileNumber ||
                city != original.city ||
-               street != original.street
+               street != original.street ||
+               country != original.country
     }
     
     
     public func prepareForCheckout() -> Bool {
-        guard !recipientName.isEmpty, !mobileNumber.isEmpty, !city.isEmpty, !street.isEmpty else {
+        let name = recipientName.trimmingCharacters(in: .whitespaces)
+        let num = mobileNumber.trimmingCharacters(in: .whitespaces)
+        let cty = city.trimmingCharacters(in: .whitespaces)
+        let str = street.trimmingCharacters(in: .whitespaces)
+        
+        guard !name.isEmpty, !num.isEmpty, !cty.isEmpty, !str.isEmpty else {
             errorMessage = "Please fill in all fields"
+            return false
+        }
+        
+        let nameComponents = name.components(separatedBy: " ")
+        guard nameComponents.count >= 2 else {
+            errorMessage = "Please enter both your first and last name"
             return false
         }
         
@@ -109,5 +123,6 @@ public class CheckoutAddressViewModel: ObservableObject {
         self.mobileNumber = originalAddress.mobileNumber
         self.city = originalAddress.city
         self.street = originalAddress.street
+        self.country = originalAddress.country
     }
 }

@@ -84,16 +84,14 @@ public struct CheckoutAddressView: View {
                     CustomInputField(title: "RECIPIENT NAME", placeholder: "e.g. Johnathan Doe", text: $viewModel.recipientName)
                     CustomInputField(title: "MOBILE NUMBER", placeholder: "+2 (___) ___-____", text: $viewModel.mobileNumber)
                         .keyboardType(.phonePad)
-                        .onChange(of: viewModel.mobileNumber) { _, newValue in
-                            let filtered = newValue.filter { $0.isNumber || $0 == "+" }
-                            if filtered != newValue { viewModel.mobileNumber = filtered }
-                        }
                     HStack(spacing: 16) {
                         CustomInputField(title: "CITY", placeholder: "City", text: $viewModel.city)
                         CustomInputField(title: "STREET", placeholder: "Street name", text: $viewModel.street)
                     }
                 }
                 .padding(.horizontal, 20)
+                .disabled(viewModel.selectedAddress == nil)
+                .opacity(viewModel.selectedAddress == nil ? 0.5 : 1.0)
             }
         }
         .onTapGesture { UIApplication.shared.endEditing() }
@@ -116,15 +114,18 @@ public struct CheckoutAddressView: View {
         VStack {
             Button(action: {
                 if viewModel.prepareForCheckout() {
+                    let nameParts = viewModel.recipientName.trimmingCharacters(in: .whitespaces).components(separatedBy: " ")
+                    let firstName = nameParts.first ?? ""
+                    let lastName = nameParts.dropFirst().joined(separator: " ")
+                    
                     coordinator.selectedAddress = CheckoutAddress(
                         address1: viewModel.street,
                         city: viewModel.city,
-                        country: "EG",
-                        firstName: viewModel.recipientName,
-                        lastName: "",
+                        country: viewModel.country,
+                        firstName: firstName,
+                        lastName: lastName,
                         phone: viewModel.mobileNumber
                     )
-                    
                     coordinator.push(.payment)
                 }
             }) {
@@ -137,9 +138,10 @@ public struct CheckoutAddressView: View {
                 .foregroundColor(.white)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 16)
-                .background(DS.red)
+                .background(viewModel.selectedAddress == nil ? Color.gray : DS.red)
                 .cornerRadius(12)
             }
+            .disabled(viewModel.selectedAddress == nil)
             .padding(.horizontal, 20)
             .padding(.vertical, 16)
         }
@@ -151,14 +153,15 @@ public struct CheckoutAddressView: View {
             Button("Save & Proceed") {
                 Task {
                     let success = await viewModel.confirmAndSaveAddress()
-                    
                     if success {
+                        let nameParts = viewModel.recipientName.trimmingCharacters(in: .whitespaces).components(separatedBy: " ")
+                        
                         coordinator.selectedAddress = CheckoutAddress(
                             address1: viewModel.street,
                             city: viewModel.city,
-                            country: "EG",
-                            firstName: viewModel.recipientName,
-                            lastName: "",
+                            country: viewModel.country,
+                            firstName: nameParts.first ?? "",
+                            lastName: nameParts.dropFirst().joined(separator: " "),
                             phone: viewModel.mobileNumber
                         )
                         coordinator.push(.payment)
@@ -177,9 +180,7 @@ public struct CheckoutAddressView: View {
         )) {
             Button("OK", role: .cancel) { }
         } message: {
-            if let errorMessage = viewModel.errorMessage {
-                Text(errorMessage)
-            }
+            if let errorMessage = viewModel.errorMessage { Text(errorMessage) }
         }
     }
 }

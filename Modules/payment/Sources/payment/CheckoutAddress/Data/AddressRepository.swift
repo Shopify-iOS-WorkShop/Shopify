@@ -54,7 +54,8 @@ public final class AddressRepository: AddressRepositoryProtocol {
                 recipientName: "\(node.firstName ?? "") \(node.lastName ?? "")".trimmingCharacters(in: .whitespaces),
                 mobileNumber: node.phone ?? "",
                 city: node.city ?? "",
-                street: node.address1 ?? ""
+                street: node.address1 ?? "",
+                country: node.country ?? "EG"
             )
         }
         }
@@ -67,10 +68,11 @@ public final class AddressRepository: AddressRepositoryProtocol {
             let input = ShopifyAPI.MailingAddressInput(
                 address1: .some(address.street),
                 city: .some(address.city),
-                country: .some("EG"),
+                country: .some(address.country),
                 firstName: .some(nameParts.first ?? ""),
                 lastName: .some(nameParts.dropFirst().joined(separator: " ")),
-                phone: .some(address.mobileNumber)
+                phone: .some(address.mobileNumber),
+                province: .some("ALX")
             )
             
             let mutation = ShopifyAPI.CustomerAddressUpdateMutation(customerAccessToken: token, id: address.id, address: input)

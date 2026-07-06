@@ -15,8 +15,10 @@ public struct Address: Identifiable, Equatable {
     public let mobileNumber: String
     public let city: String
     public let street: String
+    public let country: String
 
-    public init(id: String = UUID().uuidString, title: String, details: String, recipientName: String = "", mobileNumber: String = "", city: String = "", street: String = "") {
+    public init(id: String = UUID().uuidString,title: String,details: String,recipientName: String = "",mobileNumber: String = "",city: String = "",street: String = "",country: String = "EG"
+    ) {
         self.id = id
         self.title = title
         self.details = details
@@ -24,5 +26,6 @@ public struct Address: Identifiable, Equatable {
         self.mobileNumber = mobileNumber
         self.city = city
         self.street = street
+        self.country = country
     }
 }
