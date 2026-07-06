@@ -98,6 +98,9 @@ public struct CartView: View {
                     
                     CartSummaryView(
                         cost: cart.cost,
+                        originalSubtotal: viewModel.originalSubtotal,
+                        discountAmount: viewModel.productDiscountAmount,
+                        activeDiscountCodes: cart.discountCodes,
                         onCheckout: {
                             viewModel.requestCheckout()
                         }

@@ -20,6 +20,16 @@ public final class CartViewModel {
         return cart?.lines.isEmpty ?? true
     }
     
+    public var originalSubtotal: Decimal {
+        cart?.lines.reduce(Decimal(0)) { $0 + ($1.price.amount * Decimal($1.quantity)) } ?? Decimal(0)
+    }
+    
+    public var productDiscountAmount: Decimal {
+        let total = cart?.cost.totalAmount.amount ?? Decimal(0)
+        let original = originalSubtotal
+        return original > total ? original - total : Decimal(0)
+    }
+    
     // MARK: - Dependencies
     private let getOrCreateCartUseCase: GetOrCreateCartUseCase
     private let addCartLineUseCase: AddCartLineUseCase
@@ -62,6 +72,7 @@ public final class CartViewModel {
         try? await Task.sleep(nanoseconds: 500_000_000)
         
         errorMessage = nil
+        successMessage = nil
         
         let result = await getOrCreateCartUseCase.execute()
         switch result {
@@ -78,6 +89,9 @@ public final class CartViewModel {
             for await updatedCart in observeCartUseCase.execute() {
                 await MainActor.run {
                     self.cart = updatedCart
+                    if let cartId = updatedCart?.id {
+                        print("🛒 [CartViewModel] Current Cart ID: \(cartId)")
+                    }
                 }
             }
         }
@@ -159,9 +173,16 @@ public final class CartViewModel {
         
         isApplyingDiscount = false
         switch result {
-        case .success:
-            successMessage = "Discount '\(code)' applied!"
-            discountCodeInput = ""
+        case .success(let updatedCart):
+            // Check if the code was marked as applicable
+            if let appliedCode = updatedCart.discountCodes.first(where: { $0.code == code }), !appliedCode.applicable {
+                errorMessage = "Discount code '\(code)' is invalid or not applicable."
+                // Remove the inapplicable code so it doesn't stay stuck on the cart
+                Task { await removeDiscountUseCase.execute(code: code) }
+            } else {
+                successMessage = "Discount '\(code)' applied!"
+                discountCodeInput = ""
+            }
         case .failure(let error):
             errorMessage = error.userFacingMessage
         }
