@@ -138,26 +138,26 @@
 			dependencies = (
 			);
 			name = Shopify;
-            packageProductDependencies = (
-                6DBB6C432FF69B4C00E3E198 /* search */,
-                6D0B9DA52FF8177400F50859 /* Auth */,
-                6D0B9DA72FF8177B00F50859 /* Common */,
-                6D0B9DA92FF8178300F50859 /* DataPersistence */,
-                6D0B9DAB2FF8178A00F50859 /* Home */,
-                6D0B9DAD2FF8179100F50859 /* ProductDetails */,
-                6D0B9DAF2FF8179800F50859 /* ProductListing */,
-                6D0B9DB12FF817A100F50859 /* ShopifyNetwork */,
-                6D0B9DB32FF817AC00F50859 /* GoogleSignIn */,
-                6D0B9DB52FF817B500F50859 /* FirebaseAnalytics */,
-                6D06F6F42FF946280034F8D9 /* Favorites */,
-                78DCBFF72FF8218100C552AF /* Cart */,
-                31170F792FF7EA880017293F /* Payment */,
-                315646262FFA70F6005620F2 /* ShopifyAdminNetwork */,
-                31091F1F2FF9941000EA2C1C /* Stripe */,
-                31091F212FF9941000EA2C1C /* StripeApplePay */,
-                31091F312FF9941000EA2C1C /* StripePayments */,
-                789931152FFADBE5009F76F7 /* Settings */,
-            );
+			packageProductDependencies = (
+				6DBB6C432FF69B4C00E3E198 /* search */,
+				6D0B9DA52FF8177400F50859 /* Auth */,
+				6D0B9DA72FF8177B00F50859 /* Common */,
+				6D0B9DA92FF8178300F50859 /* DataPersistence */,
+				6D0B9DAB2FF8178A00F50859 /* Home */,
+				6D0B9DAD2FF8179100F50859 /* ProductDetails */,
+				6D0B9DAF2FF8179800F50859 /* ProductListing */,
+				6D0B9DB12FF817A100F50859 /* ShopifyNetwork */,
+				6D0B9DB32FF817AC00F50859 /* GoogleSignIn */,
+				6D0B9DB52FF817B500F50859 /* FirebaseAnalytics */,
+				6D06F6F42FF946280034F8D9 /* Favorites */,
+				78DCBFF72FF8218100C552AF /* Cart */,
+				31170F792FF7EA880017293F /* Payment */,
+				315646262FFA70F6005620F2 /* ShopifyAdminNetwork */,
+				31091F1F2FF9941000EA2C1C /* Stripe */,
+				31091F212FF9941000EA2C1C /* StripeApplePay */,
+				31091F312FF9941000EA2C1C /* StripePayments */,
+				789931152FFADBE5009F76F7 /* Settings */,
+			);
 			productName = Shopify;
 			productReference = 78BFEC872FEFCB6800358550 /* Shopify.app */;
 			productType = "com.apple.product-type.application";
