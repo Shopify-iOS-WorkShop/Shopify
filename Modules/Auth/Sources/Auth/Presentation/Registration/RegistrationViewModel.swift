@@ -65,6 +65,18 @@ public final class RegistrationViewModel: ObservableObject {
         guard !email.isEmpty else { return nil }
         return isValidEmail(email) ? nil : "Please enter a valid email address"
     }
+    
+    public var nameValidationError: String? {
+        guard !fullName.isEmpty else { return nil }
+        let nameParts = resolvedNameParts
+        if nameParts.firstName.isEmpty {
+            return "First name is required"
+        }
+        if nameParts.lastName.isEmpty {
+            return "Last name is required. Please enter full name (e.g., John Doe)"
+        }
+        return nil
+    }
 
     // MARK: - Register Action
     public func register() {
@@ -149,8 +161,13 @@ public final class RegistrationViewModel: ObservableObject {
 
     // MARK: - Helpers
     private func validate() -> Bool {
-        if !isNameValid {
-            errorMessage = "Full name is required."
+        let nameParts = resolvedNameParts
+        if nameParts.firstName.isEmpty {
+            errorMessage = "First name is required."
+            return false
+        }
+        if nameParts.lastName.isEmpty {
+            errorMessage = "Last name is required. Please enter your full name (e.g., John Doe)."
             return false
         }
         if !isValidEmail(email) {
@@ -174,11 +191,8 @@ public final class RegistrationViewModel: ObservableObject {
     }
 
     private var isNameValid: Bool {
-        !fullName.trimmingCharacters(in: .whitespaces).isEmpty ||
-        (
-            !firstName.trimmingCharacters(in: .whitespaces).isEmpty &&
-            !lastName.trimmingCharacters(in: .whitespaces).isEmpty
-        )
+        let nameParts = resolvedNameParts
+        return !nameParts.firstName.isEmpty && !nameParts.lastName.isEmpty
     }
 
     private var registrationName: String {

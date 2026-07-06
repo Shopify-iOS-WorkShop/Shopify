@@ -18,6 +18,27 @@ import Favorites
 import Cart
 import Settings
 
+enum GuestPromptContext {
+    case addToCart
+    case addToFavorites
+    
+    var title: String {
+        switch self {
+        case .addToCart: return "Sign In to Add to Cart"
+        case .addToFavorites: return "Sign In to Add to Favorites"
+        }
+    }
+    
+    var message: String {
+        switch self {
+        case .addToCart:
+            return "Please sign in to add items to your cart and manage your shopping."
+        case .addToFavorites:
+            return "Please sign in to save items to your favorites and access them across devices."
+        }
+    }
+}
+
 struct ContentView: View {
 
 
@@ -27,6 +48,7 @@ struct ContentView: View {
     @State private var sessionChecked: Bool = false
     @State private var selectedTab: Common.Tab = .home
     @State private var cartViewModel: CartViewModel? = nil
+    @State private var guestPromptContext: GuestPromptContext? = nil
 
    
     @AppStorage("settings_colorScheme") private var colorSchemeRaw: Int = 0
@@ -129,14 +151,28 @@ struct ContentView: View {
         }
 
         // ── Guest action prompt ───────────────────────────────────────
-        .alert("Sign In Required", isPresented: $appCoordinator.showGuestSignInPrompt) {
+        .alert(
+            guestPromptContext?.title ?? "Sign In Required",
+            isPresented: Binding(
+                get: { guestPromptContext != nil },
+                set: { if !$0 { 
+                    guestPromptContext = nil
+                    appCoordinator.showGuestSignInPrompt = false
+                } }
+            )
+        ) {
             Button("Sign In") {
                 appCoordinator.authCoordinator.path = NavigationPath()
                 appCoordinator.hasCompletedAuth     = false
+                guestPromptContext = nil
+                appCoordinator.showGuestSignInPrompt = false
             }
-            Button("Continue Browsing", role: .cancel) {}
+            Button("Continue Browsing", role: .cancel) {
+                guestPromptContext = nil
+                appCoordinator.showGuestSignInPrompt = false
+            }
         } message: {
-            Text("Please sign in to add items to your cart and access your account.")
+            Text(guestPromptContext?.message ?? "Please sign in to access this feature.")
         }
     }
 
@@ -162,7 +198,7 @@ struct ContentView: View {
                         favoritedIDs: favoritesViewModel.favoritedIDs,
                         onFavoriteTap: { product in
                             guard sessionStore.current != nil else {
-                                appCoordinator.showGuestSignInPrompt = true
+                                guestPromptContext = .addToFavorites
                                 return
                             }
                             favoritesViewModel.toggleFavorite(
@@ -197,7 +233,20 @@ struct ContentView: View {
                 // Cart tab
                 NavigationStack(path: $appCoordinator.cartCoordinator.navigationPath) {
                     Group {
-                        if let cartViewModel {
+                        if sessionStore.current == nil {
+                            // Guest mode - show sign in prompt
+                            GuestSignInView(
+                                icon: "cart.badge.questionmark",
+                                title: "Sign In to View Cart",
+                                message: "Please sign in to add items to your cart and manage your shopping.",
+                                onSignInTapped: {
+                                    appCoordinator.authCoordinator.path = NavigationPath()
+                                    appCoordinator.hasCompletedAuth = false
+                                },
+                                onBrowseTapped: { selectedTab = .home }
+                            )
+                            .navigationTitle("Cart")
+                        } else if let cartViewModel {
                             CartView(
                                 viewModel: cartViewModel,
                                 onGoShopping: { selectedTab = .home },
@@ -218,9 +267,25 @@ struct ContentView: View {
                 .tag(Common.Tab.cart)
                 .toolbar(.hidden, for: .tabBar)
 
+                // Wishlist tab
                 NavigationStack(path: $appCoordinator.favoritesCoordinator.path) {
-                    FavoritesView(viewModel: favoritesViewModel)
-                        .navigationDestination(for: FavoritesRoute.self) { favoritesDestination(for: $0) }
+                    if sessionStore.current == nil {
+                        // Guest mode - show sign in prompt
+                        GuestSignInView(
+                            icon: "heart.slash",
+                            title: "Sign In to View Wishlist",
+                            message: "Please sign in to save items to your favorites and access them across devices.",
+                            onSignInTapped: {
+                                appCoordinator.authCoordinator.path = NavigationPath()
+                                appCoordinator.hasCompletedAuth = false
+                            },
+                            onBrowseTapped: { selectedTab = .home }
+                        )
+                        .navigationTitle("Wishlist")
+                    } else {
+                        FavoritesView(viewModel: favoritesViewModel)
+                            .navigationDestination(for: FavoritesRoute.self) { favoritesDestination(for: $0) }
+                    }
                 }
                 .environment(appCoordinator.favoritesCoordinator)
                 .tag(Common.Tab.wishlist)
@@ -246,12 +311,6 @@ struct ContentView: View {
             )
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
-        .onChange(of: selectedTab) { oldTab, newTab in
-            if newTab == .wishlist && sessionStore.current == nil {
-                appCoordinator.showGuestSignInPrompt = true
-                selectedTab = oldTab // revert
-            }
-        }
     }
 
 
@@ -294,7 +353,7 @@ struct ContentView: View {
                 },
                 onToggleFavorite: { [weak favoritesViewModel] id, title, vendor, price, rating, imageURL in
                     guard sessionStore.current != nil else {
-                        appCoordinator.showGuestSignInPrompt = true
+                        guestPromptContext = .addToFavorites
                         return
                     }
                     guard let vm = favoritesViewModel else { return }
@@ -316,7 +375,7 @@ struct ContentView: View {
                 onAddToCart: { [cartViewModel] variantId, quantity in
                     // Block guests — sessionStore is a class ref, checked at call time
                     guard sessionStore.current != nil else {
-                        appCoordinator.showGuestSignInPrompt = true
+                        guestPromptContext = .addToCart
                         return nil
                     }
                     guard let cartViewModel else { return "Cart not initialized" }
@@ -345,7 +404,7 @@ struct ContentView: View {
                 },
                 onToggleFavorite: { [weak favoritesViewModel] id, title, vendor, price, rating, imageURL in
                     guard sessionStore.current != nil else {
-                        appCoordinator.showGuestSignInPrompt = true
+                        guestPromptContext = .addToFavorites
                         return
                     }
                     guard let vm = favoritesViewModel else { return }
@@ -365,6 +424,10 @@ struct ContentView: View {
                     }
                 },
                 onAddToCart: { [cartViewModel] variantId, quantity in
+                    guard sessionStore.current != nil else {
+                        guestPromptContext = .addToCart
+                        return nil
+                    }
                     guard let cartViewModel else { return "Cart not initialized" }
                     return await cartViewModel.addLine(variantId: variantId, quantity: quantity)
                 }
@@ -384,7 +447,7 @@ struct ContentView: View {
                 },
                 onToggleFavorite: { [weak favoritesViewModel] id, title, vendor, price, rating, imageURL in
                     guard sessionStore.current != nil else {
-                        appCoordinator.showGuestSignInPrompt = true
+                        guestPromptContext = .addToFavorites
                         return
                     }
                     guard let vm = favoritesViewModel else { return }
@@ -404,6 +467,10 @@ struct ContentView: View {
                     }
                 },
                 onAddToCart: { [cartViewModel] variantId, quantity in
+                    guard sessionStore.current != nil else {
+                        guestPromptContext = .addToCart
+                        return nil
+                    }
                     guard let cartViewModel else { return "Cart not initialized" }
                     return await cartViewModel.addLine(variantId: variantId, quantity: quantity)
                 }
@@ -434,7 +501,7 @@ struct ContentView: View {
                     },
                     onToggleFavorite: { [weak favoritesViewModel] id, title, vendor, price, rating, imageURL in
                         guard sessionStore.current != nil else {
-                            appCoordinator.showGuestSignInPrompt = true
+                            guestPromptContext = .addToFavorites
                             return
                         }
                         guard let vm = favoritesViewModel else { return }
@@ -455,7 +522,7 @@ struct ContentView: View {
                     },
                     onAddToCart: { [cartViewModel] variantId, quantity in
                         guard sessionStore.current != nil else {
-                            appCoordinator.showGuestSignInPrompt = true
+                            guestPromptContext = .addToCart
                             return nil
                         }
                         guard let cartViewModel else { return "Cart not initialized" }
