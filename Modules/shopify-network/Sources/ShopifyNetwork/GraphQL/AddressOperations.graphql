@@ -12,6 +12,7 @@ query GetCustomerAddresses($customerAccessToken: String!) {
           firstName
           lastName
           phone
+          country
         }
       }
     }

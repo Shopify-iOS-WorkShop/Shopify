@@ -8,7 +8,7 @@ public extension ShopifyAPI {
     public static let operationName: String = "GetCustomerAddresses"
     public static let operationDocument: ApolloAPI.OperationDocument = .init(
       definition: .init(
-        #"query GetCustomerAddresses($customerAccessToken: String!) { customer(customerAccessToken: $customerAccessToken) { __typename defaultAddress { __typename id } addresses(first: 10) { __typename edges { __typename node { __typename id address1 city firstName lastName phone } } } } }"#
+        #"query GetCustomerAddresses($customerAccessToken: String!) { customer(customerAccessToken: $customerAccessToken) { __typename defaultAddress { __typename id } addresses(first: 10) { __typename edges { __typename node { __typename id address1 city firstName lastName phone country } } } } }"#
       ))
 
     public var customerAccessToken: String
@@ -118,6 +118,7 @@ public extension ShopifyAPI {
                 .field("firstName", String?.self),
                 .field("lastName", String?.self),
                 .field("phone", String?.self),
+                .field("country", String?.self),
               ] }
 
               /// A globally-unique ID.
@@ -135,6 +136,8 @@ public extension ShopifyAPI {
               /// Formatted using E.164 standard. For example, _+16135551111_.
               ///
               public var phone: String? { __data["phone"] }
+              /// The name of the country.
+              public var country: String? { __data["country"] }
             }
           }
         }
