@@ -8,14 +8,13 @@ public extension ShopifyAPI.Objects {
   ///
   /// Each page has a unique [`handle`](https://shopify.dev/docs/api/storefront/current/objects/Page#field-Page.fields.handle) for URL routing and includes [`SEO`](https://shopify.dev/docs/api/storefront/current/objects/SEO) information for search engine optimization. Pages support [`Metafield`](https://shopify.dev/docs/api/storefront/current/objects/Metafield) attachments for storing additional custom data.
   ///
-  nonisolated static let Page = ApolloAPI.Object(
+  static let Page = ApolloAPI.Object(
     typename: "Page",
     implementedInterfaces: [
       ShopifyAPI.Interfaces.HasMetafields.self,
       ShopifyAPI.Interfaces.Node.self,
       ShopifyAPI.Interfaces.OnlineStorePublishable.self,
       ShopifyAPI.Interfaces.Trackable.self
-    ],
-    keyFields: nil
+    ]
   )
 }

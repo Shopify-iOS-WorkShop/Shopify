@@ -8,9 +8,8 @@ extension CartAPI.Objects {
   ///
   /// Menu items can link to [collections](https://shopify.dev/docs/api/storefront/current/objects/Collection), [products](https://shopify.dev/docs/api/storefront/current/objects/Product), [pages](https://shopify.dev/docs/api/storefront/current/objects/Page), [blogs](https://shopify.dev/docs/api/storefront/current/objects/Blog), or external URLs. Use the [`menu`](https://shopify.dev/docs/api/storefront/current/queries/menu) query to retrieve a menu by its handle.
   ///
-  nonisolated static let Menu = ApolloAPI.Object(
+  static let Menu = ApolloAPI.Object(
     typename: "Menu",
-    implementedInterfaces: [CartAPI.Interfaces.Node.self],
-    keyFields: nil
+    implementedInterfaces: [CartAPI.Interfaces.Node.self]
   )
 }

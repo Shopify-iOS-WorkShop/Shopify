@@ -6,9 +6,8 @@ import ApolloAPI
 public extension ShopifyAPI.Objects {
   /// An auto-generated type for paginating through multiple Images.
   ///
-  nonisolated static let ImageConnection = ApolloAPI.Object(
+  static let ImageConnection = ApolloAPI.Object(
     typename: "ImageConnection",
-    implementedInterfaces: [],
-    keyFields: nil
+    implementedInterfaces: []
   )
 }

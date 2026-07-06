@@ -145,6 +145,28 @@ final class ShopifyCustomerDataSource {
 
         return graphQLResponse
     }
+    
+    public func fetchCustomerId(accessToken: String) async throws -> String {
+        let query = """
+        query GetCustomerProfile($customerAccessToken: String!) {
+            customer(customerAccessToken: $customerAccessToken) {
+                id
+            }
+        }
+        """
+
+        let variables: [String: Any] = [
+            "customerAccessToken": accessToken
+        ]
+
+        let response: GraphQLResponse<CustomerProfileContainer> = try await send(query: query, variables: variables)
+
+        guard let storefrontId = response.data?.customer?.id else {
+            throw AuthError.shopify("Profile not found")
+        }
+
+        return storefrontId.components(separatedBy: "/").last ?? storefrontId
+    }
 }
 
 struct AuthShopifyGraphQLEndpoint: Endpoint {
@@ -271,4 +293,12 @@ private struct CustomerRecoverContainer: Decodable {
 
 private struct CustomerRecoverPayload: Decodable {
     let customerUserErrors: [CustomerUserError]
+}
+
+struct CustomerProfileContainer: Decodable {
+    let customer: CustomerProfileNode?
+}
+
+struct CustomerProfileNode: Decodable {
+    let id: String
 }

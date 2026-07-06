@@ -5,16 +5,5 @@ import ApolloAPI
 
 extension CartAPI.Interfaces {
   /// Represents an error in the input of a mutation.
-  nonisolated static let DisplayableError = ApolloAPI.Interface(
-    name: "DisplayableError",
-    keyFields: nil,
-    implementingObjects: [
-      "CartUserError",
-      "CustomerUserError",
-      "MetafieldDeleteUserError",
-      "MetafieldsSetUserError",
-      "UserError",
-      "UserErrorsShopPayPaymentRequestSessionUserErrors"
-    ]
-  )
+  static let DisplayableError = Interface(name: "DisplayableError")
 }

@@ -16,6 +16,7 @@ import ShopifyNetwork
 import DataPersistence
 import Favorites
 import Cart
+import Payment
 import Settings
 
 struct ContentView: View {
@@ -27,17 +28,10 @@ struct ContentView: View {
     @State private var sessionChecked: Bool = false
     @State private var selectedTab: Common.Tab = .home
     @State private var cartViewModel: CartViewModel? = nil
-
-   
     @AppStorage("settings_colorScheme") private var colorSchemeRaw: Int = 0
 
-
-    @StateObject private var homeViewModel: HomeViewModel =
-        AppAssembly.shared.resolve(HomeViewModel.self)
-
-    @State private var settingsViewModel: SettingsViewModel =
-        AppAssembly.shared.resolve(SettingsViewModel.self)
-
+    @StateObject private var homeViewModel: HomeViewModel = AppAssembly.shared.resolve(HomeViewModel.self)
+    @State private var settingsViewModel: SettingsViewModel = AppAssembly.shared.resolve(SettingsViewModel.self)
     private let repository: AuthRepositoryProtocol = AuthRepositoryFactory.make()
     private let sessionStore: SessionStore         = AppAssembly.shared.resolve(SessionStore.self)
     
@@ -80,7 +74,6 @@ struct ContentView: View {
             
             favoritesViewModel.loadFavorites()
             
-           
             appCoordinator.homeCoordinator.onCartTapped = { [self] in
                 selectedTab = .cart
             }
@@ -195,28 +188,38 @@ struct ContentView: View {
                 .toolbar(.hidden, for: .tabBar)
 
                 // Cart tab
-                NavigationStack(path: $appCoordinator.cartCoordinator.navigationPath) {
-                    Group {
-                        if let cartViewModel {
-                            CartView(
-                                viewModel: cartViewModel,
-                                onGoShopping: { selectedTab = .home },
-                                onProductTapped: { productId in
-                                    let rawId = productId.components(separatedBy: "/").last ?? productId
-                                    appCoordinator.cartCoordinator.navigationPath.append(
-                                        CartRoute.productDetails(productId: rawId, handle: "")
-                                    )
+                                NavigationStack(path: $appCoordinator.cartCoordinator.navigationPath) {
+                                    Group {
+                                        if let cartViewModel {
+                                            CartView(
+                                                viewModel: cartViewModel,
+                                                onGoShopping: { selectedTab = .home },
+                                                onProductTapped: { productId in
+                                                    let rawId = productId.components(separatedBy: "/").last ?? productId
+                                                    appCoordinator.cartCoordinator.navigationPath.append(
+                                                        CartRoute.productDetails(productId: rawId, handle: "")
+                                                    )
+                                                }
+                                            )
+                                            .onAppear {
+                                                cartViewModel.onCheckoutRequested = {
+                                                    guard let cart = cartViewModel.cart else { return }
+                                                    appCoordinator.cartCoordinator.navigateTo(.checkout(cart: cart))
+                                                }
+                                                
+                                                cartViewModel.onSignInRequired = {
+                                                    appCoordinator.showGuestSignInPrompt = true
+                                                }
+                                            }
+                                        } else {
+                                            ProgressView()
+                                        }
+                                    }
+                                    .navigationDestination(for: CartRoute.self) { cartDestination(for: $0) }
                                 }
-                            )
-                        } else {
-                            ProgressView()
-                        }
-                    }
-                    .navigationDestination(for: CartRoute.self) { cartDestination(for: $0) }
-                }
-                .environment(appCoordinator.cartCoordinator)
-                .tag(Common.Tab.cart)
-                .toolbar(.hidden, for: .tabBar)
+                                .environment(appCoordinator.cartCoordinator)
+                                .tag(Common.Tab.cart)
+                                .toolbar(.hidden, for: .tabBar)
 
                 NavigationStack(path: $appCoordinator.favoritesCoordinator.path) {
                     FavoritesView(viewModel: favoritesViewModel)
@@ -246,12 +249,56 @@ struct ContentView: View {
             )
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
-        .onChange(of: selectedTab) { oldTab, newTab in
-            if newTab == .wishlist && sessionStore.current == nil {
-                appCoordinator.showGuestSignInPrompt = true
-                selectedTab = oldTab // revert
-            }
-        }
+        .onChange(of: cartViewModel?.cartItemCount) { _, newValue in
+                    appCoordinator.homeCoordinator.cartBadgeCount = newValue ?? 0
+                }
+                .task {
+                    appCoordinator.homeCoordinator.cartBadgeCount = cartViewModel?.cartItemCount ?? 0
+                }
+                .fullScreenCover(isPresented: $appCoordinator.isShowingCheckout) {
+                    NavigationStack(path: $appCoordinator.checkoutAddressCoordinator.path) {
+                        CheckoutAddressView(
+                            viewModel: AppAssembly.shared.resolve(CheckoutAddressViewModel.self)
+                        )
+                        .navigationDestination(for: CheckoutAddressRoute.self) { route in
+                            switch route {
+                            case .payment:
+                                let safeAddress = appCoordinator.checkoutAddressCoordinator.selectedAddress
+                                    ?? CheckoutAddress(address1: "N/A", city: "N/A", country: "EG", firstName: "Customer", lastName: "", phone: "")
+                                let customerId = sessionStore.current?.customerId ?? ""
+
+                                PaymentMethodView(
+                                    viewModel: AppAssembly.shared.container.resolve(
+                                        PaymentMethodViewModel.self,
+                                        arguments:
+                                            appCoordinator.checkoutAddressCoordinator.cartItems,
+                                            appCoordinator.checkoutAddressCoordinator.totalAmount,
+                                            appCoordinator.checkoutAddressCoordinator.deliveryFee,
+                                            safeAddress,
+                                            customerId
+                                    )!
+                                )
+
+                            case .success:
+                                CheckoutResultView(
+                                    onTrackOrder: {
+                                        appCoordinator.checkoutAddressCoordinator.onCheckoutComplete?()
+                                    },
+                                    onContinueShopping: {
+                                        appCoordinator.checkoutAddressCoordinator.onCheckoutComplete?()
+                                    }
+                                )
+                            }
+                        }
+                    }
+                    .environment(appCoordinator.checkoutAddressCoordinator)
+                }
+                .onChange(of: selectedTab) { oldTab, newTab in
+                    if newTab == .wishlist && sessionStore.current == nil {
+                        appCoordinator.showGuestSignInPrompt = true
+                        selectedTab = oldTab // revert
+                    }
+                }
     }
 
 
@@ -474,17 +521,17 @@ struct ContentView: View {
 
     @MainActor
     private func restoreSession() async {
-        guard let session = repository.currentSession(), session.isValid else {
-            sessionStore.clearSession()
-            // No valid session — show the Login screen.
-            // hasCompletedAuth stays false (its default), so authFlow is displayed.
-            // The user can log in or tap "Continue as Guest" from the Login screen.
-            return
+    guard let session = repository.currentSession(), session.isValid else {
+        sessionStore.clearSession()
+                    appCoordinator.hasCompletedAuth = false
+                    cartViewModel = AppAssembly.shared.resolve(CartViewModel.self)
+                    return
+                }
+                
+                sessionStore.updateSession(session.toCommonSession())
+                cartViewModel = AppAssembly.shared.resolve(CartViewModel.self)
+                appCoordinator.hasCompletedAuth = true
+            }
         }
-        sessionStore.updateSession(session.toCommonSession())
-        // Authenticated: onChange will create + load cartViewModel
-        appCoordinator.hasCompletedAuth = true
-    }
-}
 
 #Preview { ContentView() }

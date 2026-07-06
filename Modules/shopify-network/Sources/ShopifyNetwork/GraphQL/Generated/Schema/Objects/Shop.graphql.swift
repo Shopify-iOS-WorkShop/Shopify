@@ -8,12 +8,11 @@ public extension ShopifyAPI.Objects {
   ///
   /// Access store policies such as privacy, refund, shipping, and terms of service via [`ShopPolicy`](https://shopify.dev/docs/api/storefront/current/objects/ShopPolicy), and the subscription policy via [`ShopPolicyWithDefault`](https://shopify.dev/docs/api/storefront/current/objects/ShopPolicyWithDefault). [`PaymentSettings`](https://shopify.dev/docs/api/storefront/current/objects/PaymentSettings) expose accepted card brands, supported digital wallets, and enabled presentment currencies. The object also includes the primary [`Domain`](https://shopify.dev/docs/api/storefront/current/objects/Domain), countries the shop ships to, [`ShopPayInstallmentsPricing`](https://shopify.dev/docs/api/storefront/current/objects/ShopPayInstallmentsPricing), and [`SocialLoginProvider`](https://shopify.dev/docs/api/storefront/current/objects/SocialLoginProvider) options for customer accounts.
   ///
-  nonisolated static let Shop = ApolloAPI.Object(
+  static let Shop = ApolloAPI.Object(
     typename: "Shop",
     implementedInterfaces: [
       ShopifyAPI.Interfaces.HasMetafields.self,
       ShopifyAPI.Interfaces.Node.self
-    ],
-    keyFields: nil
+    ]
   )
 }

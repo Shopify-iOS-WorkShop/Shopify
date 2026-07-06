@@ -2,10 +2,9 @@
 // This file was automatically generated and should not be edited.
 
 @_exported import ApolloAPI
-@_spi(Execution) @_spi(Unsafe) import ApolloAPI
 
 extension CartAPI {
-  nonisolated struct CartDiscountCodesUpdateMutation: GraphQLMutation {
+  class CartDiscountCodesUpdateMutation: GraphQLMutation {
     static let operationName: String = "CartDiscountCodesUpdate"
     static let operationDocument: ApolloAPI.OperationDocument = .init(
       definition: .init(
@@ -24,24 +23,21 @@ extension CartAPI {
       self.discountCodes = discountCodes
     }
 
-    @_spi(Unsafe) public var __variables: Variables? { [
+    public var __variables: Variables? { [
       "cartId": cartId,
       "discountCodes": discountCodes
     ] }
 
-    nonisolated struct Data: CartAPI.SelectionSet {
+    struct Data: CartAPI.SelectionSet {
       let __data: DataDict
       init(_dataDict: DataDict) { __data = _dataDict }
 
-      static var __parentType: any ApolloAPI.ParentType { CartAPI.Objects.Mutation }
+      static var __parentType: ApolloAPI.ParentType { CartAPI.Objects.Mutation }
       static var __selections: [ApolloAPI.Selection] { [
         .field("cartDiscountCodesUpdate", CartDiscountCodesUpdate?.self, arguments: [
           "cartId": .variable("cartId"),
           "discountCodes": .variable("discountCodes")
         ]),
-      ] }
-      static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-        CartDiscountCodesUpdateMutation.Data.self
       ] }
 
       /// Updates the discount codes applied to a [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart). This mutation replaces all existing discount codes with the provided list, so pass an empty array to remove all codes. Discount codes are case-insensitive.
@@ -53,18 +49,15 @@ extension CartAPI {
       /// CartDiscountCodesUpdate
       ///
       /// Parent Type: `CartDiscountCodesUpdatePayload`
-      nonisolated struct CartDiscountCodesUpdate: CartAPI.SelectionSet {
+      struct CartDiscountCodesUpdate: CartAPI.SelectionSet {
         let __data: DataDict
         init(_dataDict: DataDict) { __data = _dataDict }
 
-        static var __parentType: any ApolloAPI.ParentType { CartAPI.Objects.CartDiscountCodesUpdatePayload }
+        static var __parentType: ApolloAPI.ParentType { CartAPI.Objects.CartDiscountCodesUpdatePayload }
         static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .field("cart", Cart?.self),
           .field("userErrors", [UserError].self),
-        ] }
-        static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-          CartDiscountCodesUpdateMutation.Data.CartDiscountCodesUpdate.self
         ] }
 
         /// The updated cart.
@@ -75,18 +68,14 @@ extension CartAPI {
         /// CartDiscountCodesUpdate.Cart
         ///
         /// Parent Type: `Cart`
-        nonisolated struct Cart: CartAPI.SelectionSet {
+        struct Cart: CartAPI.SelectionSet {
           let __data: DataDict
           init(_dataDict: DataDict) { __data = _dataDict }
 
-          static var __parentType: any ApolloAPI.ParentType { CartAPI.Objects.Cart }
+          static var __parentType: ApolloAPI.ParentType { CartAPI.Objects.Cart }
           static var __selections: [ApolloAPI.Selection] { [
             .field("__typename", String.self),
             .fragment(CartFragment.self),
-          ] }
-          static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-            CartDiscountCodesUpdateMutation.Data.CartDiscountCodesUpdate.Cart.self,
-            CartFragment.self
           ] }
 
           /// A globally-unique ID.
@@ -125,19 +114,16 @@ extension CartAPI {
         /// CartDiscountCodesUpdate.UserError
         ///
         /// Parent Type: `CartUserError`
-        nonisolated struct UserError: CartAPI.SelectionSet {
+        struct UserError: CartAPI.SelectionSet {
           let __data: DataDict
           init(_dataDict: DataDict) { __data = _dataDict }
 
-          static var __parentType: any ApolloAPI.ParentType { CartAPI.Objects.CartUserError }
+          static var __parentType: ApolloAPI.ParentType { CartAPI.Objects.CartUserError }
           static var __selections: [ApolloAPI.Selection] { [
             .field("__typename", String.self),
             .field("field", [String]?.self),
             .field("message", String.self),
             .field("code", GraphQLEnum<CartAPI.CartErrorCode>?.self),
-          ] }
-          static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-            CartDiscountCodesUpdateMutation.Data.CartDiscountCodesUpdate.UserError.self
           ] }
 
           /// The path to the input field that caused the error.

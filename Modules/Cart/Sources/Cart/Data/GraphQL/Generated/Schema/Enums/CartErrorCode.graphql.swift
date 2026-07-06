@@ -1,12 +1,12 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-@_spi(Internal) import ApolloAPI
+import ApolloAPI
 
 extension CartAPI {
   /// Error codes returned by [`CartUserError`](https://shopify.dev/docs/api/storefront/current/objects/CartUserError) during cart mutations. Covers validation failures for addresses, quantities, delivery options, merchandise lines, discount codes, and metafields.
   ///
-  nonisolated enum CartErrorCode: String, EnumType {
+  enum CartErrorCode: String, EnumType {
     /// The input value is invalid.
     case invalid = "INVALID"
     /// The input value should be less than the maximum value allowed.

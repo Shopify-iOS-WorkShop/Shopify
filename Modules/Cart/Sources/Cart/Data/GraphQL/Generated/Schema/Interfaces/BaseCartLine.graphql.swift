@@ -8,12 +8,5 @@ extension CartAPI.Interfaces {
   ///
   /// Each implementation includes the merchandise being purchased, quantity, cost breakdown, applied discounts, custom attributes, and any associated [`SellingPlan`](https://shopify.dev/docs/api/storefront/current/objects/SellingPlan).
   ///
-  nonisolated static let BaseCartLine = ApolloAPI.Interface(
-    name: "BaseCartLine",
-    keyFields: nil,
-    implementingObjects: [
-      "CartLine",
-      "ComponentizableCartLine"
-    ]
-  )
+  static let BaseCartLine = Interface(name: "BaseCartLine")
 }

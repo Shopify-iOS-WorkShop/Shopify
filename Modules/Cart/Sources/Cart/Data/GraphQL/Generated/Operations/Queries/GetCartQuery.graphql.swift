@@ -2,10 +2,9 @@
 // This file was automatically generated and should not be edited.
 
 @_exported import ApolloAPI
-@_spi(Execution) @_spi(Unsafe) import ApolloAPI
 
 extension CartAPI {
-  nonisolated struct GetCartQuery: GraphQLQuery {
+  class GetCartQuery: GraphQLQuery {
     static let operationName: String = "GetCart"
     static let operationDocument: ApolloAPI.OperationDocument = .init(
       definition: .init(
@@ -19,18 +18,15 @@ extension CartAPI {
       self.cartId = cartId
     }
 
-    @_spi(Unsafe) public var __variables: Variables? { ["cartId": cartId] }
+    public var __variables: Variables? { ["cartId": cartId] }
 
-    nonisolated struct Data: CartAPI.SelectionSet {
+    struct Data: CartAPI.SelectionSet {
       let __data: DataDict
       init(_dataDict: DataDict) { __data = _dataDict }
 
-      static var __parentType: any ApolloAPI.ParentType { CartAPI.Objects.QueryRoot }
+      static var __parentType: ApolloAPI.ParentType { CartAPI.Objects.QueryRoot }
       static var __selections: [ApolloAPI.Selection] { [
         .field("cart", Cart?.self, arguments: ["id": .variable("cartId")]),
-      ] }
-      static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-        GetCartQuery.Data.self
       ] }
 
       /// Returns a [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart) by its ID. The cart contains the merchandise lines a buyer intends to purchase, along with estimated costs, applied discounts, gift cards, and delivery options.
@@ -42,18 +38,14 @@ extension CartAPI {
       /// Cart
       ///
       /// Parent Type: `Cart`
-      nonisolated struct Cart: CartAPI.SelectionSet {
+      struct Cart: CartAPI.SelectionSet {
         let __data: DataDict
         init(_dataDict: DataDict) { __data = _dataDict }
 
-        static var __parentType: any ApolloAPI.ParentType { CartAPI.Objects.Cart }
+        static var __parentType: ApolloAPI.ParentType { CartAPI.Objects.Cart }
         static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .fragment(CartFragment.self),
-        ] }
-        static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-          GetCartQuery.Data.Cart.self,
-          CartFragment.self
         ] }
 
         /// A globally-unique ID.

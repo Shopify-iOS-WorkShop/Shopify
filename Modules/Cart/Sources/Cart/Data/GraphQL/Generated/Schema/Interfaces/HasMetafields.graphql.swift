@@ -8,25 +8,5 @@ extension CartAPI.Interfaces {
   ///
   /// You can retrieve a [single metafield](https://shopify.dev/docs/api/storefront/current/interfaces/HasMetafields#fields-metafield) by namespace and key, or fetch [multiple metafields](https://shopify.dev/docs/api/storefront/current/interfaces/HasMetafields#fields-metafields) in a single request. If you omit the namespace, then the [app-reserved namespace](https://shopify.dev/docs/apps/build/metafields#app-owned-metafields) is used by default.
   ///
-  nonisolated static let HasMetafields = ApolloAPI.Interface(
-    name: "HasMetafields",
-    keyFields: nil,
-    implementingObjects: [
-      "Article",
-      "Blog",
-      "Cart",
-      "Collection",
-      "Company",
-      "CompanyLocation",
-      "Customer",
-      "Location",
-      "Market",
-      "Order",
-      "Page",
-      "Product",
-      "ProductVariant",
-      "SellingPlan",
-      "Shop"
-    ]
-  )
+  static let HasMetafields = Interface(name: "HasMetafields")
 }

@@ -17,6 +17,7 @@ import ProductListing
 import ShopifyNetwork
 import Settings
 import Favorites
+import Payment
 import search
 
 class AppAssembly {
@@ -50,9 +51,9 @@ class AppAssembly {
         ProductListingAssembly().assemble(container: container)
         SettingsAssembly().assemble(container: container)
         FavoritesAssembly().assemble(container: container)
+        PaymentAssembly().assemble(container: container)
         SearchAssembly().assemble(container: container)
     }
-
     func resolve<T>(_ type: T.Type) -> T {
         guard let resolved = container.resolve(type) else {
             fatalError("Could not resolve type \(type)")

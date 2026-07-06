@@ -8,9 +8,8 @@ extension CartAPI.Objects {
   ///
   /// Amounts include the subtotal before taxes and cart-level discounts, the checkout charge amount excluding deferred payments, and the total. The subtotal and total amounts each include a corresponding boolean field indicating whether the value is an estimate.
   ///
-  nonisolated static let CartCost = ApolloAPI.Object(
+  static let CartCost = ApolloAPI.Object(
     typename: "CartCost",
-    implementedInterfaces: [],
-    keyFields: nil
+    implementedInterfaces: []
   )
 }

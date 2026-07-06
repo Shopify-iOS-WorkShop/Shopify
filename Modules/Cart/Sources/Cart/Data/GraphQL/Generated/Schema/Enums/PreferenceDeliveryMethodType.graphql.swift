@@ -1,11 +1,11 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-@_spi(Internal) import ApolloAPI
+import ApolloAPI
 
 extension CartAPI {
   /// The preferred delivery methods such as shipping, local pickup or through pickup points.
-  nonisolated enum PreferenceDeliveryMethodType: String, EnumType {
+  enum PreferenceDeliveryMethodType: String, EnumType {
     /// A delivery method used to send items directly to a buyer’s specified address.
     case shipping = "SHIPPING"
     /// A delivery method used to let buyers receive items directly from a specific location within an area.

@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Cart: Equatable {
+public struct Cart: Equatable,Hashable {
     public let id: String
     public let checkoutUrl: URL
     public let totalQuantity: Int

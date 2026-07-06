@@ -5,9 +5,8 @@ import ApolloAPI
 
 extension CartAPI.Objects {
   /// Represents an error that happens during execution of a customer mutation.
-  nonisolated static let CustomerUserError = ApolloAPI.Object(
+  static let CustomerUserError = ApolloAPI.Object(
     typename: "CustomerUserError",
-    implementedInterfaces: [CartAPI.Interfaces.DisplayableError.self],
-    keyFields: nil
+    implementedInterfaces: [CartAPI.Interfaces.DisplayableError.self]
   )
 }

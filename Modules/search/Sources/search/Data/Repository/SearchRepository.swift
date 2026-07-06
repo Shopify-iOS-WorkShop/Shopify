@@ -38,7 +38,7 @@ public final class SearchRepository: SearchRepositoryProtocol, @unchecked Sendab
     
     public func searchProducts(query: String, first: Int, after: String?) async throws -> (products: [SearchProduct], pageInfo: PageInfo) {
         let afterCursor: GraphQLNullable<String> = after != nil ? .some(after!) : .none
-        let gqlQuery = ShopifyAPI.SearchProductsQuery(query: query, first: Int32(first), after: afterCursor)
+        let gqlQuery = ShopifyAPI.SearchProductsQuery(query: query, first: first, after: afterCursor)
         let data = try await client.fetch(query: gqlQuery)
         
         let products = data.search.edges.compactMap { edge -> SearchProduct? in

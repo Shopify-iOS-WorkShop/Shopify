@@ -2,10 +2,9 @@
 // This file was automatically generated and should not be edited.
 
 @_exported import ApolloAPI
-@_spi(Execution) @_spi(Unsafe) import ApolloAPI
 
 extension CartAPI {
-  nonisolated struct CartLineFragment: CartAPI.SelectionSet, Fragment {
+  struct CartLineFragment: CartAPI.SelectionSet, Fragment {
     static var fragmentDefinition: StaticString {
       #"fragment CartLineFragment on BaseCartLine { __typename id quantity merchandise { __typename ... on ProductVariant { id title availableForSale quantityAvailable price { __typename ...MoneyFragment } compareAtPrice { __typename ...MoneyFragment } image { __typename url altText width height } selectedOptions { __typename name value } product { __typename id title handle vendor featuredImage { __typename url altText } } } } cost { __typename amountPerQuantity { __typename ...MoneyFragment } compareAtAmountPerQuantity { __typename ...MoneyFragment } subtotalAmount { __typename ...MoneyFragment } totalAmount { __typename ...MoneyFragment } } discountAllocations { __typename discountedAmount { __typename ...MoneyFragment } } }"#
     }
@@ -13,7 +12,7 @@ extension CartAPI {
     let __data: DataDict
     init(_dataDict: DataDict) { __data = _dataDict }
 
-    static var __parentType: any ApolloAPI.ParentType { CartAPI.Interfaces.BaseCartLine }
+    static var __parentType: ApolloAPI.ParentType { CartAPI.Interfaces.BaseCartLine }
     static var __selections: [ApolloAPI.Selection] { [
       .field("__typename", String.self),
       .field("id", CartAPI.ID.self),
@@ -21,9 +20,6 @@ extension CartAPI {
       .field("merchandise", Merchandise.self),
       .field("cost", Cost.self),
       .field("discountAllocations", [DiscountAllocation].self),
-    ] }
-    static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-      CartLineFragment.self
     ] }
 
     /// A globally-unique ID.
@@ -40,17 +36,14 @@ extension CartAPI {
     /// Merchandise
     ///
     /// Parent Type: `Merchandise`
-    nonisolated struct Merchandise: CartAPI.SelectionSet {
+    struct Merchandise: CartAPI.SelectionSet {
       let __data: DataDict
       init(_dataDict: DataDict) { __data = _dataDict }
 
-      static var __parentType: any ApolloAPI.ParentType { CartAPI.Unions.Merchandise }
+      static var __parentType: ApolloAPI.ParentType { CartAPI.Unions.Merchandise }
       static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
         .inlineFragment(AsProductVariant.self),
-      ] }
-      static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-        CartLineFragment.Merchandise.self
       ] }
 
       var asProductVariant: AsProductVariant? { _asInlineFragment() }
@@ -58,12 +51,12 @@ extension CartAPI {
       /// Merchandise.AsProductVariant
       ///
       /// Parent Type: `ProductVariant`
-      nonisolated struct AsProductVariant: CartAPI.InlineFragment {
+      struct AsProductVariant: CartAPI.InlineFragment {
         let __data: DataDict
         init(_dataDict: DataDict) { __data = _dataDict }
 
         typealias RootEntityType = CartLineFragment.Merchandise
-        static var __parentType: any ApolloAPI.ParentType { CartAPI.Objects.ProductVariant }
+        static var __parentType: ApolloAPI.ParentType { CartAPI.Objects.ProductVariant }
         static var __selections: [ApolloAPI.Selection] { [
           .field("id", CartAPI.ID.self),
           .field("title", String.self),
@@ -74,10 +67,6 @@ extension CartAPI {
           .field("image", Image?.self),
           .field("selectedOptions", [SelectedOption].self),
           .field("product", Product.self),
-        ] }
-        static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-          CartLineFragment.Merchandise.self,
-          CartLineFragment.Merchandise.AsProductVariant.self
         ] }
 
         /// A globally-unique ID.
@@ -102,18 +91,14 @@ extension CartAPI {
         /// Merchandise.AsProductVariant.Price
         ///
         /// Parent Type: `MoneyV2`
-        nonisolated struct Price: CartAPI.SelectionSet {
+        struct Price: CartAPI.SelectionSet {
           let __data: DataDict
           init(_dataDict: DataDict) { __data = _dataDict }
 
-          static var __parentType: any ApolloAPI.ParentType { CartAPI.Objects.MoneyV2 }
+          static var __parentType: ApolloAPI.ParentType { CartAPI.Objects.MoneyV2 }
           static var __selections: [ApolloAPI.Selection] { [
             .field("__typename", String.self),
             .fragment(MoneyFragment.self),
-          ] }
-          static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-            CartLineFragment.Merchandise.AsProductVariant.Price.self,
-            MoneyFragment.self
           ] }
 
           /// Decimal money amount.
@@ -132,18 +117,14 @@ extension CartAPI {
         /// Merchandise.AsProductVariant.CompareAtPrice
         ///
         /// Parent Type: `MoneyV2`
-        nonisolated struct CompareAtPrice: CartAPI.SelectionSet {
+        struct CompareAtPrice: CartAPI.SelectionSet {
           let __data: DataDict
           init(_dataDict: DataDict) { __data = _dataDict }
 
-          static var __parentType: any ApolloAPI.ParentType { CartAPI.Objects.MoneyV2 }
+          static var __parentType: ApolloAPI.ParentType { CartAPI.Objects.MoneyV2 }
           static var __selections: [ApolloAPI.Selection] { [
             .field("__typename", String.self),
             .fragment(MoneyFragment.self),
-          ] }
-          static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-            CartLineFragment.Merchandise.AsProductVariant.CompareAtPrice.self,
-            MoneyFragment.self
           ] }
 
           /// Decimal money amount.
@@ -162,20 +143,17 @@ extension CartAPI {
         /// Merchandise.AsProductVariant.Image
         ///
         /// Parent Type: `Image`
-        nonisolated struct Image: CartAPI.SelectionSet {
+        struct Image: CartAPI.SelectionSet {
           let __data: DataDict
           init(_dataDict: DataDict) { __data = _dataDict }
 
-          static var __parentType: any ApolloAPI.ParentType { CartAPI.Objects.Image }
+          static var __parentType: ApolloAPI.ParentType { CartAPI.Objects.Image }
           static var __selections: [ApolloAPI.Selection] { [
             .field("__typename", String.self),
             .field("url", CartAPI.URL.self),
             .field("altText", String?.self),
             .field("width", Int?.self),
             .field("height", Int?.self),
-          ] }
-          static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-            CartLineFragment.Merchandise.AsProductVariant.Image.self
           ] }
 
           /// The location of the image as a URL.
@@ -198,18 +176,15 @@ extension CartAPI {
         /// Merchandise.AsProductVariant.SelectedOption
         ///
         /// Parent Type: `SelectedOption`
-        nonisolated struct SelectedOption: CartAPI.SelectionSet {
+        struct SelectedOption: CartAPI.SelectionSet {
           let __data: DataDict
           init(_dataDict: DataDict) { __data = _dataDict }
 
-          static var __parentType: any ApolloAPI.ParentType { CartAPI.Objects.SelectedOption }
+          static var __parentType: ApolloAPI.ParentType { CartAPI.Objects.SelectedOption }
           static var __selections: [ApolloAPI.Selection] { [
             .field("__typename", String.self),
             .field("name", String.self),
             .field("value", String.self),
-          ] }
-          static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-            CartLineFragment.Merchandise.AsProductVariant.SelectedOption.self
           ] }
 
           /// The product option’s name.
@@ -221,11 +196,11 @@ extension CartAPI {
         /// Merchandise.AsProductVariant.Product
         ///
         /// Parent Type: `Product`
-        nonisolated struct Product: CartAPI.SelectionSet {
+        struct Product: CartAPI.SelectionSet {
           let __data: DataDict
           init(_dataDict: DataDict) { __data = _dataDict }
 
-          static var __parentType: any ApolloAPI.ParentType { CartAPI.Objects.Product }
+          static var __parentType: ApolloAPI.ParentType { CartAPI.Objects.Product }
           static var __selections: [ApolloAPI.Selection] { [
             .field("__typename", String.self),
             .field("id", CartAPI.ID.self),
@@ -233,9 +208,6 @@ extension CartAPI {
             .field("handle", String.self),
             .field("vendor", String.self),
             .field("featuredImage", FeaturedImage?.self),
-          ] }
-          static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-            CartLineFragment.Merchandise.AsProductVariant.Product.self
           ] }
 
           /// A globally-unique ID.
@@ -260,18 +232,15 @@ extension CartAPI {
           /// Merchandise.AsProductVariant.Product.FeaturedImage
           ///
           /// Parent Type: `Image`
-          nonisolated struct FeaturedImage: CartAPI.SelectionSet {
+          struct FeaturedImage: CartAPI.SelectionSet {
             let __data: DataDict
             init(_dataDict: DataDict) { __data = _dataDict }
 
-            static var __parentType: any ApolloAPI.ParentType { CartAPI.Objects.Image }
+            static var __parentType: ApolloAPI.ParentType { CartAPI.Objects.Image }
             static var __selections: [ApolloAPI.Selection] { [
               .field("__typename", String.self),
               .field("url", CartAPI.URL.self),
               .field("altText", String?.self),
-            ] }
-            static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-              CartLineFragment.Merchandise.AsProductVariant.Product.FeaturedImage.self
             ] }
 
             /// The location of the image as a URL.
@@ -293,20 +262,17 @@ extension CartAPI {
     /// Cost
     ///
     /// Parent Type: `CartLineCost`
-    nonisolated struct Cost: CartAPI.SelectionSet {
+    struct Cost: CartAPI.SelectionSet {
       let __data: DataDict
       init(_dataDict: DataDict) { __data = _dataDict }
 
-      static var __parentType: any ApolloAPI.ParentType { CartAPI.Objects.CartLineCost }
+      static var __parentType: ApolloAPI.ParentType { CartAPI.Objects.CartLineCost }
       static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
         .field("amountPerQuantity", AmountPerQuantity.self),
         .field("compareAtAmountPerQuantity", CompareAtAmountPerQuantity?.self),
         .field("subtotalAmount", SubtotalAmount.self),
         .field("totalAmount", TotalAmount.self),
-      ] }
-      static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-        CartLineFragment.Cost.self
       ] }
 
       /// The amount of the merchandise line.
@@ -321,18 +287,14 @@ extension CartAPI {
       /// Cost.AmountPerQuantity
       ///
       /// Parent Type: `MoneyV2`
-      nonisolated struct AmountPerQuantity: CartAPI.SelectionSet {
+      struct AmountPerQuantity: CartAPI.SelectionSet {
         let __data: DataDict
         init(_dataDict: DataDict) { __data = _dataDict }
 
-        static var __parentType: any ApolloAPI.ParentType { CartAPI.Objects.MoneyV2 }
+        static var __parentType: ApolloAPI.ParentType { CartAPI.Objects.MoneyV2 }
         static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .fragment(MoneyFragment.self),
-        ] }
-        static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-          CartLineFragment.Cost.AmountPerQuantity.self,
-          MoneyFragment.self
         ] }
 
         /// Decimal money amount.
@@ -351,18 +313,14 @@ extension CartAPI {
       /// Cost.CompareAtAmountPerQuantity
       ///
       /// Parent Type: `MoneyV2`
-      nonisolated struct CompareAtAmountPerQuantity: CartAPI.SelectionSet {
+      struct CompareAtAmountPerQuantity: CartAPI.SelectionSet {
         let __data: DataDict
         init(_dataDict: DataDict) { __data = _dataDict }
 
-        static var __parentType: any ApolloAPI.ParentType { CartAPI.Objects.MoneyV2 }
+        static var __parentType: ApolloAPI.ParentType { CartAPI.Objects.MoneyV2 }
         static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .fragment(MoneyFragment.self),
-        ] }
-        static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-          CartLineFragment.Cost.CompareAtAmountPerQuantity.self,
-          MoneyFragment.self
         ] }
 
         /// Decimal money amount.
@@ -381,18 +339,14 @@ extension CartAPI {
       /// Cost.SubtotalAmount
       ///
       /// Parent Type: `MoneyV2`
-      nonisolated struct SubtotalAmount: CartAPI.SelectionSet {
+      struct SubtotalAmount: CartAPI.SelectionSet {
         let __data: DataDict
         init(_dataDict: DataDict) { __data = _dataDict }
 
-        static var __parentType: any ApolloAPI.ParentType { CartAPI.Objects.MoneyV2 }
+        static var __parentType: ApolloAPI.ParentType { CartAPI.Objects.MoneyV2 }
         static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .fragment(MoneyFragment.self),
-        ] }
-        static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-          CartLineFragment.Cost.SubtotalAmount.self,
-          MoneyFragment.self
         ] }
 
         /// Decimal money amount.
@@ -411,18 +365,14 @@ extension CartAPI {
       /// Cost.TotalAmount
       ///
       /// Parent Type: `MoneyV2`
-      nonisolated struct TotalAmount: CartAPI.SelectionSet {
+      struct TotalAmount: CartAPI.SelectionSet {
         let __data: DataDict
         init(_dataDict: DataDict) { __data = _dataDict }
 
-        static var __parentType: any ApolloAPI.ParentType { CartAPI.Objects.MoneyV2 }
+        static var __parentType: ApolloAPI.ParentType { CartAPI.Objects.MoneyV2 }
         static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .fragment(MoneyFragment.self),
-        ] }
-        static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-          CartLineFragment.Cost.TotalAmount.self,
-          MoneyFragment.self
         ] }
 
         /// Decimal money amount.
@@ -442,17 +392,14 @@ extension CartAPI {
     /// DiscountAllocation
     ///
     /// Parent Type: `CartDiscountAllocation`
-    nonisolated struct DiscountAllocation: CartAPI.SelectionSet {
+    struct DiscountAllocation: CartAPI.SelectionSet {
       let __data: DataDict
       init(_dataDict: DataDict) { __data = _dataDict }
 
-      static var __parentType: any ApolloAPI.ParentType { CartAPI.Interfaces.CartDiscountAllocation }
+      static var __parentType: ApolloAPI.ParentType { CartAPI.Interfaces.CartDiscountAllocation }
       static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
         .field("discountedAmount", DiscountedAmount.self),
-      ] }
-      static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-        CartLineFragment.DiscountAllocation.self
       ] }
 
       /// The discounted amount that has been applied to the cart line.
@@ -461,18 +408,14 @@ extension CartAPI {
       /// DiscountAllocation.DiscountedAmount
       ///
       /// Parent Type: `MoneyV2`
-      nonisolated struct DiscountedAmount: CartAPI.SelectionSet {
+      struct DiscountedAmount: CartAPI.SelectionSet {
         let __data: DataDict
         init(_dataDict: DataDict) { __data = _dataDict }
 
-        static var __parentType: any ApolloAPI.ParentType { CartAPI.Objects.MoneyV2 }
+        static var __parentType: ApolloAPI.ParentType { CartAPI.Objects.MoneyV2 }
         static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .fragment(MoneyFragment.self),
-        ] }
-        static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-          CartLineFragment.DiscountAllocation.DiscountedAmount.self,
-          MoneyFragment.self
         ] }
 
         /// Decimal money amount.

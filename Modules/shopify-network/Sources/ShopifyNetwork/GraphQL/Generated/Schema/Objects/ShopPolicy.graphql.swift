@@ -5,9 +5,8 @@ import ApolloAPI
 
 public extension ShopifyAPI.Objects {
   /// Policy that a merchant has configured for their store, such as their refund or privacy policy.
-  nonisolated static let ShopPolicy = ApolloAPI.Object(
+  static let ShopPolicy = ApolloAPI.Object(
     typename: "ShopPolicy",
-    implementedInterfaces: [ShopifyAPI.Interfaces.Node.self],
-    keyFields: nil
+    implementedInterfaces: [ShopifyAPI.Interfaces.Node.self]
   )
 }

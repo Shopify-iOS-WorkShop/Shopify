@@ -7,6 +7,8 @@
 
 import Foundation
 import SwiftUI
+import Common
+
 public struct FlashSaleBannerView: View {
     public init() {}
 

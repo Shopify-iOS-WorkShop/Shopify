@@ -10,6 +10,7 @@
 //
 
 import SwiftUI
+import Common
 
 struct AdBannerCardView: View {
     let ad: Ad
