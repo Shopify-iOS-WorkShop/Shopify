@@ -17,7 +17,7 @@ import ProductListing
 import ShopifyNetwork
 import Settings
 import Favorites
-import Address
+import Addresss
 import Payment
 import search
 
