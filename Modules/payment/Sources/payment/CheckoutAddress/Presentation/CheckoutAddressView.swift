@@ -16,8 +16,8 @@ public struct CheckoutAddressView: View {
     @State private var showingAddressSheet: Bool = false
     
     @MainActor
-    public init(viewModel: CheckoutAddressViewModel? = nil) {
-        _viewModel = StateObject(wrappedValue: viewModel ?? CheckoutAddressFactory.makeAddressViewModel())
+    public init(viewModel: CheckoutAddressViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
     }
 
     public var body: some View {
@@ -83,9 +83,9 @@ public struct CheckoutAddressView: View {
                 VStack(spacing: 16) {
                     CustomInputField(title: "RECIPIENT NAME", placeholder: "e.g. Johnathan Doe", text: $viewModel.recipientName)
                     CustomInputField(title: "MOBILE NUMBER", placeholder: "+2 (___) ___-____", text: $viewModel.mobileNumber)
-                        .keyboardType(.numberPad)
+                        .keyboardType(.phonePad)
                         .onChange(of: viewModel.mobileNumber) { _, newValue in
-                            let filtered = newValue.filter { $0.isNumber }
+                            let filtered = newValue.filter { $0.isNumber || $0 == "+" }
                             if filtered != newValue { viewModel.mobileNumber = filtered }
                         }
                     HStack(spacing: 16) {
@@ -116,6 +116,15 @@ public struct CheckoutAddressView: View {
         VStack {
             Button(action: {
                 if viewModel.prepareForCheckout() {
+                    coordinator.selectedAddress = CheckoutAddress(
+                        address1: viewModel.street,
+                        city: viewModel.city,
+                        country: "EG",
+                        firstName: viewModel.recipientName,
+                        lastName: "",
+                        phone: viewModel.mobileNumber
+                    )
+                    
                     coordinator.push(.payment)
                 }
             }) {
@@ -138,21 +147,39 @@ public struct CheckoutAddressView: View {
             Color(UIColor.systemBackground)
                 .shadow(color: Color.black.opacity(0.08), radius: 10, y: -4)
         )
-        // Updated Alert Logic
         .alert("Save Changes?", isPresented: $viewModel.showUpdateAlert) {
-            Button("Cancel", role: .cancel) {
-                viewModel.revertAddressChanges()
-            }
             Button("Save & Proceed") {
                 Task {
                     let success = await viewModel.confirmAndSaveAddress()
+                    
                     if success {
+                        coordinator.selectedAddress = CheckoutAddress(
+                            address1: viewModel.street,
+                            city: viewModel.city,
+                            country: "EG",
+                            firstName: viewModel.recipientName,
+                            lastName: "",
+                            phone: viewModel.mobileNumber
+                        )
                         coordinator.push(.payment)
                     }
                 }
             }
+            Button("Cancel", role: .cancel) {
+                viewModel.revertAddressChanges()
+            }
         } message: {
             Text("You have modified your selected address. Do you want to save these changes to your profile before proceeding?")
+        }
+        .alert("Error", isPresented: Binding<Bool>(
+            get: { viewModel.errorMessage != nil },
+            set: { if !$0 { viewModel.errorMessage = nil } }
+        )) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            if let errorMessage = viewModel.errorMessage {
+                Text(errorMessage)
+            }
         }
     }
 }

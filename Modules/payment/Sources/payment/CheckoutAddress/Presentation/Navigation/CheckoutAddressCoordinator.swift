@@ -14,6 +14,10 @@ public final class CheckoutAddressCoordinator {
     public var path = NavigationPath()
     
     public var onCheckoutComplete: (() -> Void)?
+    public var selectedAddress: CheckoutAddress?
+    public var cartItems: [CartItem] = []
+    public var totalAmount: Double = 0.0
+    public var deliveryFee: Double = 0.0
     
     public init() {}
     
