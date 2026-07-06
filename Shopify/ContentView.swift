@@ -16,13 +16,14 @@ import ShopifyNetwork
 import DataPersistence
 import Favorites
 import Cart
+import Payment
 
 struct ContentView: View {
     @State private var appCoordinator = AppCoordinator()
     @StateObject private var favoritesViewModel = AppAssembly.shared.makeFavoritesViewModel()
     @State private var sessionChecked: Bool = false
     @State private var selectedTab: Common.Tab = .home
-    @State private var cartViewModel: CartViewModel? = nil  // Initialize after session restore
+    @State private var cartViewModel: CartViewModel? = nil
     @StateObject private var homeViewModel: HomeViewModel = AppAssembly.shared.resolve(HomeViewModel.self)
     private let repository: AuthRepositoryProtocol = AuthRepositoryFactory.make()
     private let sessionStore: SessionStore = AppAssembly.shared.resolve(SessionStore.self)
@@ -38,7 +39,6 @@ struct ContentView: View {
             }
         }
         .task {
-            // Restore session on app launch
             await restoreSession()
             sessionChecked = true
         }
@@ -49,10 +49,8 @@ struct ContentView: View {
                 }
             }
             
-            // Load setup for favorites
             favoritesViewModel.loadFavorites()
             
-            // Wire cart icon tap in Home → switch to Cart tab
             appCoordinator.homeCoordinator.onCartTapped = {
                 selectedTab = .cart
             }
@@ -113,12 +111,9 @@ struct ContentView: View {
 
                 // Cart tab
                 if let cartViewModel {
-                    CartView(
-                        viewModel: cartViewModel,
-                        onGoShopping: {
-                            selectedTab = .home
-                        }
-                    )
+                    NavigationStack(path: $appCoordinator.cartCoordinator.navigationPath) {
+                        appCoordinator.cartCoordinator.start(viewModel: cartViewModel)
+                    }
                     .tag(Common.Tab.cart)
                     .toolbar(.hidden, for: .tabBar)
                 } else {
@@ -155,8 +150,45 @@ struct ContentView: View {
             appCoordinator.homeCoordinator.cartBadgeCount = newValue ?? 0
         }
         .task {
-            // Initialize cart badge count
             appCoordinator.homeCoordinator.cartBadgeCount = cartViewModel?.cartItemCount ?? 0
+        }
+        .fullScreenCover(isPresented: $appCoordinator.isShowingCheckout) {
+            NavigationStack(path: $appCoordinator.checkoutAddressCoordinator.path) {
+                CheckoutAddressView(
+                    viewModel: AppAssembly.shared.resolve(CheckoutAddressViewModel.self)
+                )
+                .navigationDestination(for: CheckoutAddressRoute.self) { route in
+                    switch route {
+                    case .payment:
+                        let safeAddress = appCoordinator.checkoutAddressCoordinator.selectedAddress
+                            ?? CheckoutAddress(address1: "N/A", city: "N/A", country: "EG", firstName: "Customer", lastName: "", phone: "")
+                        let customerId = sessionStore.current?.customerId ?? ""
+
+                        PaymentMethodView(
+                            viewModel: AppAssembly.shared.container.resolve(
+                                PaymentMethodViewModel.self,
+                                arguments:
+                                    appCoordinator.checkoutAddressCoordinator.cartItems,
+                                    appCoordinator.checkoutAddressCoordinator.totalAmount,
+                                    appCoordinator.checkoutAddressCoordinator.deliveryFee,
+                                    safeAddress,
+                                    customerId
+                            )!
+                        )
+
+                    case .success:
+                        CheckoutResultView(
+                            onTrackOrder: {
+                                appCoordinator.checkoutAddressCoordinator.onCheckoutComplete?()
+                            },
+                            onContinueShopping: {
+                                appCoordinator.checkoutAddressCoordinator.onCheckoutComplete?()
+                            }
+                        )
+                    }
+                }
+            }
+            .environment(appCoordinator.checkoutAddressCoordinator)
         }
     }
 
@@ -272,25 +304,14 @@ struct ContentView: View {
     
     @MainActor
     private func restoreSession() async {
-        // Get persisted session from local storage
         guard let session = repository.currentSession(), session.isValid else {
             appCoordinator.hasCompletedAuth = false
-            // Create cart for guest mode
             cartViewModel = AppAssembly.shared.resolve(CartViewModel.self)
             return
         }
         
-        // Update SessionStore so all modules can access the session
         sessionStore.updateSession(session.toCommonSession())
-        
-        // NOW create CartViewModel with correct session
         cartViewModel = AppAssembly.shared.resolve(CartViewModel.self)
-        
-        // Mark auth as completed
         appCoordinator.hasCompletedAuth = true
     }
-}
-
-#Preview {
-    ContentView()
 }

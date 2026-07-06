@@ -13,16 +13,19 @@ import Home
 import ProductListing
 import Payment
 import Favorites
+import Cart
 
 @Observable
 public final class AppCoordinator {
     public var hasCompletedAuth: Bool = false
+    public var isShowingCheckout: Bool = false
 
     public var authCoordinator = AuthCoordinator()
     public var homeCoordinator = HomeCoordinator()
     public var productListingCoordinator = ProductListingCoordinator()
     public var checkoutAddressCoordinator = CheckoutAddressCoordinator()
     public var favoritesCoordinator = FavoritesCoordinator()
+    public var cartCoordinator = CartCoordinator()
 
     public init() {
         setupCallbacks()
@@ -39,6 +42,36 @@ public final class AppCoordinator {
 
         favoritesCoordinator.onNavigateToDetail = { [weak self] productId in
             self?.homeCoordinator.push(.productDetail(productId: productId))
+        }
+        
+        cartCoordinator.onCheckoutRequested = { [weak self] cart in
+            guard let self = self else { return }
+            
+            let paymentItems = cart.lines.map { line in
+                Payment.CartItem(variantId: line.variantId, quantity: line.quantity)
+            }
+            
+            self.checkoutAddressCoordinator.cartItems = paymentItems
+            self.checkoutAddressCoordinator.totalAmount = Double(truncating: cart.cost.totalAmount.amount as NSNumber)
+            self.checkoutAddressCoordinator.deliveryFee = 15.0
+            
+            self.isShowingCheckout = true
+        }
+
+        cartCoordinator.onProductDetailRequested = { [weak self] productId, handle in
+            let idString = productId.components(separatedBy: "/").last ?? productId
+            if let idInt = Int(idString) {
+                self?.homeCoordinator.push(.productDetail(productId: idInt))
+            }
+        }
+
+        cartCoordinator.onSignInRequired = { [weak self] in
+            self?.hasCompletedAuth = false
+        }
+        
+        checkoutAddressCoordinator.onCheckoutComplete = { [weak self] in
+            self?.isShowingCheckout = false
+            self?.checkoutAddressCoordinator.popToRoot()
         }
     }
 }

@@ -9,6 +9,7 @@ import Firebase
 import GoogleSignIn
 import Payment
 import Favorites
+import StripeCore
 
 @main
 struct ShopifyApp: App {
@@ -32,6 +33,8 @@ struct ShopifyApp: App {
         }
         
         _ = AppAssembly.shared.setup(with: modelContainer.mainContext)
+        
+        StripeAPI.defaultPublishableKey = ShopifyConfig.stripeTestKey
     }
 
     var body: some Scene {
