@@ -71,6 +71,15 @@ public final class PaymentRepository: PaymentRepositoryProtocol {
         address: CheckoutAddress,
         customerId: String
     ) -> ShopifyAdminAPI.DraftOrderInput {
+
+        let formattedCustomerId = customerId.hasPrefix("gid://")
+                ? customerId
+                : "gid://shopify/Customer/\(customerId)"
+
+        let purchasingEntity = ShopifyAdminAPI.PurchasingEntityInput(
+            customerId: .some(formattedCustomerId)
+        )
+        
         let lineItems = cartItems.map { item in
             ShopifyAdminAPI.DraftOrderLineItemInput(
                 quantity: item.quantity,
@@ -98,11 +107,7 @@ public final class PaymentRepository: PaymentRepositoryProtocol {
             ),
             title: .some("Standard Shipping")
         )
-
-        let purchasingEntity = ShopifyAdminAPI.PurchasingEntityInput(
-            customerId: .some(customerId)
-        )
-
+        
         return ShopifyAdminAPI.DraftOrderInput(
             billingAddress: .some(shopifyAddress),
             lineItems: .some(lineItems),

@@ -26,6 +26,23 @@ public class PaymentMethodViewModel: ObservableObject {
     private let address: CheckoutAddress
     private let customerId: String
     
+    public var totalItems: Int {
+        cartItems.reduce(0) { $0 + $1.quantity }
+    }
+    
+    public var subtotalFormatted: String {
+        String(format: "$%.2f", totalAmount - deliveryFee)
+    }
+    
+    public var deliveryFeeFormatted: String {
+        String(format: "$%.2f", deliveryFee)
+    }
+    
+    public var totalFormatted: String {
+        String(format: "$%.2f", totalAmount)
+    }
+    
+    
     public init(
         placeOrderUseCase: PlaceOrderUseCaseProtocol,
         cartItems: [CartItem],

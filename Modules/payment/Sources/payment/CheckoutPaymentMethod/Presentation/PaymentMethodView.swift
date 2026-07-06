@@ -10,7 +10,7 @@ import Common
 
 public struct PaymentMethodView: View {
     @StateObject private var viewModel: PaymentMethodViewModel
-    
+    @Environment(CheckoutAddressCoordinator.self) private var coordinator
     public init(viewModel: PaymentMethodViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
@@ -41,10 +41,10 @@ public struct PaymentMethodView: View {
                 }
                 
                 OrderSummaryBox(
-                    itemsCount: 3,
-                    subtotal: "$1,299.00",
-                    shippingFee: "$15.00",
-                    totalAmount: "$1,314.00"
+                    itemsCount: viewModel.totalItems,
+                    subtotal: viewModel.subtotalFormatted,
+                    shippingFee: viewModel.deliveryFeeFormatted,
+                    totalAmount: viewModel.totalFormatted
                 )
             }
             .padding(.horizontal, 20)
@@ -62,13 +62,11 @@ public struct PaymentMethodView: View {
         }
         .onTapGesture { UIApplication.shared.endEditing() }
         
-        .alert("Payment Successful! 🎉", isPresented: $viewModel.orderSuccess) {
-            Button("Awesome", role: .cancel) {
+        .onChange(of: viewModel.orderSuccess) { oldValue, isSuccess in
+            if isSuccess {
+                coordinator.push(.success)
             }
-        } message: {
-            Text("Your order was successfully placed.")
         }
-        
         .alert("Payment Failed", isPresented: Binding<Bool>(
             get: { viewModel.errorMessage != nil },
             set: { if !$0 { viewModel.errorMessage = nil } }
