@@ -7,21 +7,24 @@ public final class CartCoordinator {
     public var navigationPath = NavigationPath()
 
     // Callbacks set by AppCoordinator
-    public var onCheckoutRequested: ((URL?) -> Void)?
+    public var onCheckoutRequested: ((Cart) -> Void)?
     public var onProductDetailRequested: ((String, String) -> Void)?
     public var onSignInRequired: (() -> Void)?
 
     public init() {}
 
-    // Temporary placeholder for the CartView until it's implemented in task/cart-ui
     public func start(viewModel: CartViewModel) -> some View {
-        CartView(viewModel: viewModel)
+        viewModel.onCheckoutRequested = { [weak self, weak viewModel] in
+            guard let cart = viewModel?.cart else { return }
+            self?.navigateTo(.checkout(cart: cart))
+        }
+        return CartView(viewModel: viewModel)
     }
 
-    public func navigateTo(_ route: CartRoute, currentCheckoutUrl: URL? = nil) {
+    public func navigateTo(_ route: CartRoute) {
         switch route {
-        case .checkout:
-            onCheckoutRequested?(currentCheckoutUrl)
+        case .checkout(let cart):
+            onCheckoutRequested?(cart)
         case .productDetails(let id, let handle):
             onProductDetailRequested?(id, handle)
         case .signInRequired:
