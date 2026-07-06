@@ -1,6 +1,7 @@
 import DependencyInjection
 import DataPersistence
 import Swinject
+import Common
 
 public class FavoritesAssembly: DIAssembly {
 
@@ -15,8 +16,12 @@ public class FavoritesAssembly: DIAssembly {
         }
 
         container.register(FavoritesRepositoryProtocol.self) { resolver in
-            FavoritesRepository(
-                localDataSource: resolver.resolve(FavoritesLocalDataSource.self)!
+            guard let sessionProvider = resolver.resolve(SessionProviding.self) else {
+                fatalError("SessionProviding must be registered before FavoritesAssembly. Register CommonAssembly or equivalent first.")
+            }
+            return FavoritesRepository(
+                localDataSource: resolver.resolve(FavoritesLocalDataSource.self)!,
+                sessionProvider: sessionProvider
             )
         }
 

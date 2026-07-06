@@ -1,6 +1,7 @@
 import Foundation
 
 public enum FavoritesError: LocalizedError, Equatable {
+    case unauthorized
     case alreadyFavorited
     case notFound
     case saveFailed(String)
@@ -9,6 +10,8 @@ public enum FavoritesError: LocalizedError, Equatable {
 
     public var errorDescription: String? {
         switch self {
+        case .unauthorized:
+            return "You must be logged in to manage favorites."
         case .alreadyFavorited:
             return "This product is already in your favorites."
         case .notFound:
