@@ -359,12 +359,7 @@ struct ContentView: View {
             }
             .environment(appCoordinator.checkoutAddressCoordinator)
         }
-        .onChange(of: selectedTab) { oldTab, newTab in
-            if newTab == .wishlist && sessionStore.current == nil {
-                appCoordinator.showGuestSignInPrompt = true
-                selectedTab = oldTab // revert
-            }
-        }
+
     }
 
 
