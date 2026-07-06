@@ -5,9 +5,8 @@ import ApolloAPI
 
 public extension ShopifyAPI.Objects {
   /// A company's main point of contact.
-  nonisolated static let CompanyContact = ApolloAPI.Object(
+  static let CompanyContact = ApolloAPI.Object(
     typename: "CompanyContact",
-    implementedInterfaces: [ShopifyAPI.Interfaces.Node.self],
-    keyFields: nil
+    implementedInterfaces: [ShopifyAPI.Interfaces.Node.self]
   )
 }

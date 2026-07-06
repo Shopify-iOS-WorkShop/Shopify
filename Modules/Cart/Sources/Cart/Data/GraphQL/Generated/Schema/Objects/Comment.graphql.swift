@@ -5,9 +5,8 @@ import ApolloAPI
 
 extension CartAPI.Objects {
   /// A comment on an article.
-  nonisolated static let Comment = ApolloAPI.Object(
+  static let Comment = ApolloAPI.Object(
     typename: "Comment",
-    implementedInterfaces: [CartAPI.Interfaces.Node.self],
-    keyFields: nil
+    implementedInterfaces: [CartAPI.Interfaces.Node.self]
   )
 }

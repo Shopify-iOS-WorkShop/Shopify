@@ -3,19 +3,21 @@
 
 import ApolloAPI
 
-nonisolated protocol CartAPI_SelectionSet: ApolloAPI.SelectionSet & ApolloAPI.RootSelectionSet
+protocol CartAPI_SelectionSet: ApolloAPI.SelectionSet & ApolloAPI.RootSelectionSet
 where Schema == CartAPI.SchemaMetadata {}
 
-nonisolated protocol CartAPI_InlineFragment: ApolloAPI.SelectionSet & ApolloAPI.InlineFragment
+protocol CartAPI_InlineFragment: ApolloAPI.SelectionSet & ApolloAPI.InlineFragment
 where Schema == CartAPI.SchemaMetadata {}
 
-nonisolated protocol CartAPI_MutableSelectionSet: ApolloAPI.MutableRootSelectionSet
+protocol CartAPI_MutableSelectionSet: ApolloAPI.MutableRootSelectionSet
 where Schema == CartAPI.SchemaMetadata {}
 
-nonisolated protocol CartAPI_MutableInlineFragment: ApolloAPI.MutableSelectionSet & ApolloAPI.InlineFragment
+protocol CartAPI_MutableInlineFragment: ApolloAPI.MutableSelectionSet & ApolloAPI.InlineFragment
 where Schema == CartAPI.SchemaMetadata {}
 
 extension CartAPI {
+  typealias ID = String
+
   typealias SelectionSet = CartAPI_SelectionSet
 
   typealias InlineFragment = CartAPI_InlineFragment
@@ -24,84 +26,83 @@ extension CartAPI {
 
   typealias MutableInlineFragment = CartAPI_MutableInlineFragment
 
-  nonisolated enum SchemaMetadata: ApolloAPI.SchemaMetadata {
-    static let configuration: any ApolloAPI.SchemaConfiguration.Type = SchemaConfiguration.self
-
-    private static let objectTypeMap: [String: ApolloAPI.Object] = [
-      "AppliedGiftCard": CartAPI.Objects.AppliedGiftCard,
-      "Article": CartAPI.Objects.Article,
-      "BaseCartLineConnection": CartAPI.Objects.BaseCartLineConnection,
-      "Blog": CartAPI.Objects.Blog,
-      "Cart": CartAPI.Objects.Cart,
-      "CartAutomaticDiscountAllocation": CartAPI.Objects.CartAutomaticDiscountAllocation,
-      "CartBuyerIdentity": CartAPI.Objects.CartBuyerIdentity,
-      "CartBuyerIdentityUpdatePayload": CartAPI.Objects.CartBuyerIdentityUpdatePayload,
-      "CartCodeDiscountAllocation": CartAPI.Objects.CartCodeDiscountAllocation,
-      "CartCost": CartAPI.Objects.CartCost,
-      "CartCreatePayload": CartAPI.Objects.CartCreatePayload,
-      "CartCustomDiscountAllocation": CartAPI.Objects.CartCustomDiscountAllocation,
-      "CartDiscountCode": CartAPI.Objects.CartDiscountCode,
-      "CartDiscountCodesUpdatePayload": CartAPI.Objects.CartDiscountCodesUpdatePayload,
-      "CartLine": CartAPI.Objects.CartLine,
-      "CartLineCost": CartAPI.Objects.CartLineCost,
-      "CartLinesAddPayload": CartAPI.Objects.CartLinesAddPayload,
-      "CartLinesRemovePayload": CartAPI.Objects.CartLinesRemovePayload,
-      "CartLinesUpdatePayload": CartAPI.Objects.CartLinesUpdatePayload,
-      "CartUserError": CartAPI.Objects.CartUserError,
-      "Collection": CartAPI.Objects.Collection,
-      "Comment": CartAPI.Objects.Comment,
-      "Company": CartAPI.Objects.Company,
-      "CompanyContact": CartAPI.Objects.CompanyContact,
-      "CompanyLocation": CartAPI.Objects.CompanyLocation,
-      "ComponentizableCartLine": CartAPI.Objects.ComponentizableCartLine,
-      "Customer": CartAPI.Objects.Customer,
-      "CustomerUserError": CartAPI.Objects.CustomerUserError,
-      "ExternalVideo": CartAPI.Objects.ExternalVideo,
-      "GenericFile": CartAPI.Objects.GenericFile,
-      "Image": CartAPI.Objects.Image,
-      "Location": CartAPI.Objects.Location,
-      "MailingAddress": CartAPI.Objects.MailingAddress,
-      "Market": CartAPI.Objects.Market,
-      "MediaImage": CartAPI.Objects.MediaImage,
-      "MediaPresentation": CartAPI.Objects.MediaPresentation,
-      "Menu": CartAPI.Objects.Menu,
-      "MenuItem": CartAPI.Objects.MenuItem,
-      "Metafield": CartAPI.Objects.Metafield,
-      "MetafieldDeleteUserError": CartAPI.Objects.MetafieldDeleteUserError,
-      "MetafieldsSetUserError": CartAPI.Objects.MetafieldsSetUserError,
-      "Metaobject": CartAPI.Objects.Metaobject,
-      "Model3d": CartAPI.Objects.Model3d,
-      "MoneyV2": CartAPI.Objects.MoneyV2,
-      "Mutation": CartAPI.Objects.Mutation,
-      "Order": CartAPI.Objects.Order,
-      "Page": CartAPI.Objects.Page,
-      "Product": CartAPI.Objects.Product,
-      "ProductOption": CartAPI.Objects.ProductOption,
-      "ProductOptionValue": CartAPI.Objects.ProductOptionValue,
-      "ProductVariant": CartAPI.Objects.ProductVariant,
-      "QueryRoot": CartAPI.Objects.QueryRoot,
-      "SearchQuerySuggestion": CartAPI.Objects.SearchQuerySuggestion,
-      "SelectedOption": CartAPI.Objects.SelectedOption,
-      "SellingPlan": CartAPI.Objects.SellingPlan,
-      "Shop": CartAPI.Objects.Shop,
-      "ShopPayInstallmentsFinancingPlan": CartAPI.Objects.ShopPayInstallmentsFinancingPlan,
-      "ShopPayInstallmentsFinancingPlanTerm": CartAPI.Objects.ShopPayInstallmentsFinancingPlanTerm,
-      "ShopPayInstallmentsProductVariantPricing": CartAPI.Objects.ShopPayInstallmentsProductVariantPricing,
-      "ShopPolicy": CartAPI.Objects.ShopPolicy,
-      "TaxonomyCategory": CartAPI.Objects.TaxonomyCategory,
-      "UrlRedirect": CartAPI.Objects.UrlRedirect,
-      "UserError": CartAPI.Objects.UserError,
-      "UserErrorsShopPayPaymentRequestSessionUserErrors": CartAPI.Objects.UserErrorsShopPayPaymentRequestSessionUserErrors,
-      "Video": CartAPI.Objects.Video
-    ]
+  enum SchemaMetadata: ApolloAPI.SchemaMetadata {
+    static let configuration: ApolloAPI.SchemaConfiguration.Type = SchemaConfiguration.self
 
     static func objectType(forTypename typename: String) -> ApolloAPI.Object? {
-      objectTypeMap[typename]
+      switch typename {
+      case "Mutation": return CartAPI.Objects.Mutation
+      case "CartLinesAddPayload": return CartAPI.Objects.CartLinesAddPayload
+      case "Cart": return CartAPI.Objects.Cart
+      case "Article": return CartAPI.Objects.Article
+      case "AppliedGiftCard": return CartAPI.Objects.AppliedGiftCard
+      case "Blog": return CartAPI.Objects.Blog
+      case "Collection": return CartAPI.Objects.Collection
+      case "Page": return CartAPI.Objects.Page
+      case "Product": return CartAPI.Objects.Product
+      case "SearchQuerySuggestion": return CartAPI.Objects.SearchQuerySuggestion
+      case "Metaobject": return CartAPI.Objects.Metaobject
+      case "CartLine": return CartAPI.Objects.CartLine
+      case "ComponentizableCartLine": return CartAPI.Objects.ComponentizableCartLine
+      case "Comment": return CartAPI.Objects.Comment
+      case "Company": return CartAPI.Objects.Company
+      case "CompanyContact": return CartAPI.Objects.CompanyContact
+      case "CompanyLocation": return CartAPI.Objects.CompanyLocation
+      case "ExternalVideo": return CartAPI.Objects.ExternalVideo
+      case "MediaImage": return CartAPI.Objects.MediaImage
+      case "Model3d": return CartAPI.Objects.Model3d
+      case "Video": return CartAPI.Objects.Video
+      case "GenericFile": return CartAPI.Objects.GenericFile
+      case "Location": return CartAPI.Objects.Location
+      case "MailingAddress": return CartAPI.Objects.MailingAddress
+      case "Market": return CartAPI.Objects.Market
+      case "MediaPresentation": return CartAPI.Objects.MediaPresentation
+      case "Menu": return CartAPI.Objects.Menu
+      case "MenuItem": return CartAPI.Objects.MenuItem
+      case "Metafield": return CartAPI.Objects.Metafield
+      case "Order": return CartAPI.Objects.Order
+      case "ProductOption": return CartAPI.Objects.ProductOption
+      case "ProductOptionValue": return CartAPI.Objects.ProductOptionValue
+      case "ProductVariant": return CartAPI.Objects.ProductVariant
+      case "Shop": return CartAPI.Objects.Shop
+      case "ShopPayInstallmentsFinancingPlan": return CartAPI.Objects.ShopPayInstallmentsFinancingPlan
+      case "ShopPayInstallmentsFinancingPlanTerm": return CartAPI.Objects.ShopPayInstallmentsFinancingPlanTerm
+      case "ShopPayInstallmentsProductVariantPricing": return CartAPI.Objects.ShopPayInstallmentsProductVariantPricing
+      case "ShopPolicy": return CartAPI.Objects.ShopPolicy
+      case "TaxonomyCategory": return CartAPI.Objects.TaxonomyCategory
+      case "UrlRedirect": return CartAPI.Objects.UrlRedirect
+      case "Customer": return CartAPI.Objects.Customer
+      case "SellingPlan": return CartAPI.Objects.SellingPlan
+      case "BaseCartLineConnection": return CartAPI.Objects.BaseCartLineConnection
+      case "MoneyV2": return CartAPI.Objects.MoneyV2
+      case "Image": return CartAPI.Objects.Image
+      case "SelectedOption": return CartAPI.Objects.SelectedOption
+      case "CartLineCost": return CartAPI.Objects.CartLineCost
+      case "CartAutomaticDiscountAllocation": return CartAPI.Objects.CartAutomaticDiscountAllocation
+      case "CartCodeDiscountAllocation": return CartAPI.Objects.CartCodeDiscountAllocation
+      case "CartCustomDiscountAllocation": return CartAPI.Objects.CartCustomDiscountAllocation
+      case "CartCost": return CartAPI.Objects.CartCost
+      case "CartDiscountCode": return CartAPI.Objects.CartDiscountCode
+      case "CartBuyerIdentity": return CartAPI.Objects.CartBuyerIdentity
+      case "CartUserError": return CartAPI.Objects.CartUserError
+      case "CustomerUserError": return CartAPI.Objects.CustomerUserError
+      case "MetafieldDeleteUserError": return CartAPI.Objects.MetafieldDeleteUserError
+      case "MetafieldsSetUserError": return CartAPI.Objects.MetafieldsSetUserError
+      case "UserError": return CartAPI.Objects.UserError
+      case "UserErrorsShopPayPaymentRequestSessionUserErrors": return CartAPI.Objects.UserErrorsShopPayPaymentRequestSessionUserErrors
+      case "CartBuyerIdentityUpdatePayload": return CartAPI.Objects.CartBuyerIdentityUpdatePayload
+      case "CartLinesRemovePayload": return CartAPI.Objects.CartLinesRemovePayload
+      case "CartLinesUpdatePayload": return CartAPI.Objects.CartLinesUpdatePayload
+      case "CartCreatePayload": return CartAPI.Objects.CartCreatePayload
+      case "CartDiscountCodesUpdatePayload": return CartAPI.Objects.CartDiscountCodesUpdatePayload
+      case "QueryRoot": return CartAPI.Objects.QueryRoot
+      default: return nil
+      }
     }
   }
 
-  nonisolated enum Objects {}
-  nonisolated enum Interfaces {}
-  nonisolated enum Unions {}
+  enum Objects {}
+  enum Interfaces {}
+  enum Unions {}
 
 }

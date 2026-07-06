@@ -3,13 +3,23 @@ import Common
 
 public struct CartSummaryView: View {
     let cost: CartCost
+    let originalSubtotal: Decimal?
+    let discountAmount: Decimal?
+    let activeDiscountCodes: [CartDiscount]
     let onCheckout: () -> Void
+    @Environment(CurrencyStore.self) private var currencyStore
     
     public init(
         cost: CartCost,
+        originalSubtotal: Decimal? = nil,
+        discountAmount: Decimal? = nil,
+        activeDiscountCodes: [CartDiscount] = [],
         onCheckout: @escaping () -> Void
     ) {
         self.cost = cost
+        self.originalSubtotal = originalSubtotal
+        self.discountAmount = discountAmount
+        self.activeDiscountCodes = activeDiscountCodes
         self.onCheckout = onCheckout
     }
     
@@ -20,17 +30,27 @@ public struct CartSummaryView: View {
                     Text("Subtotal")
                         .foregroundColor(.secondary)
                     Spacer()
-                    Text(cost.subtotalAmount.formatted)
+                    // If we have a discount, the subtotal here should be the original price
+                    Text(currencyStore.convert(originalSubtotal ?? cost.subtotalAmount.amount))
                         .fontWeight(.medium)
                 }
                 
-                // Assuming tax or extra checkout charges
-                if cost.checkoutChargeAmount.amount > 0 {
+                if let discount = discountAmount, discount > 0 {
                     HStack {
-                        Text("Taxes & Charges")
-                            .foregroundColor(.secondary)
+                        Text("Discount")
+                            .foregroundColor(.pink)
                         Spacer()
-                        Text(cost.checkoutChargeAmount.formatted)
+                        Text("-" + currencyStore.convert(discount))
+                            .foregroundColor(.pink)
+                            .fontWeight(.medium)
+                    }
+                } else if !activeDiscountCodes.isEmpty {
+                    HStack {
+                        Text("Discount")
+                            .foregroundColor(.pink)
+                        Spacer()
+                        Text("Free Shipping")
+                            .foregroundColor(.pink)
                             .fontWeight(.medium)
                     }
                 }
@@ -43,7 +63,7 @@ public struct CartSummaryView: View {
                         .font(.title3)
                         .fontWeight(.bold)
                     Spacer()
-                    Text(cost.totalAmount.formatted)
+                    Text(currencyStore.convert(cost.totalAmount.amount))
                         .font(.title3)
                         .fontWeight(.bold)
                 }

@@ -5,16 +5,5 @@ import ApolloAPI
 
 extension CartAPI.Interfaces {
   /// Represents a resource that can be published to the Online Store sales channel.
-  nonisolated static let OnlineStorePublishable = ApolloAPI.Interface(
-    name: "OnlineStorePublishable",
-    keyFields: nil,
-    implementingObjects: [
-      "Article",
-      "Blog",
-      "Collection",
-      "Metaobject",
-      "Page",
-      "Product"
-    ]
-  )
+  static let OnlineStorePublishable = Interface(name: "OnlineStorePublishable")
 }

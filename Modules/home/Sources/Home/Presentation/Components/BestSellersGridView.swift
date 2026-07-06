@@ -10,11 +10,10 @@ import SwiftUI
 
 public struct BestSellersGridView: View {
     public let products: [Product]
-    /// Pass favoritedIDs as a value so SwiftUI re-renders when the set changes.
     public let favoritedIDs: Set<String>
     public let onFavoriteTap: ((Product) -> Void)?
+    
     @Environment(HomeCoordinator.self) private var coordinator
-
     private let columns = [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)]
 
     public init(

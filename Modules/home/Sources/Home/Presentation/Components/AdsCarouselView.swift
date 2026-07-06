@@ -9,6 +9,7 @@
 //
 
 import SwiftUI
+import Common
 
 public struct AdsCarouselView: View {
     let ads: [Ad]

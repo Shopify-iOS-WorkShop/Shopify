@@ -5,9 +5,8 @@ import ApolloAPI
 
 public extension ShopifyAPI.Objects {
   /// A media presentation.
-  nonisolated static let MediaPresentation = ApolloAPI.Object(
+  static let MediaPresentation = ApolloAPI.Object(
     typename: "MediaPresentation",
-    implementedInterfaces: [ShopifyAPI.Interfaces.Node.self],
-    keyFields: nil
+    implementedInterfaces: [ShopifyAPI.Interfaces.Node.self]
   )
 }

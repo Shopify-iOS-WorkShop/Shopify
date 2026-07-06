@@ -2,10 +2,9 @@
 // This file was automatically generated and should not be edited.
 
 @_exported import ApolloAPI
-@_spi(Execution) @_spi(Unsafe) import ApolloAPI
 
 extension CartAPI {
-  nonisolated struct CartLinesRemoveMutation: GraphQLMutation {
+  class CartLinesRemoveMutation: GraphQLMutation {
     static let operationName: String = "CartLinesRemove"
     static let operationDocument: ApolloAPI.OperationDocument = .init(
       definition: .init(
@@ -24,24 +23,21 @@ extension CartAPI {
       self.lineIds = lineIds
     }
 
-    @_spi(Unsafe) public var __variables: Variables? { [
+    public var __variables: Variables? { [
       "cartId": cartId,
       "lineIds": lineIds
     ] }
 
-    nonisolated struct Data: CartAPI.SelectionSet {
+    struct Data: CartAPI.SelectionSet {
       let __data: DataDict
       init(_dataDict: DataDict) { __data = _dataDict }
 
-      static var __parentType: any ApolloAPI.ParentType { CartAPI.Objects.Mutation }
+      static var __parentType: ApolloAPI.ParentType { CartAPI.Objects.Mutation }
       static var __selections: [ApolloAPI.Selection] { [
         .field("cartLinesRemove", CartLinesRemove?.self, arguments: [
           "cartId": .variable("cartId"),
           "lineIds": .variable("lineIds")
         ]),
-      ] }
-      static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-        CartLinesRemoveMutation.Data.self
       ] }
 
       /// Removes one or more merchandise lines from a [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart). Accepts up to 250 line IDs per request. Returns the updated cart along with any errors or warnings.
@@ -51,18 +47,15 @@ extension CartAPI {
       /// CartLinesRemove
       ///
       /// Parent Type: `CartLinesRemovePayload`
-      nonisolated struct CartLinesRemove: CartAPI.SelectionSet {
+      struct CartLinesRemove: CartAPI.SelectionSet {
         let __data: DataDict
         init(_dataDict: DataDict) { __data = _dataDict }
 
-        static var __parentType: any ApolloAPI.ParentType { CartAPI.Objects.CartLinesRemovePayload }
+        static var __parentType: ApolloAPI.ParentType { CartAPI.Objects.CartLinesRemovePayload }
         static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .field("cart", Cart?.self),
           .field("userErrors", [UserError].self),
-        ] }
-        static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-          CartLinesRemoveMutation.Data.CartLinesRemove.self
         ] }
 
         /// The updated cart.
@@ -73,18 +66,14 @@ extension CartAPI {
         /// CartLinesRemove.Cart
         ///
         /// Parent Type: `Cart`
-        nonisolated struct Cart: CartAPI.SelectionSet {
+        struct Cart: CartAPI.SelectionSet {
           let __data: DataDict
           init(_dataDict: DataDict) { __data = _dataDict }
 
-          static var __parentType: any ApolloAPI.ParentType { CartAPI.Objects.Cart }
+          static var __parentType: ApolloAPI.ParentType { CartAPI.Objects.Cart }
           static var __selections: [ApolloAPI.Selection] { [
             .field("__typename", String.self),
             .fragment(CartFragment.self),
-          ] }
-          static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-            CartLinesRemoveMutation.Data.CartLinesRemove.Cart.self,
-            CartFragment.self
           ] }
 
           /// A globally-unique ID.
@@ -123,19 +112,16 @@ extension CartAPI {
         /// CartLinesRemove.UserError
         ///
         /// Parent Type: `CartUserError`
-        nonisolated struct UserError: CartAPI.SelectionSet {
+        struct UserError: CartAPI.SelectionSet {
           let __data: DataDict
           init(_dataDict: DataDict) { __data = _dataDict }
 
-          static var __parentType: any ApolloAPI.ParentType { CartAPI.Objects.CartUserError }
+          static var __parentType: ApolloAPI.ParentType { CartAPI.Objects.CartUserError }
           static var __selections: [ApolloAPI.Selection] { [
             .field("__typename", String.self),
             .field("field", [String]?.self),
             .field("message", String.self),
             .field("code", GraphQLEnum<CartAPI.CartErrorCode>?.self),
-          ] }
-          static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-            CartLinesRemoveMutation.Data.CartLinesRemove.UserError.self
           ] }
 
           /// The path to the input field that caused the error.

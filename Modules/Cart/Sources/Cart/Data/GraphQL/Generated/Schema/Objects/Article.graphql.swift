@@ -8,14 +8,13 @@ extension CartAPI.Objects {
   ///
   /// Articles can be organized with tags and include [`SEO`](https://shopify.dev/docs/api/storefront/current/objects/SEO) metadata. You can manage [comments](https://shopify.dev/docs/api/storefront/current/objects/Comment) when the blog's comment policy enables them.
   ///
-  nonisolated static let Article = ApolloAPI.Object(
+  static let Article = ApolloAPI.Object(
     typename: "Article",
     implementedInterfaces: [
       CartAPI.Interfaces.HasMetafields.self,
       CartAPI.Interfaces.Node.self,
       CartAPI.Interfaces.OnlineStorePublishable.self,
       CartAPI.Interfaces.Trackable.self
-    ],
-    keyFields: nil
+    ]
   )
 }

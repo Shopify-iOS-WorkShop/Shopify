@@ -1,7 +1,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-@_spi(Internal) import ApolloAPI
+import ApolloAPI
 
 extension CartAPI {
   /// The code designating a country/region, which generally follows ISO 3166-1 alpha-2 guidelines.
@@ -9,7 +9,7 @@ extension CartAPI {
   /// of another country. For example, the territories associated with Spain are represented by the country code `ES`,
   /// and the territories associated with the United States of America are represented by the country code `US`.
   ///
-  nonisolated enum CountryCode: String, EnumType {
+  enum CountryCode: String, EnumType {
     /// Afghanistan.
     case af = "AF"
     /// Åland Islands.

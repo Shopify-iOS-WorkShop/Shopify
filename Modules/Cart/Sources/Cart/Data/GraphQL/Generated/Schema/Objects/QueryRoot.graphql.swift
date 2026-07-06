@@ -10,9 +10,8 @@ extension CartAPI.Objects {
   ///
   /// Explore queries interactively with the [GraphiQL explorer and sample query kit](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/api-exploration).
   ///
-  nonisolated static let QueryRoot = ApolloAPI.Object(
+  static let QueryRoot = ApolloAPI.Object(
     typename: "QueryRoot",
-    implementedInterfaces: [],
-    keyFields: nil
+    implementedInterfaces: []
   )
 }

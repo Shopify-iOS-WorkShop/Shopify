@@ -1,11 +1,7 @@
 // @generated
-// This file was automatically generated and can be edited to
-// implement advanced custom scalar functionality.
-//
-// Any changes to this file will not be overwritten by future
-// code generation execution.
+// This file was automatically generated and should not be edited.
 
-@_spi(Internal) @_spi(Execution) import ApolloAPI
+import ApolloAPI
 
 extension CartAPI {
   /// A signed decimal number, which supports arbitrary precision and is serialized as a string.

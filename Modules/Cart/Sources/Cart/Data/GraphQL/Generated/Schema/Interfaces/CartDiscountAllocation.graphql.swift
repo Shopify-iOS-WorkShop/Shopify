@@ -8,13 +8,5 @@ extension CartAPI.Interfaces {
   ///
   /// Tracks how a discount distributes across [cart lines](https://shopify.dev/docs/api/storefront/current/objects/CartLine). Each allocation includes the [`CartDiscountApplication`](https://shopify.dev/docs/api/storefront/current/objects/CartDiscountApplication) details, the discounted amount, and whether the discount targets line items or shipping.
   ///
-  nonisolated static let CartDiscountAllocation = ApolloAPI.Interface(
-    name: "CartDiscountAllocation",
-    keyFields: nil,
-    implementingObjects: [
-      "CartAutomaticDiscountAllocation",
-      "CartCodeDiscountAllocation",
-      "CartCustomDiscountAllocation"
-    ]
-  )
+  static let CartDiscountAllocation = Interface(name: "CartDiscountAllocation")
 }
