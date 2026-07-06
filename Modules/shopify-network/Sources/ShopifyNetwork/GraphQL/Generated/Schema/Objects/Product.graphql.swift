@@ -12,14 +12,13 @@ public extension ShopifyAPI.Objects {
   ///
   /// Learn more about working with [products and collections](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/products-collections).
   ///
-  nonisolated static let Product = ApolloAPI.Object(
+  static let Product = ApolloAPI.Object(
     typename: "Product",
     implementedInterfaces: [
       ShopifyAPI.Interfaces.HasMetafields.self,
       ShopifyAPI.Interfaces.Node.self,
       ShopifyAPI.Interfaces.OnlineStorePublishable.self,
       ShopifyAPI.Interfaces.Trackable.self
-    ],
-    keyFields: nil
+    ]
   )
 }

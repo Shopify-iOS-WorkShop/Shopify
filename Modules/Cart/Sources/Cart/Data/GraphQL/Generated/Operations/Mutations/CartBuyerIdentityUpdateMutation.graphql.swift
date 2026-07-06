@@ -2,10 +2,9 @@
 // This file was automatically generated and should not be edited.
 
 @_exported import ApolloAPI
-@_spi(Execution) @_spi(Unsafe) import ApolloAPI
 
 extension CartAPI {
-  nonisolated struct CartBuyerIdentityUpdateMutation: GraphQLMutation {
+  class CartBuyerIdentityUpdateMutation: GraphQLMutation {
     static let operationName: String = "CartBuyerIdentityUpdate"
     static let operationDocument: ApolloAPI.OperationDocument = .init(
       definition: .init(
@@ -24,24 +23,21 @@ extension CartAPI {
       self.buyerIdentity = buyerIdentity
     }
 
-    @_spi(Unsafe) public var __variables: Variables? { [
+    public var __variables: Variables? { [
       "cartId": cartId,
       "buyerIdentity": buyerIdentity
     ] }
 
-    nonisolated struct Data: CartAPI.SelectionSet {
+    struct Data: CartAPI.SelectionSet {
       let __data: DataDict
       init(_dataDict: DataDict) { __data = _dataDict }
 
-      static var __parentType: any ApolloAPI.ParentType { CartAPI.Objects.Mutation }
+      static var __parentType: ApolloAPI.ParentType { CartAPI.Objects.Mutation }
       static var __selections: [ApolloAPI.Selection] { [
         .field("cartBuyerIdentityUpdate", CartBuyerIdentityUpdate?.self, arguments: [
           "cartId": .variable("cartId"),
           "buyerIdentity": .variable("buyerIdentity")
         ]),
-      ] }
-      static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-        CartBuyerIdentityUpdateMutation.Data.self
       ] }
 
       /// Updates the buyer identity on a [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart), including contact information, location, and checkout preferences. The buyer's country determines [international pricing](https://shopify.dev/docs/storefronts/headless/building-with-the-storefront-api/markets/international-pricing) and should match their shipping address.
@@ -53,18 +49,15 @@ extension CartAPI {
       /// CartBuyerIdentityUpdate
       ///
       /// Parent Type: `CartBuyerIdentityUpdatePayload`
-      nonisolated struct CartBuyerIdentityUpdate: CartAPI.SelectionSet {
+      struct CartBuyerIdentityUpdate: CartAPI.SelectionSet {
         let __data: DataDict
         init(_dataDict: DataDict) { __data = _dataDict }
 
-        static var __parentType: any ApolloAPI.ParentType { CartAPI.Objects.CartBuyerIdentityUpdatePayload }
+        static var __parentType: ApolloAPI.ParentType { CartAPI.Objects.CartBuyerIdentityUpdatePayload }
         static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .field("cart", Cart?.self),
           .field("userErrors", [UserError].self),
-        ] }
-        static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-          CartBuyerIdentityUpdateMutation.Data.CartBuyerIdentityUpdate.self
         ] }
 
         /// The updated cart.
@@ -75,18 +68,14 @@ extension CartAPI {
         /// CartBuyerIdentityUpdate.Cart
         ///
         /// Parent Type: `Cart`
-        nonisolated struct Cart: CartAPI.SelectionSet {
+        struct Cart: CartAPI.SelectionSet {
           let __data: DataDict
           init(_dataDict: DataDict) { __data = _dataDict }
 
-          static var __parentType: any ApolloAPI.ParentType { CartAPI.Objects.Cart }
+          static var __parentType: ApolloAPI.ParentType { CartAPI.Objects.Cart }
           static var __selections: [ApolloAPI.Selection] { [
             .field("__typename", String.self),
             .fragment(CartFragment.self),
-          ] }
-          static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-            CartBuyerIdentityUpdateMutation.Data.CartBuyerIdentityUpdate.Cart.self,
-            CartFragment.self
           ] }
 
           /// A globally-unique ID.
@@ -125,19 +114,16 @@ extension CartAPI {
         /// CartBuyerIdentityUpdate.UserError
         ///
         /// Parent Type: `CartUserError`
-        nonisolated struct UserError: CartAPI.SelectionSet {
+        struct UserError: CartAPI.SelectionSet {
           let __data: DataDict
           init(_dataDict: DataDict) { __data = _dataDict }
 
-          static var __parentType: any ApolloAPI.ParentType { CartAPI.Objects.CartUserError }
+          static var __parentType: ApolloAPI.ParentType { CartAPI.Objects.CartUserError }
           static var __selections: [ApolloAPI.Selection] { [
             .field("__typename", String.self),
             .field("field", [String]?.self),
             .field("message", String.self),
             .field("code", GraphQLEnum<CartAPI.CartErrorCode>?.self),
-          ] }
-          static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-            CartBuyerIdentityUpdateMutation.Data.CartBuyerIdentityUpdate.UserError.self
           ] }
 
           /// The path to the input field that caused the error.

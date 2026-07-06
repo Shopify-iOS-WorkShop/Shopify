@@ -5,9 +5,8 @@ import ApolloAPI
 
 extension CartAPI.Objects {
   /// The schema’s entry-point for mutations. This acts as the public, top-level API from which all mutation queries must start.
-  nonisolated static let Mutation = ApolloAPI.Object(
+  static let Mutation = ApolloAPI.Object(
     typename: "Mutation",
-    implementedInterfaces: [],
-    keyFields: nil
+    implementedInterfaces: []
   )
 }

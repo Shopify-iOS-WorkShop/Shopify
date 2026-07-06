@@ -6,9 +6,8 @@ import ApolloAPI
 extension CartAPI.Objects {
   /// A discount allocation applied to a cart line when a customer enters a [discount code](https://help.shopify.com/manual/discounts/discount-methods/discount-codes).
   ///
-  nonisolated static let CartCodeDiscountAllocation = ApolloAPI.Object(
+  static let CartCodeDiscountAllocation = ApolloAPI.Object(
     typename: "CartCodeDiscountAllocation",
-    implementedInterfaces: [CartAPI.Interfaces.CartDiscountAllocation.self],
-    keyFields: nil
+    implementedInterfaces: [CartAPI.Interfaces.CartDiscountAllocation.self]
   )
 }

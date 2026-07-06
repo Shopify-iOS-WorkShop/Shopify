@@ -6,9 +6,8 @@ import ApolloAPI
 public extension ShopifyAPI.Objects {
   /// An auto-generated type for paginating through multiple SearchResultItems.
   ///
-  nonisolated static let SearchResultItemConnection = ApolloAPI.Object(
+  static let SearchResultItemConnection = ApolloAPI.Object(
     typename: "SearchResultItemConnection",
-    implementedInterfaces: [],
-    keyFields: nil
+    implementedInterfaces: []
   )
 }

@@ -8,9 +8,8 @@ public extension ShopifyAPI.Objects {
   ///
   /// Menu items support nested hierarchies through the [`items`](https://shopify.dev/docs/api/storefront/current/objects/MenuItem#field-MenuItem.fields.items) field, enabling dropdown or multi-level navigation structures. The [`tags`](https://shopify.dev/docs/api/storefront/current/objects/MenuItem#field-MenuItem.fields.tags) field filters results when the item links to a collection specifically.
   ///
-  nonisolated static let MenuItem = ApolloAPI.Object(
+  static let MenuItem = ApolloAPI.Object(
     typename: "MenuItem",
-    implementedInterfaces: [ShopifyAPI.Interfaces.Node.self],
-    keyFields: nil
+    implementedInterfaces: [ShopifyAPI.Interfaces.Node.self]
   )
 }

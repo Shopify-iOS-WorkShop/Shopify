@@ -1,11 +1,11 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-@_spi(Internal) @_spi(Unsafe) import ApolloAPI
+import ApolloAPI
 
 extension CartAPI {
   /// Delivery preferences can be used to prefill the delivery section at checkout.
-  nonisolated struct CartDeliveryPreferenceInput: InputObject {
+  struct CartDeliveryPreferenceInput: InputObject {
     private(set) var __data: InputDict
 
     init(_ data: InputDict) {

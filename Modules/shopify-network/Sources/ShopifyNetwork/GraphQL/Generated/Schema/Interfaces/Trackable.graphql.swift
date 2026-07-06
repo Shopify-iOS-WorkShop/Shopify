@@ -5,15 +5,5 @@ import ApolloAPI
 
 public extension ShopifyAPI.Interfaces {
   /// Represents a resource that you can track the origin of the search traffic.
-  nonisolated static let Trackable = ApolloAPI.Interface(
-    name: "Trackable",
-    keyFields: nil,
-    implementingObjects: [
-      "Article",
-      "Collection",
-      "Page",
-      "Product",
-      "SearchQuerySuggestion"
-    ]
-  )
+  static let Trackable = Interface(name: "Trackable")
 }

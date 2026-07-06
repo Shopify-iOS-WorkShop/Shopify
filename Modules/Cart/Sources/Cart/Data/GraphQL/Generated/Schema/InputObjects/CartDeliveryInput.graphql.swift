@@ -1,11 +1,11 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-@_spi(Internal) @_spi(Unsafe) import ApolloAPI
+import ApolloAPI
 
 extension CartAPI {
   /// The input fields for the cart's delivery properties.
-  nonisolated struct CartDeliveryInput: InputObject {
+  struct CartDeliveryInput: InputObject {
     private(set) var __data: InputDict
 
     init(_ data: InputDict) {

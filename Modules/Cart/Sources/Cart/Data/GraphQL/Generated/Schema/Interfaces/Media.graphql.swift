@@ -8,14 +8,5 @@ extension CartAPI.Interfaces {
   ///
   /// Each implementation shares fields for alt text, content type, and preview images, while adding type-specific fields like embed URLs for external videos or source files for 3D models.
   ///
-  nonisolated static let Media = ApolloAPI.Interface(
-    name: "Media",
-    keyFields: nil,
-    implementingObjects: [
-      "ExternalVideo",
-      "MediaImage",
-      "Model3d",
-      "Video"
-    ]
-  )
+  static let Media = Interface(name: "Media")
 }

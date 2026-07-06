@@ -8,9 +8,8 @@ extension CartAPI.Objects {
   ///
   /// The [`compareAtAmountPerQuantity`](https://shopify.dev/docs/api/storefront/current/objects/CartLineCost#field-CartLineCost.fields.compareAtAmountPerQuantity) field shows the original price when the item is on sale, enabling the display of savings to customers.
   ///
-  nonisolated static let CartLineCost = ApolloAPI.Object(
+  static let CartLineCost = ApolloAPI.Object(
     typename: "CartLineCost",
-    implementedInterfaces: [],
-    keyFields: nil
+    implementedInterfaces: []
   )
 }

@@ -6,7 +6,7 @@ import ApolloAPI
 public extension ShopifyAPI.Unions {
   /// A search result that matches the search query.
   ///
-  nonisolated static let SearchResultItem = Union(
+  static let SearchResultItem = Union(
     name: "SearchResultItem",
     possibleTypes: [
       ShopifyAPI.Objects.Article.self,

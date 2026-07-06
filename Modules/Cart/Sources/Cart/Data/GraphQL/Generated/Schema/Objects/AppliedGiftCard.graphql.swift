@@ -5,9 +5,8 @@ import ApolloAPI
 
 extension CartAPI.Objects {
   /// Details about the gift card used on the checkout.
-  nonisolated static let AppliedGiftCard = ApolloAPI.Object(
+  static let AppliedGiftCard = ApolloAPI.Object(
     typename: "AppliedGiftCard",
-    implementedInterfaces: [CartAPI.Interfaces.Node.self],
-    keyFields: nil
+    implementedInterfaces: [CartAPI.Interfaces.Node.self]
   )
 }

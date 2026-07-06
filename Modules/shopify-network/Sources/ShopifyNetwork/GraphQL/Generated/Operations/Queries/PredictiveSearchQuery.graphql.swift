@@ -2,10 +2,9 @@
 // This file was automatically generated and should not be edited.
 
 @_exported import ApolloAPI
-@_spi(Execution) @_spi(Unsafe) import ApolloAPI
 
 public extension ShopifyAPI {
-  nonisolated struct PredictiveSearchQuery: GraphQLQuery {
+  class PredictiveSearchQuery: GraphQLQuery {
     public static let operationName: String = "PredictiveSearch"
     public static let operationDocument: ApolloAPI.OperationDocument = .init(
       definition: .init(
@@ -18,21 +17,18 @@ public extension ShopifyAPI {
       self.query = query
     }
 
-    @_spi(Unsafe) public var __variables: Variables? { ["query": query] }
+    public var __variables: Variables? { ["query": query] }
 
-    nonisolated public struct Data: ShopifyAPI.SelectionSet {
-      @_spi(Unsafe) public let __data: DataDict
-      @_spi(Unsafe) public init(_dataDict: DataDict) { __data = _dataDict }
+    public struct Data: ShopifyAPI.SelectionSet {
+      public let __data: DataDict
+      public init(_dataDict: DataDict) { __data = _dataDict }
 
-      @_spi(Execution) public static var __parentType: any ApolloAPI.ParentType { ShopifyAPI.Objects.QueryRoot }
-      @_spi(Execution) public static var __selections: [ApolloAPI.Selection] { [
+      public static var __parentType: ApolloAPI.ParentType { ShopifyAPI.Objects.QueryRoot }
+      public static var __selections: [ApolloAPI.Selection] { [
         .field("predictiveSearch", PredictiveSearch?.self, arguments: [
           "query": .variable("query"),
           "types": ["PRODUCT", "COLLECTION"]
         ]),
-      ] }
-      @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-        PredictiveSearchQuery.Data.self
       ] }
 
       /// Returns suggested results as customers type in a search field, enabling type-ahead search experiences. The query matches [products](https://shopify.dev/docs/api/storefront/current/objects/Product), [collections](https://shopify.dev/docs/api/storefront/current/objects/Collection), [pages](https://shopify.dev/docs/api/storefront/current/objects/Page), and [articles](https://shopify.dev/docs/api/storefront/current/objects/Article) based on partial search terms, and also provides [search query suggestions](https://shopify.dev/docs/api/storefront/current/objects/SearchQuerySuggestion) to help customers refine their search.
@@ -44,18 +40,15 @@ public extension ShopifyAPI {
       /// PredictiveSearch
       ///
       /// Parent Type: `PredictiveSearchResult`
-      nonisolated public struct PredictiveSearch: ShopifyAPI.SelectionSet {
-        @_spi(Unsafe) public let __data: DataDict
-        @_spi(Unsafe) public init(_dataDict: DataDict) { __data = _dataDict }
+      public struct PredictiveSearch: ShopifyAPI.SelectionSet {
+        public let __data: DataDict
+        public init(_dataDict: DataDict) { __data = _dataDict }
 
-        @_spi(Execution) public static var __parentType: any ApolloAPI.ParentType { ShopifyAPI.Objects.PredictiveSearchResult }
-        @_spi(Execution) public static var __selections: [ApolloAPI.Selection] { [
+        public static var __parentType: ApolloAPI.ParentType { ShopifyAPI.Objects.PredictiveSearchResult }
+        public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .field("products", [Product].self),
           .field("collections", [Collection].self),
-        ] }
-        @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-          PredictiveSearchQuery.Data.PredictiveSearch.self
         ] }
 
         /// The products that match the search query.
@@ -66,21 +59,18 @@ public extension ShopifyAPI {
         /// PredictiveSearch.Product
         ///
         /// Parent Type: `Product`
-        nonisolated public struct Product: ShopifyAPI.SelectionSet {
-          @_spi(Unsafe) public let __data: DataDict
-          @_spi(Unsafe) public init(_dataDict: DataDict) { __data = _dataDict }
+        public struct Product: ShopifyAPI.SelectionSet {
+          public let __data: DataDict
+          public init(_dataDict: DataDict) { __data = _dataDict }
 
-          @_spi(Execution) public static var __parentType: any ApolloAPI.ParentType { ShopifyAPI.Objects.Product }
-          @_spi(Execution) public static var __selections: [ApolloAPI.Selection] { [
+          public static var __parentType: ApolloAPI.ParentType { ShopifyAPI.Objects.Product }
+          public static var __selections: [ApolloAPI.Selection] { [
             .field("__typename", String.self),
             .field("id", ShopifyAPI.ID.self),
             .field("title", String.self),
             .field("vendor", String.self),
             .field("priceRange", PriceRange.self),
             .field("images", Images.self, arguments: ["first": 1]),
-          ] }
-          @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-            PredictiveSearchQuery.Data.PredictiveSearch.Product.self
           ] }
 
           /// A globally-unique ID.
@@ -102,17 +92,14 @@ public extension ShopifyAPI {
           /// PredictiveSearch.Product.PriceRange
           ///
           /// Parent Type: `ProductPriceRange`
-          nonisolated public struct PriceRange: ShopifyAPI.SelectionSet {
-            @_spi(Unsafe) public let __data: DataDict
-            @_spi(Unsafe) public init(_dataDict: DataDict) { __data = _dataDict }
+          public struct PriceRange: ShopifyAPI.SelectionSet {
+            public let __data: DataDict
+            public init(_dataDict: DataDict) { __data = _dataDict }
 
-            @_spi(Execution) public static var __parentType: any ApolloAPI.ParentType { ShopifyAPI.Objects.ProductPriceRange }
-            @_spi(Execution) public static var __selections: [ApolloAPI.Selection] { [
+            public static var __parentType: ApolloAPI.ParentType { ShopifyAPI.Objects.ProductPriceRange }
+            public static var __selections: [ApolloAPI.Selection] { [
               .field("__typename", String.self),
               .field("minVariantPrice", MinVariantPrice.self),
-            ] }
-            @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-              PredictiveSearchQuery.Data.PredictiveSearch.Product.PriceRange.self
             ] }
 
             /// The lowest variant's price.
@@ -121,18 +108,15 @@ public extension ShopifyAPI {
             /// PredictiveSearch.Product.PriceRange.MinVariantPrice
             ///
             /// Parent Type: `MoneyV2`
-            nonisolated public struct MinVariantPrice: ShopifyAPI.SelectionSet {
-              @_spi(Unsafe) public let __data: DataDict
-              @_spi(Unsafe) public init(_dataDict: DataDict) { __data = _dataDict }
+            public struct MinVariantPrice: ShopifyAPI.SelectionSet {
+              public let __data: DataDict
+              public init(_dataDict: DataDict) { __data = _dataDict }
 
-              @_spi(Execution) public static var __parentType: any ApolloAPI.ParentType { ShopifyAPI.Objects.MoneyV2 }
-              @_spi(Execution) public static var __selections: [ApolloAPI.Selection] { [
+              public static var __parentType: ApolloAPI.ParentType { ShopifyAPI.Objects.MoneyV2 }
+              public static var __selections: [ApolloAPI.Selection] { [
                 .field("__typename", String.self),
                 .field("amount", ShopifyAPI.Decimal.self),
                 .field("currencyCode", GraphQLEnum<ShopifyAPI.CurrencyCode>.self),
-              ] }
-              @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-                PredictiveSearchQuery.Data.PredictiveSearch.Product.PriceRange.MinVariantPrice.self
               ] }
 
               /// Decimal money amount.
@@ -145,17 +129,14 @@ public extension ShopifyAPI {
           /// PredictiveSearch.Product.Images
           ///
           /// Parent Type: `ImageConnection`
-          nonisolated public struct Images: ShopifyAPI.SelectionSet {
-            @_spi(Unsafe) public let __data: DataDict
-            @_spi(Unsafe) public init(_dataDict: DataDict) { __data = _dataDict }
+          public struct Images: ShopifyAPI.SelectionSet {
+            public let __data: DataDict
+            public init(_dataDict: DataDict) { __data = _dataDict }
 
-            @_spi(Execution) public static var __parentType: any ApolloAPI.ParentType { ShopifyAPI.Objects.ImageConnection }
-            @_spi(Execution) public static var __selections: [ApolloAPI.Selection] { [
+            public static var __parentType: ApolloAPI.ParentType { ShopifyAPI.Objects.ImageConnection }
+            public static var __selections: [ApolloAPI.Selection] { [
               .field("__typename", String.self),
               .field("edges", [Edge].self),
-            ] }
-            @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-              PredictiveSearchQuery.Data.PredictiveSearch.Product.Images.self
             ] }
 
             /// A list of edges.
@@ -164,17 +145,14 @@ public extension ShopifyAPI {
             /// PredictiveSearch.Product.Images.Edge
             ///
             /// Parent Type: `ImageEdge`
-            nonisolated public struct Edge: ShopifyAPI.SelectionSet {
-              @_spi(Unsafe) public let __data: DataDict
-              @_spi(Unsafe) public init(_dataDict: DataDict) { __data = _dataDict }
+            public struct Edge: ShopifyAPI.SelectionSet {
+              public let __data: DataDict
+              public init(_dataDict: DataDict) { __data = _dataDict }
 
-              @_spi(Execution) public static var __parentType: any ApolloAPI.ParentType { ShopifyAPI.Objects.ImageEdge }
-              @_spi(Execution) public static var __selections: [ApolloAPI.Selection] { [
+              public static var __parentType: ApolloAPI.ParentType { ShopifyAPI.Objects.ImageEdge }
+              public static var __selections: [ApolloAPI.Selection] { [
                 .field("__typename", String.self),
                 .field("node", Node.self),
-              ] }
-              @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-                PredictiveSearchQuery.Data.PredictiveSearch.Product.Images.Edge.self
               ] }
 
               /// The item at the end of ImageEdge.
@@ -183,18 +161,15 @@ public extension ShopifyAPI {
               /// PredictiveSearch.Product.Images.Edge.Node
               ///
               /// Parent Type: `Image`
-              nonisolated public struct Node: ShopifyAPI.SelectionSet {
-                @_spi(Unsafe) public let __data: DataDict
-                @_spi(Unsafe) public init(_dataDict: DataDict) { __data = _dataDict }
+              public struct Node: ShopifyAPI.SelectionSet {
+                public let __data: DataDict
+                public init(_dataDict: DataDict) { __data = _dataDict }
 
-                @_spi(Execution) public static var __parentType: any ApolloAPI.ParentType { ShopifyAPI.Objects.Image }
-                @_spi(Execution) public static var __selections: [ApolloAPI.Selection] { [
+                public static var __parentType: ApolloAPI.ParentType { ShopifyAPI.Objects.Image }
+                public static var __selections: [ApolloAPI.Selection] { [
                   .field("__typename", String.self),
                   .field("url", ShopifyAPI.URL.self),
                   .field("altText", String?.self),
-                ] }
-                @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-                  PredictiveSearchQuery.Data.PredictiveSearch.Product.Images.Edge.Node.self
                 ] }
 
                 /// The location of the image as a URL.
@@ -216,20 +191,17 @@ public extension ShopifyAPI {
         /// PredictiveSearch.Collection
         ///
         /// Parent Type: `Collection`
-        nonisolated public struct Collection: ShopifyAPI.SelectionSet {
-          @_spi(Unsafe) public let __data: DataDict
-          @_spi(Unsafe) public init(_dataDict: DataDict) { __data = _dataDict }
+        public struct Collection: ShopifyAPI.SelectionSet {
+          public let __data: DataDict
+          public init(_dataDict: DataDict) { __data = _dataDict }
 
-          @_spi(Execution) public static var __parentType: any ApolloAPI.ParentType { ShopifyAPI.Objects.Collection }
-          @_spi(Execution) public static var __selections: [ApolloAPI.Selection] { [
+          public static var __parentType: ApolloAPI.ParentType { ShopifyAPI.Objects.Collection }
+          public static var __selections: [ApolloAPI.Selection] { [
             .field("__typename", String.self),
             .field("id", ShopifyAPI.ID.self),
             .field("title", String.self),
             .field("handle", String.self),
             .field("image", Image?.self),
-          ] }
-          @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-            PredictiveSearchQuery.Data.PredictiveSearch.Collection.self
           ] }
 
           /// A globally-unique ID.
@@ -246,18 +218,15 @@ public extension ShopifyAPI {
           /// PredictiveSearch.Collection.Image
           ///
           /// Parent Type: `Image`
-          nonisolated public struct Image: ShopifyAPI.SelectionSet {
-            @_spi(Unsafe) public let __data: DataDict
-            @_spi(Unsafe) public init(_dataDict: DataDict) { __data = _dataDict }
+          public struct Image: ShopifyAPI.SelectionSet {
+            public let __data: DataDict
+            public init(_dataDict: DataDict) { __data = _dataDict }
 
-            @_spi(Execution) public static var __parentType: any ApolloAPI.ParentType { ShopifyAPI.Objects.Image }
-            @_spi(Execution) public static var __selections: [ApolloAPI.Selection] { [
+            public static var __parentType: ApolloAPI.ParentType { ShopifyAPI.Objects.Image }
+            public static var __selections: [ApolloAPI.Selection] { [
               .field("__typename", String.self),
               .field("url", ShopifyAPI.URL.self),
               .field("altText", String?.self),
-            ] }
-            @_spi(Execution) public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
-              PredictiveSearchQuery.Data.PredictiveSearch.Collection.Image.self
             ] }
 
             /// The location of the image as a URL.

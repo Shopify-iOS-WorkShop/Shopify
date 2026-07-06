@@ -1,13 +1,14 @@
 {
   "schemaNamespace" : "ShopifyAPI",
   "input" : {
-    "operationSearchPaths" : [
-      "**/*.graphql"
-    ],
-    "schemaSearchPaths" : [
-      "**/*.graphqls"
-    ]
-  },
+      "operationSearchPaths" : [
+        "**/*.graphql",
+        "!**/ShopifyAdminNetwork/**/*.graphql"
+      ],
+      "schemaSearchPaths" : [
+        "**/*.graphqls"
+      ]
+    },
   "output" : {
     "testMocks" : {
       "none" : {

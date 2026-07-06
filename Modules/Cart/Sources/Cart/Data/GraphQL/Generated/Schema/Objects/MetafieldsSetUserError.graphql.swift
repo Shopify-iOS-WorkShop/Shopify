@@ -5,9 +5,8 @@ import ApolloAPI
 
 extension CartAPI.Objects {
   /// An error that occurs during the execution of `MetafieldsSet`.
-  nonisolated static let MetafieldsSetUserError = ApolloAPI.Object(
+  static let MetafieldsSetUserError = ApolloAPI.Object(
     typename: "MetafieldsSetUserError",
-    implementedInterfaces: [CartAPI.Interfaces.DisplayableError.self],
-    keyFields: nil
+    implementedInterfaces: [CartAPI.Interfaces.DisplayableError.self]
   )
 }
