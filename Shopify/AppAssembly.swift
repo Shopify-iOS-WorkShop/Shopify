@@ -18,6 +18,7 @@ import ProductDetails
 import ProductListing
 import ShopifyNetwork
 import Favorites
+import Payment
 
 class AppAssembly {
     static let shared = AppAssembly()
@@ -53,8 +54,8 @@ class AppAssembly {
         ProductDetailsAssembly().assemble(container: container)
         ProductListingAssembly().assemble(container: container)
         FavoritesAssembly().assemble(container: container)
+        PaymentAssembly().assemble(container: container)
     }
-    
     
     func resolve<T>(_ type: T.Type) -> T {
         guard let resolved = container.resolve(type) else {
