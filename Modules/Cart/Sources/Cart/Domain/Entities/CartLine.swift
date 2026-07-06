@@ -1,7 +1,7 @@
 import Foundation
 import Common
 
-public struct CartLine: Equatable, Identifiable {
+public struct CartLine: Equatable, Identifiable,Hashable {
     public let id: String
     public let quantity: Int
     public let variantId: String
@@ -59,7 +59,7 @@ public struct CartLine: Equatable, Identifiable {
     }
 }
 
-public struct ProductOption: Equatable {
+public struct ProductOption: Equatable,Hashable {
     public let name: String
     public let value: String
 

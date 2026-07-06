@@ -1,7 +1,7 @@
 import Foundation
 import Common
 
-public struct CartCost: Equatable {
+public struct CartCost: Equatable,Hashable {
     public let subtotalAmount: Money
     public let totalAmount: Money
     public let checkoutChargeAmount: Money

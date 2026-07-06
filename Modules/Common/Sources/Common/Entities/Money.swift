@@ -8,7 +8,7 @@
 import Foundation
 
 /// Represents a monetary value with a specific currency
-public struct Money: Equatable, Sendable, Codable {
+public struct Money: Equatable, Sendable, Codable,Hashable {
     public let amount: Decimal
     public let currencyCode: String
     
