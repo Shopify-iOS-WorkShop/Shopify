@@ -110,9 +110,15 @@ struct ContentView: View {
                     .toolbar(.hidden, for: .tabBar)
 
                 // Cart tab
+                // Cart tab
                 if let cartViewModel {
                     NavigationStack(path: $appCoordinator.cartCoordinator.navigationPath) {
-                        appCoordinator.cartCoordinator.start(viewModel: cartViewModel)
+                        appCoordinator.cartCoordinator.start(
+                            viewModel: cartViewModel,
+                            onGoShopping: {
+                                selectedTab = .home
+                            }
+                        )
                     }
                     .tag(Common.Tab.cart)
                     .toolbar(.hidden, for: .tabBar)

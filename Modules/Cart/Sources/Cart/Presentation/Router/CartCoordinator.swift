@@ -13,12 +13,12 @@ public final class CartCoordinator {
 
     public init() {}
 
-    public func start(viewModel: CartViewModel) -> some View {
-        viewModel.onCheckoutRequested = { [weak self, weak viewModel] in
-            guard let cart = viewModel?.cart else { return }
-            self?.navigateTo(.checkout(cart: cart))
+    public func start(viewModel: CartViewModel, onGoShopping: (() -> Void)? = nil) -> some View {
+            viewModel.onCheckoutRequested = { [weak self, weak viewModel] in
+                guard let cart = viewModel?.cart else { return }
+                self?.navigateTo(.checkout(cart: cart))
         }
-        return CartView(viewModel: viewModel)
+        return CartView(viewModel: viewModel, onGoShopping: onGoShopping)
     }
 
     public func navigateTo(_ route: CartRoute) {
