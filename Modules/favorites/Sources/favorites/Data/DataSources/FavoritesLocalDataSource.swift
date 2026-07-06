@@ -16,8 +16,9 @@ public final class FavoritesLocalDataSource {
     }
 
    
-    public func fetchAll() throws -> [FavoriteItem] {
+    public func fetchAll(userId: String) throws -> [FavoriteItem] {
         var descriptor = FetchDescriptor<FavoriteItem>(
+            predicate: #Predicate { $0.userId == userId },
             sortBy: [SortDescriptor(\.savedAt, order: .reverse)]
         )
         descriptor.includePendingChanges = true
@@ -25,17 +26,18 @@ public final class FavoritesLocalDataSource {
     }
 
     
-    public func find(productId: String) throws -> FavoriteItem? {
+    public func find(productId: String, userId: String) throws -> FavoriteItem? {
+        let id = "\(userId)_\(productId)"
         var descriptor = FetchDescriptor<FavoriteItem>(
-            predicate: #Predicate { $0.productId == productId }
+            predicate: #Predicate { $0.id == id }
         )
         descriptor.fetchLimit = 1
         return try client.fetch(descriptor).first
     }
 
     
-    public func delete(productId: String) throws {
-        guard let item = try find(productId: productId) else {
+    public func delete(productId: String, userId: String) throws {
+        guard let item = try find(productId: productId, userId: userId) else {
             throw FavoritesLocalDataSourceError.notFound
         }
         client.delete(item)

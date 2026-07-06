@@ -9,14 +9,16 @@ let package = Package(
     ],
     dependencies: [
         .package(path: "../DataPersistence"),
-        .package(path: "../DependencyInjection")
+        .package(path: "../DependencyInjection"),
+        .package(path: "../Common")
     ],
     targets: [
         .target(
             name: "Favorites",
             dependencies: [
                 .product(name: "DataPersistence", package: "DataPersistence"),
-                .product(name: "DependencyInjection", package: "DependencyInjection")
+                .product(name: "DependencyInjection", package: "DependencyInjection"),
+                .product(name: "Common", package: "Common")
             ],
             path: "Sources/favorites"
         ),

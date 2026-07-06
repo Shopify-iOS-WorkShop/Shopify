@@ -4,7 +4,9 @@ import SwiftData
 
 @Model
 public final class FavoriteItem {
-    @Attribute(.unique) public var productId: String
+    @Attribute(.unique) public var id: String
+    public var userId: String
+    public var productId: String
     public var title: String
     public var vendor: String
     public var price: Double
@@ -15,6 +17,8 @@ public final class FavoriteItem {
     public var savedAt: Date
 
     public init(
+        id: String,
+        userId: String,
         productId: String,
         title: String,
         vendor: String,
@@ -25,6 +29,8 @@ public final class FavoriteItem {
         isInStock: Bool,
         savedAt: Date = .now
     ) {
+        self.id = id
+        self.userId = userId
         self.productId = productId
         self.title = title
         self.vendor = vendor
