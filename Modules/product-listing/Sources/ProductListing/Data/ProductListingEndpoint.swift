@@ -4,38 +4,36 @@ import ShopifyNetwork
 public enum ProductListingEndpoint: Endpoint {
     case allProducts
     case collectionProducts(id: String)
-    
+
     public var baseURL: String {
         return "https://\(ShopifyConfig.hostname)/admin/api/\(ShopifyConfig.apiVersion)"
     }
-    
+
     public var path: String {
         switch self {
-        case .allProducts, .collectionProducts:
+        case .allProducts:
             return "/products.json"
+        case .collectionProducts(let id):
+            let numericId = id.components(separatedBy: "/").last ?? id
+            return "/collections/\(numericId)/products.json"
         }
     }
-    
+
     public var method: String {
         return "GET"
     }
-    
+
     public var headers: [String: String]? {
         return [
             "X-Shopify-Access-Token": ShopifyConfig.accessToken,
             "Content-Type": "application/json"
         ]
     }
-    
+
     public var queryItems: [URLQueryItem]? {
-        switch self {
-        case .allProducts:
-            return nil
-        case .collectionProducts(let id):
-            return [URLQueryItem(name: "collection_id", value: id)]
-        }
+        return nil
     }
-    
+
     public var body: Data? {
         return nil
     }

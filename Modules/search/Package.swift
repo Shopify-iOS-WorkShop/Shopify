@@ -5,10 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "search",
-    platforms: [
-        .iOS(.v15),
-        .macOS(.v12)
-    ],
+    platforms: [.iOS(.v17)],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
@@ -18,15 +15,15 @@ let package = Package(
     ],
     dependencies: [
         .package(path: "../shopify-network"),
-        .package(url: "https://github.com/apollographql/apollo-ios.git", from: "1.8.0")
+        .package(path: "../DependencyInjection"),
+        .package(url: "https://github.com/apollographql/apollo-ios.git", from: "2.2.0")
     ],
     targets: [
-        // Targets are the basic building blocks of a package, defining a module or a test suite.
-        // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "search",
             dependencies: [
                 .product(name: "ShopifyNetwork", package: "shopify-network"),
+                .product(name: "DependencyInjection", package: "DependencyInjection"),
                 .product(name: "Apollo", package: "apollo-ios")
             ]
         ),

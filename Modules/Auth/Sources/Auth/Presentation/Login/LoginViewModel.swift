@@ -16,18 +16,8 @@ public final class LoginViewModel: ObservableObject {
         signInUseCase: SignInUseCaseProtocol,
         signInWithSocialUseCase: SignInWithSocialUseCaseProtocol
     ) {
-        self.signInUseCase = signInUseCase
-        self.signInWithSocialUseCase = signInWithSocialUseCase
-    }
-
-    public convenience init(
-        loginUseCase: SignInUseCase,
-        googleSignInUseCase: SignInWithSocialUseCase
-    ) {
-        self.init(
-            signInUseCase: loginUseCase,
-            signInWithSocialUseCase: googleSignInUseCase
-        )
+        self.signInUseCase            = signInUseCase
+        self.signInWithSocialUseCase  = signInWithSocialUseCase
     }
 
     public convenience init(repository: AuthRepositoryProtocol = AuthRepositoryFactory.make()) {
@@ -41,45 +31,45 @@ public final class LoginViewModel: ObservableObject {
         isValidEmail(email) && !password.isEmpty
     }
 
+    // MARK: - Email / Password login
+
     public func login() {
         guard validate() else { return }
-
-        isLoading = true
-        errorMessage = nil
+        isLoading     = true
+        errorMessage  = nil
 
         Task { @MainActor in
             let result = await signInUseCase.execute(
                 email: email.trimmingCharacters(in: .whitespacesAndNewlines),
                 password: password
             )
-
             isLoading = false
             switch result {
-            case .success(let session):
-                completedSession = session
-            case .failure(let error):
-                errorMessage = error.userFacingMessage
+            case .success(let session): completedSession = session
+            case .failure(let error):   errorMessage    = error.userFacingMessage
             }
         }
     }
 
+    // MARK: - Google Sign-In
+
     public func signInWithGoogle() {
-        isLoading = true
-        errorMessage = nil
+        isLoading        = true
+        errorMessage     = nil
         pendingSocialUser = nil
 
         Task { @MainActor in
             let result = await signInWithSocialUseCase.execute(provider: .google)
-
             isLoading = false
             switch result {
             case .success(let socialResult):
                 pendingSocialUser = socialResult
                 switch socialResult {
                 case .existingUser(let session):
-                    completedSession = session
+                    completedSession = session      // existing user → auto-login
                 case .newUser:
-                    errorMessage = "Set a password to finish connecting your Shopify account."
+                    break                           // LoginView observes pendingSocialUser
+                                                    // and pushes SetPasswordView
                 }
             case .failure(let error):
                 errorMessage = error.userFacingMessage
@@ -87,17 +77,17 @@ public final class LoginViewModel: ObservableObject {
         }
     }
 
+    // MARK: - Validation
+
     private func validate() -> Bool {
         if !isValidEmail(email) {
             errorMessage = "Please enter a valid email address."
             return false
         }
-
         if password.isEmpty {
             errorMessage = "Password is required."
             return false
         }
-
         return true
     }
 

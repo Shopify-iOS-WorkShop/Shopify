@@ -5,6 +5,10 @@ import UIKit
 public struct HomeView: View {
     @ObservedObject var viewModel: HomeViewModel
     @Environment(HomeCoordinator.self) private var coordinator
+    /// Shared currency store injected via .environment() in ContentView.
+    /// HomeView observes it directly — any currency change causes a re-render,
+    /// updating product prices across the entire home screen instantly.
+    @Environment(CurrencyStore.self) private var currencyStore
 
     public var favoritedIDs: Set<String>
     public var onFavoriteTap: ((Product) -> Void)?

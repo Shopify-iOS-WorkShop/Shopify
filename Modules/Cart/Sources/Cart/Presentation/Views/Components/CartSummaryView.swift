@@ -4,6 +4,7 @@ import Common
 public struct CartSummaryView: View {
     let cost: CartCost
     let onCheckout: () -> Void
+    @Environment(CurrencyStore.self) private var currencyStore
     
     public init(
         cost: CartCost,
@@ -20,7 +21,7 @@ public struct CartSummaryView: View {
                     Text("Subtotal")
                         .foregroundColor(.secondary)
                     Spacer()
-                    Text(cost.subtotalAmount.formatted)
+                    Text(currencyStore.convert(cost.subtotalAmount.amount))
                         .fontWeight(.medium)
                 }
                 
@@ -30,7 +31,7 @@ public struct CartSummaryView: View {
                         Text("Taxes & Charges")
                             .foregroundColor(.secondary)
                         Spacer()
-                        Text(cost.checkoutChargeAmount.formatted)
+                        Text(currencyStore.convert(cost.checkoutChargeAmount.amount))
                             .fontWeight(.medium)
                     }
                 }
@@ -43,7 +44,7 @@ public struct CartSummaryView: View {
                         .font(.title3)
                         .fontWeight(.bold)
                     Spacer()
-                    Text(cost.totalAmount.formatted)
+                    Text(currencyStore.convert(cost.totalAmount.amount))
                         .font(.title3)
                         .fontWeight(.bold)
                 }
