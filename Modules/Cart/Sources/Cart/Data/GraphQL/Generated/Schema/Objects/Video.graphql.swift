@@ -8,12 +8,11 @@ extension CartAPI.Objects {
   ///
   /// For videos hosted on external platforms like YouTube or Vimeo, use [`ExternalVideo`](https://shopify.dev/docs/api/storefront/current/objects/ExternalVideo) instead.
   ///
-  nonisolated static let Video = ApolloAPI.Object(
+  static let Video = ApolloAPI.Object(
     typename: "Video",
     implementedInterfaces: [
       CartAPI.Interfaces.Media.self,
       CartAPI.Interfaces.Node.self
-    ],
-    keyFields: nil
+    ]
   )
 }

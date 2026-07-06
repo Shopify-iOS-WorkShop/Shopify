@@ -5,9 +5,8 @@ import ApolloAPI
 
 extension CartAPI.Objects {
   /// A company's main point of contact.
-  nonisolated static let CompanyContact = ApolloAPI.Object(
+  static let CompanyContact = ApolloAPI.Object(
     typename: "CompanyContact",
-    implementedInterfaces: [CartAPI.Interfaces.Node.self],
-    keyFields: nil
+    implementedInterfaces: [CartAPI.Interfaces.Node.self]
   )
 }

@@ -7,6 +7,8 @@
 
 import Foundation
 import SwiftUI
+import Common
+
 public struct CategoryCardView: View {
     public let category: Category
 

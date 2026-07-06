@@ -8,9 +8,8 @@ public extension ShopifyAPI.Objects {
   ///
   /// The address includes geographic coordinates and provides pre-formatted output through the [`formatted`](https://shopify.dev/docs/api/storefront/current/objects/MailingAddress#field-MailingAddress.fields.formatted) field, which can optionally include or exclude name and company details.
   ///
-  nonisolated static let MailingAddress = ApolloAPI.Object(
+  static let MailingAddress = ApolloAPI.Object(
     typename: "MailingAddress",
-    implementedInterfaces: [ShopifyAPI.Interfaces.Node.self],
-    keyFields: nil
+    implementedInterfaces: [ShopifyAPI.Interfaces.Node.self]
   )
 }

@@ -5,9 +5,8 @@ import ApolloAPI
 
 public extension ShopifyAPI.Objects {
   /// A redirect on the online store.
-  nonisolated static let UrlRedirect = ApolloAPI.Object(
+  static let UrlRedirect = ApolloAPI.Object(
     typename: "UrlRedirect",
-    implementedInterfaces: [ShopifyAPI.Interfaces.Node.self],
-    keyFields: nil
+    implementedInterfaces: [ShopifyAPI.Interfaces.Node.self]
   )
 }

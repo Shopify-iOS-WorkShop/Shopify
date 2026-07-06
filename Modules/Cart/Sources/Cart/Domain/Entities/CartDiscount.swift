@@ -1,4 +1,4 @@
-public struct CartDiscount: Equatable {
+public struct CartDiscount: Equatable,Hashable {
     public let code: String
     public let applicable: Bool
 

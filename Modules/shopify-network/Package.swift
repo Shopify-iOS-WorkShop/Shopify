@@ -10,12 +10,17 @@ let package = Package(
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "ShopifyNetwork",
-            targets: ["ShopifyNetwork"]),
+            targets: ["ShopifyNetwork", "ShopifyAdminNetwork"]
+        ),
+        .library(
+            name: "ShopifyAdminNetwork",
+            targets: ["ShopifyAdminNetwork"]
+        )
     ],
     dependencies: [
         .package(
             url: "https://github.com/apollographql/apollo-ios.git",
-            from: "2.2.0"
+            from: "1.8.0"
         ),
         .package(path: "../DependencyInjection")
     ],
@@ -30,6 +35,14 @@ let package = Package(
                 .product(name: "DependencyInjection", package: "DependencyInjection")
             ],
             exclude: ["GraphQL/schema.graphqls"]
+        ),
+        .target(
+            name: "ShopifyAdminNetwork",
+            dependencies: [
+                "ShopifyNetwork",
+                .product(name: "Apollo", package: "apollo-ios"),
+                .product(name: "ApolloAPI", package: "apollo-ios")
+            ]
         ),
         .testTarget(
             name: "ShopifyNetworkTests",

@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import Common
 
 public struct SectionHeaderView: View {
     public let title: String

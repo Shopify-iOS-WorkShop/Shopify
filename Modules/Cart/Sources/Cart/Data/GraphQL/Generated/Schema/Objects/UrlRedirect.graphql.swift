@@ -5,9 +5,8 @@ import ApolloAPI
 
 extension CartAPI.Objects {
   /// A redirect on the online store.
-  nonisolated static let UrlRedirect = ApolloAPI.Object(
+  static let UrlRedirect = ApolloAPI.Object(
     typename: "UrlRedirect",
-    implementedInterfaces: [CartAPI.Interfaces.Node.self],
-    keyFields: nil
+    implementedInterfaces: [CartAPI.Interfaces.Node.self]
   )
 }

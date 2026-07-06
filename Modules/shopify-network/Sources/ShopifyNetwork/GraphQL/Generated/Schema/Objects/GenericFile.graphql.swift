@@ -10,9 +10,8 @@ public extension ShopifyAPI.Objects {
   ///
   /// Includes the file's URL, MIME type, size in bytes, and an optional preview image.
   ///
-  nonisolated static let GenericFile = ApolloAPI.Object(
+  static let GenericFile = ApolloAPI.Object(
     typename: "GenericFile",
-    implementedInterfaces: [ShopifyAPI.Interfaces.Node.self],
-    keyFields: nil
+    implementedInterfaces: [ShopifyAPI.Interfaces.Node.self]
   )
 }

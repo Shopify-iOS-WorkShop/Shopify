@@ -5,9 +5,8 @@ import ApolloAPI
 
 extension CartAPI.Objects {
   /// Return type for `cartLinesRemove` mutation.
-  nonisolated static let CartLinesRemovePayload = ApolloAPI.Object(
+  static let CartLinesRemovePayload = ApolloAPI.Object(
     typename: "CartLinesRemovePayload",
-    implementedInterfaces: [],
-    keyFields: nil
+    implementedInterfaces: []
   )
 }

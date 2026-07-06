@@ -1,14 +1,14 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-@_spi(Internal) @_spi(Unsafe) import ApolloAPI
+import ApolloAPI
 
 extension CartAPI {
   /// The input fields for updating a merchandise line in a cart. Used by the [`cartLinesUpdate`](https://shopify.dev/docs/api/storefront/current/mutations/cartLinesUpdate) mutation.
   ///
   /// Specify the line item's [`id`](https://shopify.dev/docs/api/storefront/current/input-objects/CartLineUpdateInput#fields-id) along with any fields to modify. You can change the quantity, swap the merchandise, update custom attributes, or associate a different selling plan.
   ///
-  nonisolated struct CartLineUpdateInput: InputObject {
+  struct CartLineUpdateInput: InputObject {
     private(set) var __data: InputDict
 
     init(_ data: InputDict) {
@@ -17,7 +17,7 @@ extension CartAPI {
 
     init(
       id: ID,
-      quantity: GraphQLNullable<Int32> = nil,
+      quantity: GraphQLNullable<Int> = nil,
       merchandiseId: GraphQLNullable<ID> = nil,
       attributes: GraphQLNullable<[AttributeInput]> = nil,
       sellingPlanId: GraphQLNullable<ID> = nil
@@ -38,7 +38,7 @@ extension CartAPI {
     }
 
     /// The quantity of the line item.
-    var quantity: GraphQLNullable<Int32> {
+    var quantity: GraphQLNullable<Int> {
       get { __data["quantity"] }
       set { __data["quantity"] = newValue }
     }

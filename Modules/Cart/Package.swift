@@ -14,7 +14,7 @@ let package = Package(
         .package(path: "../DependencyInjection"),
         .package(
             url: "https://github.com/apollographql/apollo-ios",
-            from: "2.2.0"
+            from: "1.8.0"
         ),
     ],
     targets: [

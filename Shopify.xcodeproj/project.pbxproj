@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		31091F202FF9941000EA2C1C /* Stripe in Frameworks */ = {isa = PBXBuildFile; productRef = 31091F1F2FF9941000EA2C1C /* Stripe */; };
+		31091F222FF9941000EA2C1C /* StripeApplePay in Frameworks */ = {isa = PBXBuildFile; productRef = 31091F212FF9941000EA2C1C /* StripeApplePay */; };
+		31091F322FF9941000EA2C1C /* StripePayments in Frameworks */ = {isa = PBXBuildFile; productRef = 31091F312FF9941000EA2C1C /* StripePayments */; };
+		31170F7A2FF7EA880017293F /* Payment in Frameworks */ = {isa = PBXBuildFile; productRef = 31170F792FF7EA880017293F /* Payment */; };
+		315646272FFA70F6005620F2 /* ShopifyAdminNetwork in Frameworks */ = {isa = PBXBuildFile; productRef = 315646262FFA70F6005620F2 /* ShopifyAdminNetwork */; };
 		31D979212FF74DCE00FA3DD4 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31D979202FF74DCE00FA3DD4 /* AppCoordinator.swift */; };
 		39EBC5CB2FF5B303009F5DA1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 39EBC5CA2FF5B303009F5DA1 /* GoogleService-Info.plist */; };
 		6D06F6F52FF946280034F8D9 /* Favorites in Frameworks */ = {isa = PBXBuildFile; productRef = 6D06F6F42FF946280034F8D9 /* Favorites */; };
@@ -59,6 +64,11 @@
 				6D0B9DA82FF8177B00F50859 /* Common in Frameworks */,
 				6D0B9DB62FF817B500F50859 /* FirebaseAnalytics in Frameworks */,
 				6D0B9DB42FF817AC00F50859 /* GoogleSignIn in Frameworks */,
+				31091F202FF9941000EA2C1C /* Stripe in Frameworks */,
+				31091F222FF9941000EA2C1C /* StripeApplePay in Frameworks */,
+				31091F322FF9941000EA2C1C /* StripePayments in Frameworks */,
+				31170F7A2FF7EA880017293F /* Payment in Frameworks */,
+				315646272FFA70F6005620F2 /* ShopifyAdminNetwork in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -141,6 +151,11 @@
 				6D0B9DB52FF817B500F50859 /* FirebaseAnalytics */,
 				6D06F6F42FF946280034F8D9 /* Favorites */,
 				78DCBFF72FF8218100C552AF /* Cart */,
+				31170F792FF7EA880017293F /* Payment */,
+				315646262FFA70F6005620F2 /* ShopifyAdminNetwork */,
+				31091F1F2FF9941000EA2C1C /* Stripe */,
+				31091F212FF9941000EA2C1C /* StripeApplePay */,
+				31091F312FF9941000EA2C1C /* StripePayments */,
 				789931152FFADBE5009F76F7 /* Settings */,
 			);
 			productName = Shopify;
@@ -174,6 +189,7 @@
 			packageReferences = (
 				C47A3B2B2FF1CB6F00857006 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				C47A3B302FF1CBC600857006 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+				31091F1E2FF9941000EA2C1C /* XCRemoteSwiftPackageReference "stripe-ios" */,
 			);
 			productRefGroup = 78BFEC882FEFCB6800358550 /* Products */;
 			projectDirPath = "";
@@ -412,6 +428,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		31091F1E2FF9941000EA2C1C /* XCRemoteSwiftPackageReference "stripe-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/stripe/stripe-ios";
+			requirement = {
+				kind = exactVersion;
+				version = 24.0.0;
+			};
+		};
 		C47A3B2B2FF1CB6F00857006 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
@@ -431,6 +455,29 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		31091F1F2FF9941000EA2C1C /* Stripe */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 31091F1E2FF9941000EA2C1C /* XCRemoteSwiftPackageReference "stripe-ios" */;
+			productName = Stripe;
+		};
+		31091F212FF9941000EA2C1C /* StripeApplePay */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 31091F1E2FF9941000EA2C1C /* XCRemoteSwiftPackageReference "stripe-ios" */;
+			productName = StripeApplePay;
+		};
+		31091F312FF9941000EA2C1C /* StripePayments */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 31091F1E2FF9941000EA2C1C /* XCRemoteSwiftPackageReference "stripe-ios" */;
+			productName = StripePayments;
+		};
+		31170F792FF7EA880017293F /* Payment */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Payment;
+		};
+		315646262FFA70F6005620F2 /* ShopifyAdminNetwork */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ShopifyAdminNetwork;
+		};
 		6D06F6F42FF946280034F8D9 /* Favorites */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Favorites;

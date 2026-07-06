@@ -8,12 +8,11 @@ public extension ShopifyAPI.Objects {
   ///
   /// The [`image`](https://shopify.dev/docs/api/storefront/current/objects/MediaImage#field-MediaImage.fields.image) field provides the actual image data with transformation options. Implements the [`Media`](https://shopify.dev/docs/api/storefront/current/interfaces/Media) interface alongside other media types like [`Video`](https://shopify.dev/docs/api/storefront/current/objects/Video) and [`Model3d`](https://shopify.dev/docs/api/storefront/current/objects/Model3d).
   ///
-  nonisolated static let MediaImage = ApolloAPI.Object(
+  static let MediaImage = ApolloAPI.Object(
     typename: "MediaImage",
     implementedInterfaces: [
       ShopifyAPI.Interfaces.Media.self,
       ShopifyAPI.Interfaces.Node.self
-    ],
-    keyFields: nil
+    ]
   )
 }

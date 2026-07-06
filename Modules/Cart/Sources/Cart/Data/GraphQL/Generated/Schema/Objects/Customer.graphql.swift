@@ -10,9 +10,8 @@ extension CartAPI.Objects {
   ///
   /// The object implements the [`HasMetafields`](https://shopify.dev/docs/api/storefront/current/interfaces/HasMetafields) interface, enabling retrieval of [custom data](https://shopify.dev/docs/apps/build/custom-data) associated with the customer.
   ///
-  nonisolated static let Customer = ApolloAPI.Object(
+  static let Customer = ApolloAPI.Object(
     typename: "Customer",
-    implementedInterfaces: [CartAPI.Interfaces.HasMetafields.self],
-    keyFields: nil
+    implementedInterfaces: [CartAPI.Interfaces.HasMetafields.self]
   )
 }

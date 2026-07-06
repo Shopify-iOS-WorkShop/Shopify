@@ -8,12 +8,11 @@ extension CartAPI.Objects {
   ///
   /// Access through the [`PurchasingCompany`](https://shopify.dev/docs/api/storefront/current/objects/PurchasingCompany) object, which associates the location with the buyer's [`Cart`](https://shopify.dev/docs/api/storefront/current/objects/Cart).
   ///
-  nonisolated static let CompanyLocation = ApolloAPI.Object(
+  static let CompanyLocation = ApolloAPI.Object(
     typename: "CompanyLocation",
     implementedInterfaces: [
       CartAPI.Interfaces.HasMetafields.self,
       CartAPI.Interfaces.Node.self
-    ],
-    keyFields: nil
+    ]
   )
 }

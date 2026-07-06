@@ -10,9 +10,8 @@ public extension ShopifyAPI.Objects {
   ///
   /// The [`name`](https://shopify.dev/docs/api/storefront/latest/objects/TaxonomyCategory#field-TaxonomyCategory.fields.name) field returns the localized category name based on the storefront's request language with shop locale fallbacks. If a translation isn't available for the resolved locale, the English taxonomy name is returned.
   ///
-  nonisolated static let TaxonomyCategory = ApolloAPI.Object(
+  static let TaxonomyCategory = ApolloAPI.Object(
     typename: "TaxonomyCategory",
-    implementedInterfaces: [ShopifyAPI.Interfaces.Node.self],
-    keyFields: nil
+    implementedInterfaces: [ShopifyAPI.Interfaces.Node.self]
   )
 }

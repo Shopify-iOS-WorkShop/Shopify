@@ -6,9 +6,8 @@ import ApolloAPI
 public extension ShopifyAPI.Objects {
   /// An auto-generated type for paginating through multiple ProductVariants.
   ///
-  nonisolated static let ProductVariantConnection = ApolloAPI.Object(
+  static let ProductVariantConnection = ApolloAPI.Object(
     typename: "ProductVariantConnection",
-    implementedInterfaces: [],
-    keyFields: nil
+    implementedInterfaces: []
   )
 }

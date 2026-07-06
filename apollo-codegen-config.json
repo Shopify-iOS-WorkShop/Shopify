@@ -2,10 +2,11 @@
   "schemaNamespace" : "ShopifyAPI",
   "input" : {
     "operationSearchPaths" : [
-      "**/*.graphql"
+      "**/*.graphql",
+      "!**/ShopifyAdminNetwork/**/*.graphql"
     ],
     "schemaSearchPaths" : [
-      "**/*.graphqls"
+      "./Modules/shopify-network/Sources/ShopifyNetwork/GraphQL/schema.graphqls"
     ]
   },
   "output" : {

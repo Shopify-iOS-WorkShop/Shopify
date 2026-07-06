@@ -5,9 +5,8 @@ import ApolloAPI
 
 public extension ShopifyAPI.Objects {
   /// A comment on an article.
-  nonisolated static let Comment = ApolloAPI.Object(
+  static let Comment = ApolloAPI.Object(
     typename: "Comment",
-    implementedInterfaces: [ShopifyAPI.Interfaces.Node.self],
-    keyFields: nil
+    implementedInterfaces: [ShopifyAPI.Interfaces.Node.self]
   )
 }

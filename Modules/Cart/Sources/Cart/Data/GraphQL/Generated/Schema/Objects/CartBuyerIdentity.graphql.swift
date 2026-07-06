@@ -8,9 +8,8 @@ extension CartAPI.Objects {
   ///
   /// For B2B scenarios, the [`purchasingCompany`](https://shopify.dev/docs/api/storefront/current/objects/CartBuyerIdentity#field-CartBuyerIdentity.fields.purchasingCompany) field identifies the company and location on whose behalf a business customer purchases. The [`preferences`](https://shopify.dev/docs/api/storefront/current/objects/CartBuyerIdentity#field-CartBuyerIdentity.fields.preferences) field stores delivery and wallet settings that prefill checkout fields to streamline the buying process.
   ///
-  nonisolated static let CartBuyerIdentity = ApolloAPI.Object(
+  static let CartBuyerIdentity = ApolloAPI.Object(
     typename: "CartBuyerIdentity",
-    implementedInterfaces: [],
-    keyFields: nil
+    implementedInterfaces: []
   )
 }

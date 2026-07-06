@@ -5,12 +5,11 @@ import ApolloAPI
 
 extension CartAPI.Objects {
   /// Represents information about the grouped merchandise in the cart.
-  nonisolated static let ComponentizableCartLine = ApolloAPI.Object(
+  static let ComponentizableCartLine = ApolloAPI.Object(
     typename: "ComponentizableCartLine",
     implementedInterfaces: [
       CartAPI.Interfaces.BaseCartLine.self,
       CartAPI.Interfaces.Node.self
-    ],
-    keyFields: nil
+    ]
   )
 }

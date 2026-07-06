@@ -8,9 +8,8 @@ public extension ShopifyAPI.Objects {
   /// [Relay specification](https://relay.dev/graphql/connections.htm#sec-undefined.PageInfo).
   /// For more information, please read our [GraphQL Pagination Usage Guide](https://shopify.dev/api/usage/pagination-graphql).
   ///
-  nonisolated static let PageInfo = ApolloAPI.Object(
+  static let PageInfo = ApolloAPI.Object(
     typename: "PageInfo",
-    implementedInterfaces: [],
-    keyFields: nil
+    implementedInterfaces: []
   )
 }

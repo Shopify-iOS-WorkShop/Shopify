@@ -41,7 +41,7 @@ internal final class CartRemoteDataSource: CartRemoteDataSourceProtocol {
     func addLines(cartId: String, lines: [CartLineInputDTO]) async throws -> CartResponseDTO {
         let apolloLines = lines.map { dto in
             CartAPI.CartLineInput(
-                quantity: .some(Int32(dto.quantity)),
+                quantity: .some(dto.quantity),
                 merchandiseId: dto.variantId
             )
         }
@@ -58,7 +58,7 @@ internal final class CartRemoteDataSource: CartRemoteDataSourceProtocol {
     }
     
     func updateLine(cartId: String, lineId: String, quantity: Int) async throws -> CartResponseDTO {
-        let line = CartAPI.CartLineUpdateInput(id: lineId, quantity: .some(Int32(quantity)))
+        let line = CartAPI.CartLineUpdateInput(id: lineId, quantity: .some(quantity))
         let mutation = CartAPI.CartLinesUpdateMutation(cartId: cartId, lines: [line])
         let data = try await client.perform(mutation: mutation)
         

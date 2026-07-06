@@ -6,9 +6,8 @@ import ApolloAPI
 public extension ShopifyAPI.Objects {
   /// An auto-generated type which holds one ProductVariant and a cursor during pagination.
   ///
-  nonisolated static let ProductVariantEdge = ApolloAPI.Object(
+  static let ProductVariantEdge = ApolloAPI.Object(
     typename: "ProductVariantEdge",
-    implementedInterfaces: [],
-    keyFields: nil
+    implementedInterfaces: []
   )
 }
