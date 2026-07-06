@@ -61,10 +61,7 @@ internal final class CartRepositoryImpl: CartRepositoryProtocol {
             cartPublisher.send(cart)
             return .success(cart)
         } catch let error as AppError {
-            if case .graphQL(let msgs) = error,
-               msgs.first?.contains("not found") == true || msgs.first?.contains("expired") == true {
-                await MainActor.run { try? localDataSource.deleteCartRecord(ownerKey: ownerKey) }
-            }
+            await checkAndClearInvalidCart(error: error)
             return .failure(error)
         } catch {
             return .failure(.unknown)
@@ -117,8 +114,12 @@ internal final class CartRepositoryImpl: CartRepositoryProtocol {
             await MainActor.run { try? localDataSource.updateCachedQuantity(cart.totalQuantity, ownerKey: ownerKey) }
             cartPublisher.send(cart)
             return .success(cart)
-        } catch let error as AppError { return .failure(error) }
-          catch { return .failure(.unknown) }
+        } catch let error as AppError {
+            await checkAndClearInvalidCart(error: error)
+            return .failure(error)
+        } catch {
+            return .failure(.unknown)
+        }
     }
 
     // MARK: - updateLine
@@ -134,8 +135,12 @@ internal final class CartRepositoryImpl: CartRepositoryProtocol {
             await MainActor.run { try? localDataSource.updateCachedQuantity(cart.totalQuantity, ownerKey: ownerKey) }
             cartPublisher.send(cart)
             return .success(cart)
-        } catch let error as AppError { return .failure(error) }
-          catch { return .failure(.unknown) }
+        } catch let error as AppError {
+            await checkAndClearInvalidCart(error: error)
+            return .failure(error)
+        } catch {
+            return .failure(.unknown)
+        }
     }
 
     // MARK: - removeLines
@@ -151,8 +156,12 @@ internal final class CartRepositoryImpl: CartRepositoryProtocol {
             await MainActor.run { try? localDataSource.updateCachedQuantity(cart.totalQuantity, ownerKey: ownerKey) }
             cartPublisher.send(cart)
             return .success(cart)
-        } catch let error as AppError { return .failure(error) }
-          catch { return .failure(.unknown) }
+        } catch let error as AppError {
+            await checkAndClearInvalidCart(error: error)
+            return .failure(error)
+        } catch {
+            return .failure(.unknown)
+        }
     }
 
     // MARK: - applyDiscountCode
@@ -167,8 +176,12 @@ internal final class CartRepositoryImpl: CartRepositoryProtocol {
             let cart = CartMapper.toDomain(from: dto)
             cartPublisher.send(cart)
             return .success(cart)
-        } catch let error as AppError { return .failure(error) }
-          catch { return .failure(.unknown) }
+        } catch let error as AppError {
+            await checkAndClearInvalidCart(error: error)
+            return .failure(error)
+        } catch {
+            return .failure(.unknown)
+        }
     }
 
     // MARK: - removeDiscountCode
@@ -184,8 +197,12 @@ internal final class CartRepositoryImpl: CartRepositoryProtocol {
             let cart = CartMapper.toDomain(from: dto)
             cartPublisher.send(cart)
             return .success(cart)
-        } catch let error as AppError { return .failure(error) }
-          catch { return .failure(.unknown) }
+        } catch let error as AppError {
+            await checkAndClearInvalidCart(error: error)
+            return .failure(error)
+        } catch {
+            return .failure(.unknown)
+        }
     }
 
     // MARK: - attachCustomer
@@ -205,13 +222,33 @@ internal final class CartRepositoryImpl: CartRepositoryProtocol {
             let cart = CartMapper.toDomain(from: dto)
             cartPublisher.send(cart)
             return .success(cart)
-        } catch let error as AppError { return .failure(error) }
-          catch { return .failure(.unknown) }
+        } catch let error as AppError {
+            await checkAndClearInvalidCart(error: error)
+            return .failure(error)
+        } catch {
+            return .failure(.unknown)
+        }
     }
 
     // MARK: - clearCart
     func clearCart() async {
         await MainActor.run { try? localDataSource.deleteCartRecord(ownerKey: ownerKey) }
         cartPublisher.send(nil)
+    }
+
+    // MARK: - Helpers
+    private func checkAndClearInvalidCart(error: AppError) async {
+        if case .graphQL(let msgs) = error {
+            let isInvalid = msgs.contains { msg in
+                msg.lowercased().contains("not found") ||
+                msg.lowercased().contains("expired") ||
+                msg.lowercased().contains("does not exist") ||
+                msg.lowercased().contains("invalid")
+            }
+            if isInvalid {
+                await MainActor.run { try? localDataSource.deleteCartRecord(ownerKey: ownerKey) }
+                cartPublisher.send(nil) // Ensure the UI clears the cart so it fetches a new one
+            }
+        }
     }
 }
