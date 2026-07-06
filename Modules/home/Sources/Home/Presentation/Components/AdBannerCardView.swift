@@ -14,6 +14,7 @@ import Common
 
 struct AdBannerCardView: View {
     let ad: Ad
+    @Environment(CurrencyStore.self) private var currencyStore
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {
@@ -92,12 +93,12 @@ struct AdBannerCardView: View {
 
             if let discountedPrice = ad.discountedPrice {
                 HStack(spacing: 8) {
-                    Text("$\(String(format: "%.2f", discountedPrice))")
+                    Text(currencyStore.convert(discountedPrice))
                         .font(.system(size: 17, weight: .bold))
                         .foregroundColor(.white)
 
                     if let originalPrice = ad.originalPrice, originalPrice > discountedPrice {
-                        Text("$\(String(format: "%.2f", originalPrice))")
+                        Text(currencyStore.convert(originalPrice))
                             .font(.system(size: 13, weight: .medium))
                             .foregroundColor(.white.opacity(0.62))
                             .strikethrough(true, color: .white.opacity(0.62))
