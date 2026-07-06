@@ -94,8 +94,23 @@ public class PaymentMethodViewModel: ObservableObject {
     
     private func validateInputs() -> Bool {
         if selectedMethod == .online {
-            if cardNumber.isEmpty || expiry.isEmpty || cvv.isEmpty {
+            let cleanCard = cardNumber.filter { $0.isNumber }
+            let cleanExpiry = expiry.filter { $0.isNumber }
+            
+            if cleanCard.isEmpty || cleanExpiry.isEmpty || cvv.isEmpty {
                 errorMessage = "Please fill in all card details."
+                return false
+            }
+            if cleanCard.count != 16 {
+                errorMessage = "Card number must be exactly 16 digits."
+                return false
+            }
+            if cleanExpiry.count != 4 {
+                errorMessage = "Please complete the expiry date (MM/YY)."
+                return false
+            }
+            if cvv.count != 3 {
+                errorMessage = "CVV must be exactly 3 digits."
                 return false
             }
         }

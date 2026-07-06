@@ -87,7 +87,8 @@ public final class PaymentRepository: PaymentRepositoryProtocol {
             )
         }
 
-        let countryCodeEnum = GraphQLEnum<ShopifyAdminAPI.CountryCode>(rawValue: address.country) ?? .case(.eg)
+        let parsedCountry = ShopifyAdminAPI.CountryCode(rawValue: address.country) ?? .eg
+        let countryCodeEnum = GraphQLEnum<ShopifyAdminAPI.CountryCode>.case(parsedCountry)
 
         let shopifyAddress = ShopifyAdminAPI.MailingAddressInput(
             address1: .some(address.address1),

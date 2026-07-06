@@ -30,6 +30,7 @@ public struct CardInputField: View {
             HStack {
                 TextField(placeholder, text: $text)
                     .font(.system(size: 16))
+                    .keyboardType(.numberPad)
                 
                 if let icon = icon {
                     Image(systemName: icon)

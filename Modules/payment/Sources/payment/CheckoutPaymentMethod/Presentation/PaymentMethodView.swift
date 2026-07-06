@@ -32,10 +32,35 @@ public struct PaymentMethodView: View {
                 if viewModel.selectedMethod == .online {
                     VStack(spacing: 16) {
                         CardInputField(title: "CARD NUMBER", placeholder: "0000 0000 0000 0000", text: $viewModel.cardNumber, icon: "creditcard")
+                            .onChange(of: viewModel.cardNumber) { _, newValue in
+                                let numbers = newValue.filter { $0.isNumber }
+                                let limited = String(numbers.prefix(16))
+                                var formatted = ""
+                                for (index, char) in limited.enumerated() {
+                                    if index > 0 && index % 4 == 0 { formatted.append(" ") }
+                                    formatted.append(char)
+                                }
+                                if viewModel.cardNumber != formatted { viewModel.cardNumber = formatted }
+                            }
                         
                         HStack(spacing: 16) {
                             CardInputField(title: "EXPIRY (MM/YY)", placeholder: "12/26", text: $viewModel.expiry)
+                                .onChange(of: viewModel.expiry) { _, newValue in
+                                    let numbers = newValue.filter { $0.isNumber }
+                                    let limited = String(numbers.prefix(4))
+                                    var formatted = limited
+                                    if limited.count > 2 {
+                                        formatted.insert("/", at: formatted.index(formatted.startIndex, offsetBy: 2))
+                                    }
+                                    if viewModel.expiry != formatted { viewModel.expiry = formatted }
+                                }
+                            
                             CardInputField(title: "CVV", placeholder: "***", text: $viewModel.cvv)
+                                .onChange(of: viewModel.cvv) { _, newValue in
+                                    let numbers = newValue.filter { $0.isNumber }
+                                    let limited = String(numbers.prefix(3))
+                                    if viewModel.cvv != limited { viewModel.cvv = limited }
+                                }
                         }
                     }
                 }
