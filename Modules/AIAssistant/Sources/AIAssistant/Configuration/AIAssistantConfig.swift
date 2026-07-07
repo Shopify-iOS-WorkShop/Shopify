@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct AIAssistantConfig {
+public struct AIAssistantConfig: Sendable {
 
     public let geminiAPIKey: String
     public let geminiModel: String
@@ -19,9 +19,11 @@ public struct AIAssistantConfig {
     public let agenticMode: Bool
     public let maxProductsInContext: Int
 
-    // Replace GEMINI_API_KEY with your own key from https://aistudio.google.com
+    // ⚠️  Do NOT hard-code a real key here — this file IS committed.
+    // Configure the real key at app start via:
+    //   AIAssistantKit.configure(with: AIAssistantConfig(geminiAPIKey: Secrets.geminiAPIKey, ...))
     public static let shopWorkshop = AIAssistantConfig(
-        geminiAPIKey:          "GEMINI_API_KEY",
+        geminiAPIKey:          "",   // overridden by AIAssistantKit.configure(...)
         geminiModel:           "gemini-1.5-flash",
         shopifyHostname:       "mad46-ios-team5.myshopify.com",
         storefrontAccessToken: "8842c04427c5f8a6e967f204266cd8bf",
