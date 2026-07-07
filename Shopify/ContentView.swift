@@ -87,6 +87,13 @@ struct ContentView: View {
             await restoreSession()
             sessionChecked = true
         }
+        .task {
+            // Exchange rates used to only load once the user visited Settings,
+            // so Home showed unconverted prices until then. Fetch them once at
+            // launch instead, in parallel with session restore, so CurrencyStore
+            // is ready before Home (or anywhere else) needs to convert a price.
+            await settingsViewModel.loadExchangeRates()
+        }
 
         .onAppear {
             appCoordinator.productListingCoordinator.onNavigate = { [weak appCoordinator] route in
@@ -150,7 +157,7 @@ struct ContentView: View {
             guestPromptContext?.title ?? "Sign In Required",
             isPresented: Binding(
                 get: { guestPromptContext != nil },
-                set: { if !$0 { 
+                set: { if !$0 {
                     guestPromptContext = nil
                     appCoordinator.showGuestSignInPrompt = false
                 } }
