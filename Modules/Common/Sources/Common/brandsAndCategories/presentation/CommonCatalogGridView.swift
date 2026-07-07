@@ -45,7 +45,12 @@ public struct CommonCatalogGridView: View {
                     ScrollView {
                         LazyVGrid(columns: columns, spacing: 20) {
                             ForEach(viewModel.items) { item in
-                                CatalogCell(item: item)
+                                Button {
+                                    onItemTapped?(item)
+                                } label: {
+                                    CatalogCell(item: item)
+                                }
+                                .buttonStyle(.plain)
                             }
                         }
                         .padding()
