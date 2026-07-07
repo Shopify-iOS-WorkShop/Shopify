@@ -6,10 +6,13 @@
 //
 
 import SwiftUI
+import Common
 
 struct ProductRow: View {
     let product: SearchProduct
     var onTap: ((SearchProduct) -> Void)?
+
+    @Environment(CurrencyStore.self) private var currencyStore
 
     var body: some View {
         HStack(spacing: 14) {
@@ -51,7 +54,7 @@ struct ProductRow: View {
                 Text(product.vendor)
                     .font(.caption)
                     .foregroundColor(.secondary)
-                Text("\(product.price) \(product.currencyCode)")
+                Text(currencyStore.convert(Double(product.price) ?? 0))
                     .font(.subheadline.weight(.bold))
                     .foregroundColor(.pocketPink)
             }
