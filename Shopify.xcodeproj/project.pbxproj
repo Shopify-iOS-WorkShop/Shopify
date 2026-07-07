@@ -13,7 +13,7 @@
 		31170F7A2FF7EA880017293F /* Payment in Frameworks */ = {isa = PBXBuildFile; productRef = 31170F792FF7EA880017293F /* Payment */; };
 		315646272FFA70F6005620F2 /* ShopifyAdminNetwork in Frameworks */ = {isa = PBXBuildFile; productRef = 315646262FFA70F6005620F2 /* ShopifyAdminNetwork */; };
 		31D979212FF74DCE00FA3DD4 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31D979202FF74DCE00FA3DD4 /* AppCoordinator.swift */; };
-		39D6F58E2FFC25A400B9FD8C /* Addresss in Frameworks */ = {isa = PBXBuildFile; productRef = 39D6F58D2FFC25A400B9FD8C /* Addresss */; };
+		395A74B12FFD304C00A375C1 /* Addresss in Frameworks */ = {isa = PBXBuildFile; productRef = 395A74B02FFD304C00A375C1 /* Addresss */; };
 		39EBC5CB2FF5B303009F5DA1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 39EBC5CA2FF5B303009F5DA1 /* GoogleService-Info.plist */; };
 		6D06F6F52FF946280034F8D9 /* Favorites in Frameworks */ = {isa = PBXBuildFile; productRef = 6D06F6F42FF946280034F8D9 /* Favorites */; };
 		6D0B9DA62FF8177400F50859 /* Auth in Frameworks */ = {isa = PBXBuildFile; productRef = 6D0B9DA52FF8177400F50859 /* Auth */; };
@@ -60,7 +60,7 @@
 				78DCBFF82FF8218100C552AF /* Cart in Frameworks */,
 				6DBB6C442FF69B4C00E3E198 /* search in Frameworks */,
 				6D0B9DAA2FF8178300F50859 /* DataPersistence in Frameworks */,
-				39D6F58E2FFC25A400B9FD8C /* Addresss in Frameworks */,
+				395A74B12FFD304C00A375C1 /* Addresss in Frameworks */,
 				6D0B9DAE2FF8179100F50859 /* ProductDetails in Frameworks */,
 				6D0B9DAC2FF8178A00F50859 /* Home in Frameworks */,
 				6D0B9DA82FF8177B00F50859 /* Common in Frameworks */,
@@ -159,7 +159,7 @@
 				31091F212FF9941000EA2C1C /* StripeApplePay */,
 				31091F312FF9941000EA2C1C /* StripePayments */,
 				789931152FFADBE5009F76F7 /* Settings */,
-				39D6F58D2FFC25A400B9FD8C /* Addresss */,
+				395A74B02FFD304C00A375C1 /* Addresss */,
 			);
 			productName = Shopify;
 			productReference = 78BFEC872FEFCB6800358550 /* Shopify.app */;
@@ -481,7 +481,7 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = ShopifyAdminNetwork;
 		};
-		39D6F58D2FFC25A400B9FD8C /* Addresss */ = {
+		395A74B02FFD304C00A375C1 /* Addresss */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Addresss;
 		};

@@ -19,8 +19,7 @@ let package = Package(
     ],
     dependencies: [
         .package(
-            url: "https://github.com/apollographql/apollo-ios.git",
-            "1.8.0"..<"1.18.0"
+            url: "https://github.com/apollographql/apollo-ios.git","1.8.0"..<"1.18.0"
         ),
         .package(path: "../DependencyInjection")
     ],
