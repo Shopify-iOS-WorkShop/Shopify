@@ -16,6 +16,8 @@ public enum AddressError: Error, Equatable, LocalizedError {
 
     case notFound
 
+    case cannotDeleteDefault
+
     public var errorDescription: String? {
         switch self {
         case .missingToken:
@@ -26,6 +28,8 @@ public enum AddressError: Error, Equatable, LocalizedError {
             return message
         case .notFound:
             return "This address could not be found. It may have already been removed."
+        case .cannotDeleteDefault:
+            return "Your default address can't be deleted. Set another address as default first, then try again."
         }
     }
 }

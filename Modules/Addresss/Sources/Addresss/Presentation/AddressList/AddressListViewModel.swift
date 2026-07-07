@@ -41,8 +41,19 @@ public final class AddressListViewModel {
         isLoading = false
     }
 
+    /// The default address is always kept around, both because it represents the
+    /// customer's primary delivery location and to guarantee that once a customer has
+    /// added at least one address, the list never drops back down to zero.
+    public func canDelete(_ address: Address) -> Bool {
+        !address.isDefault
+    }
+
     @MainActor
     public func delete(_ address: Address) async {
+        guard canDelete(address) else {
+            errorMessage = AddressError.cannotDeleteDefault.localizedDescription
+            return
+        }
         do {
             try await deleteUseCase.execute(id: address.id)
             addresses.removeAll { $0.id == address.id }
@@ -71,12 +82,37 @@ public final class AddressListViewModel {
 
     /// Called after returning from Add/Edit so the list reflects the change
     /// immediately without a full refetch.
+    ///
+    /// A brand-new address that lands in an empty list is the customer's only
+    /// address, so it's promoted to default automatically — both locally and on
+    /// the server — otherwise the customer would have a saved address with no
+    /// default at all.
     @MainActor
     public func upsert(_ address: Address) {
         if let index = addresses.firstIndex(where: { $0.id == address.id }) {
-            addresses[index] = address
+            // The update mutation's response doesn't carry default status, so we
+            // preserve whatever this address's default state already was locally
+            // rather than letting an edit silently un-default it.
+            var updated = address
+            updated.isDefault = addresses[index].isDefault
+            addresses[index] = updated
         } else {
-            addresses.append(address)
+            let isFirstAddress = addresses.isEmpty
+            var newAddress = address
+            if isFirstAddress {
+                newAddress.isDefault = true
+            }
+            addresses.append(newAddress)
+
+            if isFirstAddress {
+                Task {
+                    do {
+                        try await setDefaultUseCase.execute(id: newAddress.id)
+                    } catch {
+                        errorMessage = error.localizedDescription
+                    }
+                }
+            }
         }
     }
 }
