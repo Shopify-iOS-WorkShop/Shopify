@@ -94,6 +94,11 @@ public extension ShopifyAPI {
       case "ProductVariantEdge": return ShopifyAPI.Objects.ProductVariantEdge
       case "PageInfo": return ShopifyAPI.Objects.PageInfo
       case "PredictiveSearchResult": return ShopifyAPI.Objects.PredictiveSearchResult
+      case "OrderConnection": return ShopifyAPI.Objects.OrderConnection
+      case "OrderEdge": return ShopifyAPI.Objects.OrderEdge
+      case "OrderLineItemConnection": return ShopifyAPI.Objects.OrderLineItemConnection
+      case "OrderLineItemEdge": return ShopifyAPI.Objects.OrderLineItemEdge
+      case "OrderLineItem": return ShopifyAPI.Objects.OrderLineItem
       case "CartLinesAddPayload": return ShopifyAPI.Objects.CartLinesAddPayload
       case "BaseCartLineConnection": return ShopifyAPI.Objects.BaseCartLineConnection
       case "SelectedOption": return ShopifyAPI.Objects.SelectedOption
