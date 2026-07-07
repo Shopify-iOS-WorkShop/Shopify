@@ -49,6 +49,10 @@ public final class AuthRepository: AuthRepositoryProtocol {
             // 3. Create Storefront access token using Firebase UID as password
             // This is needed for cart, favorites, and other Storefront API operations
             let storefrontPassword = deriveStorefrontPassword(uid: user.uid)
+            try await shopifyRESTDataSource.updateCustomerPassword(
+                customerId: customerId,
+                password: storefrontPassword
+            )
             let tempSession = try await createStorefrontAccessToken(
                 email: email,
                 password: storefrontPassword,
@@ -108,17 +112,26 @@ public final class AuthRepository: AuthRepositoryProtocol {
         firebaseUID: String
     ) async -> Result<Session, AuthError> {
         do {
-            // 1. Create Shopify customer via REST API (no password required)
-            let customerId = try await shopifyRESTDataSource.createCustomer(
-                email: email,
-                firstName: firstName,
-                lastName: lastName,
-                verifiedEmail: true
-            )
-            
-            // 2. Create Storefront access token for cart/favorites operations
-            // Use Firebase UID as the Storefront "password"
+            // 1. Create or update the Shopify customer with the Storefront password.
             let storefrontPassword = deriveStorefrontPassword(uid: firebaseUID)
+            let customerId: String
+            if let existingCustomerId = try await shopifyRESTDataSource.findCustomerByEmail(email) {
+                customerId = existingCustomerId
+                try await shopifyRESTDataSource.updateCustomerPassword(
+                    customerId: existingCustomerId,
+                    password: storefrontPassword
+                )
+            } else {
+                customerId = try await shopifyRESTDataSource.createCustomer(
+                    email: email,
+                    firstName: firstName,
+                    lastName: lastName,
+                    password: storefrontPassword,
+                    verifiedEmail: true
+                )
+            }
+
+            // 2. Create Storefront access token for cart/favorites operations.
             let accessTokenSession = try await createStorefrontAccessToken(
                 email: email,
                 password: storefrontPassword,
@@ -158,6 +171,10 @@ public final class AuthRepository: AuthRepositoryProtocol {
             if let customerId = try await shopifyRESTDataSource.findCustomerByEmail(email) {
                 // Existing customer - create Storefront access token
                 let storefrontPassword = deriveStorefrontPassword(uid: uid)
+                try await shopifyRESTDataSource.updateCustomerPassword(
+                    customerId: customerId,
+                    password: storefrontPassword
+                )
                 let accessTokenSession = try await createStorefrontAccessToken(
                     email: email,
                     password: storefrontPassword,
@@ -184,6 +201,7 @@ public final class AuthRepository: AuthRepositoryProtocol {
                 email: email,
                 firstName: firstName,
                 lastName: lastName.isEmpty ? firstName : lastName,
+                password: deriveStorefrontPassword(uid: uid),
                 verifiedEmail: true // Google accounts are pre-verified
             )
             

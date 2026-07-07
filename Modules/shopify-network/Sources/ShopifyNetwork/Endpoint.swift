@@ -18,11 +18,11 @@ public protocol Endpoint {
 
 public extension Endpoint {
     var urlRequest: URLRequest? {
-        let fullURLString = baseURL + path
-        guard let encodedString = fullURLString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-              let url = URL(string: encodedString) else {
+        guard var components = URLComponents(string: baseURL + path) else {
             return nil
         }
+        components.queryItems = queryItems
+        guard let url = components.url else { return nil }
         
         var request = URLRequest(url: url)
         request.httpMethod = method
