@@ -26,7 +26,7 @@ final class SettingsRemoteDataSource {
             defaultAddress {
               id firstName lastName address1 city country phone
             }
-            orders(first: 5, sortKey: PROCESSED_AT, reverse: true) {
+            orders(first: 250, sortKey: PROCESSED_AT, reverse: true) {
               edges {
                 node {
                   id orderNumber processedAt financialStatus fulfillmentStatus

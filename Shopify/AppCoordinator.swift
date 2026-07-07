@@ -56,9 +56,13 @@ public final class AppCoordinator {
                         Payment.CartItem(variantId: line.variantId, quantity: line.quantity)
                     }
                     
+                    let hasFreeShipping = cart.discountCodes.contains { $0.code.uppercased() == "FREESHIPPING2026" }
+                    let fee = hasFreeShipping ? 0.0 : 15.0
+                    let subtotal = Double(truncating: cart.cost.totalAmount.amount as NSNumber)
+                    
                     self.checkoutAddressCoordinator.cartItems = paymentItems
-                    self.checkoutAddressCoordinator.totalAmount = Double(truncating: cart.cost.totalAmount.amount as NSNumber)
-                    self.checkoutAddressCoordinator.deliveryFee = 15.0
+                    self.checkoutAddressCoordinator.deliveryFee = fee
+                    self.checkoutAddressCoordinator.totalAmount = subtotal + fee
                     
                     self.isShowingCheckout = true
                 }

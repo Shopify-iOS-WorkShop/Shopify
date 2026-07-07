@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Mazen Amr on 28/06/2026.
 //
@@ -16,19 +16,26 @@ public class HomeViewModel: ObservableObject {
     @Published public var ads: [Ad] = [Ad.fallback]
     @Published public var isLoading: Bool = false
     @Published public var errorMessage: String?
-    
+
+    /// Tracks whether the initial fetch has already completed so returning to
+    /// Home (from a pushed screen or a tab switch) doesn't refetch and flash
+    /// the loading state again. Callers that truly need fresh data (e.g. a
+    /// future pull-to-refresh) can pass `force: true`.
+    private var hasLoadedOnce: Bool = false
+
     private let repository: HomeRepositoryProtocol
     
     public init(repository: HomeRepositoryProtocol) {
         self.repository = repository
     }
     
-    public func loadData() async {
+    public func loadData(force: Bool = false) async {
         guard !isLoading else { return }  // Only prevent if already loading
+        guard force || !hasLoadedOnce else { return }
         isLoading = true
         
         // MARK: - Simulator Network Bug Workaround
-        // Delay fetching slightly to allow the iOS Simulator network stack to fully 
+        // Delay fetching slightly to allow the iOS Simulator network stack to fully
         // initialize. Instantaneous QUIC/HTTP3 requests on launch often hang for 60s.
         try? await Task.sleep(nanoseconds: 500_000_000)
         
@@ -74,6 +81,7 @@ public class HomeViewModel: ObservableObject {
         }
 
         errorMessage = messages.isEmpty ? nil : messages.joined(separator: "\n")
+        hasLoadedOnce = true
         isLoading = false
     }
 }

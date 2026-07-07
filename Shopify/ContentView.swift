@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Auth
+import Addresss
 import Common
 import Home
 import search
@@ -52,6 +53,7 @@ struct ContentView: View {
     @State private var guestPromptContext: GuestPromptContext? = nil
 
     @AppStorage("settings_colorScheme") private var colorSchemeRaw: Int = 0
+    @AppStorage("has_completed_onboarding") private var hasCompletedOnboarding: Bool = false
 
     @StateObject private var homeViewModel: HomeViewModel = AppAssembly.shared.resolve(HomeViewModel.self)
     @State private var settingsViewModel: SettingsViewModel = AppAssembly.shared.resolve(SettingsViewModel.self)
@@ -74,6 +76,10 @@ struct ContentView: View {
         Group {
             if !sessionChecked {
                 Color(uiColor: .systemBackground).ignoresSafeArea()
+            } else if !hasCompletedOnboarding {
+                OnBoardingScreen {
+                    hasCompletedOnboarding = true
+                }
             } else if !appCoordinator.hasCompletedAuth {
                 authFlow
             } else {
@@ -85,6 +91,13 @@ struct ContentView: View {
         .task {
             await restoreSession()
             sessionChecked = true
+        }
+        .task {
+            // Exchange rates used to only load once the user visited Settings,
+            // so Home showed unconverted prices until then. Fetch them once at
+            // launch instead, in parallel with session restore, so CurrencyStore
+            // is ready before Home (or anywhere else) needs to convert a price.
+            await settingsViewModel.loadExchangeRates()
         }
 
         .onAppear {
@@ -149,7 +162,7 @@ struct ContentView: View {
             guestPromptContext?.title ?? "Sign In Required",
             isPresented: Binding(
                 get: { guestPromptContext != nil },
-                set: { if !$0 { 
+                set: { if !$0 {
                     guestPromptContext = nil
                     appCoordinator.showGuestSignInPrompt = false
                 } }
@@ -296,12 +309,20 @@ struct ContentView: View {
                 .toolbar(.hidden, for: .tabBar)
 
                 // Account tab
+//                AddressFlowView(
+//                    listViewModel: AppAssembly.shared.resolve(AddressListViewModel.self),
+//                    viewModelFactory: AppAssembly.shared.resolve(AddressViewModelFactory.self)
+//                )
+//                .tag(Common.Tab.account)
+//                .toolbar(.hidden, for: .tabBar)
+
                 SettingsView(viewModel: settingsViewModel)
                     .environment(appCoordinator.settingsCoordinator)
                     .tag(Common.Tab.account)
                     .toolbar(.hidden, for: .tabBar)
+
             }
-            .environment(currencyStore) // Available globally to all tabs
+            .environment(currencyStore)
             .toolbar(.hidden, for: .tabBar)
 
             CustomTabBar(
@@ -326,12 +347,27 @@ struct ContentView: View {
                 CheckoutAddressView(
                     viewModel: AppAssembly.shared.resolve(CheckoutAddressViewModel.self)
                 )
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button {
+                            appCoordinator.isShowingCheckout = false
+                            appCoordinator.checkoutAddressCoordinator.popToRoot()
+                        } label: {
+                            HStack(spacing: 4) {
+                                Image(systemName: "chevron.left")
+                                    .fontWeight(.semibold)
+                                Text("Cart")
+                            }
+                        }
+                    }
+                }
                 .navigationDestination(for: CheckoutAddressRoute.self) { route in
                     switch route {
                     case .payment:
                         let safeAddress = appCoordinator.checkoutAddressCoordinator.selectedAddress
                             ?? CheckoutAddress(address1: "N/A", city: "N/A", country: "EG", firstName: "Customer", lastName: "", phone: "")
                         let customerId = sessionStore.current?.customerId ?? ""
+
 
                         PaymentMethodView(
                             viewModel: AppAssembly.shared.container.resolve(
@@ -341,19 +377,33 @@ struct ContentView: View {
                                     appCoordinator.checkoutAddressCoordinator.totalAmount,
                                     appCoordinator.checkoutAddressCoordinator.deliveryFee,
                                     safeAddress,
-                                    customerId
+                                    customerId,
+                                    cartViewModel?.cart?.discountCodes.map { $0.code } ?? [],
+                                    max(
+                                        0,
+                                        Double(truncating: cartViewModel?.cart?.cost.subtotalAmount.amount as? NSNumber ?? 0)
+                                        -
+                                        Double(truncating: cartViewModel?.cart?.cost.totalAmount.amount as? NSNumber ?? 0)
+                                    ),
+                                    currencyStore.selectedCurrency,
+                                    currencyStore.exchangeRates?.convert(1.0, to: currencyStore.selectedCurrency) ?? 1.0
                             )!
                         )
 
-                    case .success:
-                        CheckoutResultView(
-                            onTrackOrder: {
-                                appCoordinator.checkoutAddressCoordinator.onCheckoutComplete?()
-                            },
-                            onContinueShopping: {
-                                appCoordinator.checkoutAddressCoordinator.onCheckoutComplete?()
-                            }
-                        )
+
+                        case .success:
+                            CheckoutResultView(
+                                onTrackOrder: {
+                                    Task { await cartViewModel?.confirmClearCart() }
+                                    appCoordinator.checkoutAddressCoordinator.onCheckoutComplete?()
+                                    selectedTab = .account
+                                },
+                                onContinueShopping: {
+                                    Task { await cartViewModel?.confirmClearCart() }
+                                    appCoordinator.checkoutAddressCoordinator.onCheckoutComplete?()
+                                    selectedTab = .home
+                                }
+                            )
                     }
                 }
             }

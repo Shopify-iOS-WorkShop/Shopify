@@ -18,10 +18,11 @@ public protocol Endpoint {
 
 public extension Endpoint {
     var urlRequest: URLRequest? {
-        var components = URLComponents(string: baseURL + path)
-        components?.queryItems = queryItems
-        
-        guard let url = components?.url else { return nil }
+        guard var components = URLComponents(string: baseURL + path) else {
+            return nil
+        }
+        components.queryItems = queryItems
+        guard let url = components.url else { return nil }
         
         var request = URLRequest(url: url)
         request.httpMethod = method
@@ -32,9 +33,22 @@ public extension Endpoint {
     }
 }
 
-public enum NetworkError: Error {
+public enum NetworkError: Error, LocalizedError {
     case invalidURL
-    case invalidResponse
+    case invalidResponse(statusCode: Int)
     case decodingFailed(Error)
     case requestFailed(Error)
+    
+    public var errorDescription: String? {
+        switch self {
+        case .invalidURL:
+            return "Invalid URL constructed. Check for hidden spaces in your endpoints."
+        case .invalidResponse(let statusCode):
+            return "Server returned an invalid response (Status Code: \(statusCode)). Check API keys."
+        case .decodingFailed(let error):
+            return "Failed to decode Shopify JSON: \(error.localizedDescription)"
+        case .requestFailed(let error):
+            return "Network request failed: \(error.localizedDescription)"
+        }
+    }
 }

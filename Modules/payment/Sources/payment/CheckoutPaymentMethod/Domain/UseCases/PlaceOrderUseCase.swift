@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Mazen Amr on 04/07/2026.
 //
@@ -14,7 +14,10 @@ public protocol PlaceOrderUseCaseProtocol {
         amount: Double,
         deliveryFee: Double,
         address: CheckoutAddress,
-        customerId: String,          
+        customerId: String,
+        discountCodes: [String],
+        discountAmount: Double,
+        currencyCode: String,
         paymentType: PaymentType,
         cardNumber: String,
         expiry: String,
@@ -36,6 +39,9 @@ public final class PlaceOrderUseCase: PlaceOrderUseCaseProtocol {
         deliveryFee: Double,
         address: CheckoutAddress,
         customerId: String,
+        discountCodes: [String],
+        discountAmount: Double,
+        currencyCode: String,
         paymentType: PaymentType,
         cardNumber: String,
         expiry: String,
@@ -60,6 +66,8 @@ public final class PlaceOrderUseCase: PlaceOrderUseCaseProtocol {
                 deliveryFee: deliveryFee,
                 address: address,
                 customerId: customerId,
+                discountCodes: discountCodes,
+                discountAmount: discountAmount,
                 cardNumber: cleanCardNumber,
                 expMonth: month,
                 expYear: fullYear,
@@ -72,7 +80,19 @@ public final class PlaceOrderUseCase: PlaceOrderUseCaseProtocol {
                 cartItems: cartItems,
                 deliveryFee: deliveryFee,
                 address: address,
-                customerId: customerId
+                customerId: customerId,
+                discountCodes: discountCodes,
+                discountAmount: discountAmount
+            )
+            
+        case .applePay:
+            return try await repository.placeApplePayOrder(
+                cartItems: cartItems,
+                deliveryFee: deliveryFee,
+                address: address,
+                customerId: customerId,
+                discountCodes: discountCodes,
+                discountAmount: discountAmount
             )
         }
     }

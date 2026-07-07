@@ -4,10 +4,13 @@
 //
 
 import SwiftUI
+import Addresss
+import DependencyInjection
 
 public struct SettingsView: View {
     @State var viewModel: SettingsViewModel
     @Environment(SettingsCoordinator.self) private var coordinator
+    @State private var isShowingAddresses = false
 
     public init(viewModel: SettingsViewModel) {
         self.viewModel = viewModel
@@ -73,9 +76,11 @@ public struct SettingsView: View {
                    let profile = viewModel.profile,
                    !profile.recentOrders.isEmpty {
                     Section("Recent Orders") {
-                        ForEach(profile.recentOrders) { order in
-                            OrderRowView(order: order)
-                        }
+                        ForEach(profile.recentOrders.prefix(3), id: \.id) { order in
+                            NavigationLink(value: SettingsRoute.orderDetail(order: order)) {
+                                OrderRowView(order: order, viewModel: viewModel)
+                            }
+                        }                        
                         NavigationLink("View All Orders", value: SettingsRoute.orderHistory)
                             .font(.subheadline)
                             .foregroundColor(Color(red: 233/255, green: 69/255, blue: 96/255))
@@ -87,8 +92,11 @@ public struct SettingsView: View {
                         NavigationLink(value: SettingsRoute.editProfile) {
                             Label("Edit Profile", systemImage: "person.circle")
                         }
-                        NavigationLink(value: SettingsRoute.addresses) {
+                        Button {
+                            isShowingAddresses = true
+                        } label: {
                             Label("Addresses", systemImage: "map")
+                                .foregroundColor(.primary)
                         }
                         NavigationLink(value: SettingsRoute.orderHistory) {
                             Label("Order History", systemImage: "clock.arrow.2.circlepath")
@@ -166,6 +174,12 @@ public struct SettingsView: View {
                 }
                 Button("Cancel", role: .cancel) { viewModel.cancelSignOut() }
             }
+            .sheet(isPresented: $isShowingAddresses) {
+                AddressFlowView(
+                    listViewModel: DIContainer.shared.resolve(AddressListViewModel.self)!,
+                    viewModelFactory: DIContainer.shared.resolve(AddressViewModelFactory.self)!
+                )
+            }
         }
         .task { await viewModel.onAppear() }
     }
@@ -183,20 +197,34 @@ public struct SettingsView: View {
                 ProgressView()
             }
         case .orderHistory:
-            OrderHistoryView(orders: viewModel.profile?.recentOrders ?? [])
+            OrderHistoryView(
+                orders: viewModel.profile?.recentOrders ?? [],
+                viewModel: viewModel
+            )
         case .editProfile:
             EditProfilePlaceholderView()
         case .addresses:
-            AddressesPlaceholderView()
+            EmptyView()
+
+        case .orderDetail(let order):
+            let detailViewModel = viewModel.makeOrderDetailViewModel(order.id)
+            OrderDetailView(viewModel: detailViewModel)
         }
+        
     }
 }
 
 
 private struct OrderHistoryView: View {
-    let orders: [CustomerOrder]
-    var body: some View {
-        List(orders) { order in OrderRowView(order: order) }
+        let orders: [CustomerOrder]
+        let viewModel: SettingsViewModel
+
+        var body: some View {
+            List(orders) { order in
+                NavigationLink(value: SettingsRoute.orderDetail(order: order)) {
+                    OrderRowView(order: order, viewModel: viewModel)
+                }
+            }
             .navigationTitle("Order History")
             .navigationBarTitleDisplayMode(.inline)
             .overlay {
@@ -208,7 +236,7 @@ private struct OrderHistoryView: View {
                     )
                 }
             }
-    }
+        }
 }
 
 

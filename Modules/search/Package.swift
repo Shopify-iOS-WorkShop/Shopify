@@ -16,7 +16,8 @@ let package = Package(
     dependencies: [
         .package(path: "../shopify-network"),
         .package(path: "../DependencyInjection"),
-        .package(url: "https://github.com/apollographql/apollo-ios.git",  "1.8.0"..<"1.18.0")
+        .package(path: "../Common"),
+        .package(url: "https://github.com/apollographql/apollo-ios.git", "1.8.0"..<"1.18.0")
     ],
     targets: [
         .target(
@@ -24,6 +25,7 @@ let package = Package(
             dependencies: [
                 .product(name: "ShopifyNetwork", package: "shopify-network"),
                 .product(name: "DependencyInjection", package: "DependencyInjection"),
+                .product(name: "Common", package: "Common"),
                 .product(name: "Apollo", package: "apollo-ios")
             ]
         ),
