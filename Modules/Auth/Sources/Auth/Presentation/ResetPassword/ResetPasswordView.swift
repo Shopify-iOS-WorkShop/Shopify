@@ -160,7 +160,7 @@ public struct ResetPasswordView: View {
             Spacer()
             
             PrimaryButton(title: "Back to Sign In") {
-                coordinator.path = NavigationPath() 
+                coordinator.path = NavigationPath()
             }
             .padding(.bottom, 24)
         }
