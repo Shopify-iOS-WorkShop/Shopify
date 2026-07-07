@@ -8,6 +8,7 @@
 import SwiftUI
 import MapKit
 
+@MainActor
 struct AddressMapPickerView: View {
     @Bindable var viewModel: AddAddressViewModel
     @FocusState private var searchFocused: Bool

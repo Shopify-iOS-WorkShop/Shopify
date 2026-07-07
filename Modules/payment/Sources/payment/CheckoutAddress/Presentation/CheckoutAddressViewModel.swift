@@ -38,7 +38,7 @@ public class CheckoutAddressViewModel: ObservableObject {
         isLoading = true
         do {
             savedAddresses = try await getAddressesUseCase.execute()
-            if let first = savedAddresses.first {
+            if selectedAddress == nil, let first = savedAddresses.first {
                 selectAddress(first)
             }
         } catch {

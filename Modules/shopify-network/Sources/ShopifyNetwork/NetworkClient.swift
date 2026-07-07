@@ -24,9 +24,13 @@ public class URLSessionNetworkClient: NetworkClient {
         
         let (data, response) = try await session.data(for: request)
         
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw NetworkError.invalidResponse(statusCode: 0)
+        }
+        
         guard let httpResponse = response as? HTTPURLResponse,
               (200...299).contains(httpResponse.statusCode) else {
-            throw NetworkError.invalidResponse
+            throw NetworkError.invalidResponse(statusCode: httpResponse.statusCode)
         }
         
         do {

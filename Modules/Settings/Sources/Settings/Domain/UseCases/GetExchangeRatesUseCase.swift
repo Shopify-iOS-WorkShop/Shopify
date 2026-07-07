@@ -13,7 +13,7 @@ public final class GetExchangeRatesUseCase {
     }
 
     /// Fetches live exchange rates relative to the given base currency (default: EGP).
-    public func execute(base: String = "EGP") async -> Result<ExchangeRates, SettingsError> {
+    public func execute(base: String = "USD") async -> Result<ExchangeRates, SettingsError> {
         return await repository.getExchangeRates(base: base)
     }
 }
