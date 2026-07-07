@@ -13,7 +13,7 @@ let package = Package(
         .package(path: "../DataPersistence"),
         .package(path: "../DependencyInjection"),
         .package(
-            url: "https://github.com/apollographql/apollo-ios", "1.8.0"..<"1.18.0"
+            url: "https://github.com/apollographql/apollo-ios","1.8.0"..<"1.18.0"
         ),
     ],
     targets: [

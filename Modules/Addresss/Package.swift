@@ -4,32 +4,38 @@
 import PackageDescription
 
 let package = Package(
-    name: "search",
-    platforms: [.iOS(.v17)],
+    name: "Addresss",
+    platforms: [
+        .iOS(.v17)
+    ],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
-            name: "search",
-            targets: ["search"]
+            name: "Addresss",
+            targets: ["Addresss"]
         ),
     ],
     dependencies: [
+        .package(path: "../Common"),
         .package(path: "../shopify-network"),
         .package(path: "../DependencyInjection"),
-        .package(url: "https://github.com/apollographql/apollo-ios.git", "1.8.0"..<"1.18.0")
+        .package(path: "../Auth"),
     ],
     targets: [
+        // Targets are the basic building blocks of a package, defining a module or a test suite.
+        // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "search",
+            name: "Addresss",
             dependencies: [
+                "Common",
+                "Auth",
                 .product(name: "ShopifyNetwork", package: "shopify-network"),
                 .product(name: "DependencyInjection", package: "DependencyInjection"),
-                .product(name: "Apollo", package: "apollo-ios")
             ]
         ),
         .testTarget(
-            name: "searchTests",
-            dependencies: ["search"]
+            name: "AddresssTests",
+            dependencies: ["Addresss"]
         ),
     ]
 )
