@@ -39,7 +39,14 @@ public struct RegistrationView: View {
                 .padding(.top, 18)
 
                 VStack(spacing: 16) {
-                    CustomInputField(title: "Full Name", placeholder: "Enter your name", text: $viewModel.fullName)
+                    VStack(alignment: .leading, spacing: 4) {
+                        CustomInputField(title: "Full Name", placeholder: "Enter your name", text: $viewModel.fullName)
+                        if let error = viewModel.nameValidationError {
+                            Text(error)
+                                .font(.caption)
+                                .foregroundColor(.red)
+                        }
+                    }
 
                     VStack(alignment: .leading, spacing: 8) {
                         CustomInputField(title: "Email", placeholder: "example@email.com", text: $viewModel.email)

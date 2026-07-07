@@ -33,13 +33,21 @@ final class GoogleSignInDataSource {
             withPresenting: rootViewController
         )
 
-        guard let idToken = result.user.idToken?.tokenString else {
+        // Refresh the ID token if it's expired
+        let user = result.user
+        
+        // Check if token needs refresh (if idToken is nil or about to expire)
+        if user.idToken == nil {
+            try await user.refreshTokensIfNeeded()
+        }
+        
+        guard let idToken = user.idToken?.tokenString else {
             throw AuthDataError.missingGoogleToken
         }
 
         let credential = GoogleAuthProvider.credential(
             withIDToken: idToken,
-            accessToken: result.user.accessToken.tokenString
+            accessToken: user.accessToken.tokenString
         )
 
         let firebaseResult = try await Auth.auth().signIn(with: credential)
