@@ -2,5 +2,5 @@ import Foundation
 
 public enum SocialSignInResult: Equatable {
     case existingUser(Session)
-    case newUser(email: String, displayName: String?, provider: AuthProvider)
+    case newUser(Session) // REST API: new users complete registration immediately, no password needed
 }
