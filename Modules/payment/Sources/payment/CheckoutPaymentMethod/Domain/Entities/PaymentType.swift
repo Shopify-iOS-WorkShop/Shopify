@@ -10,4 +10,5 @@ import Foundation
 public enum PaymentType {
     case online
     case cod
+    case applePay
 }

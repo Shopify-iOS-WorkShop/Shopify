@@ -148,6 +148,31 @@ public final class PaymentRepository: PaymentRepositoryProtocol {
         
         return OrderInfo(id: "gid://shopify/Order/\(result.order.id)", orderNumber: result.order.name)
     }
+
+    public func placeApplePayOrder(
+        cartItems: [CartItem],
+        deliveryFee: Double,
+        address: CheckoutAddress,
+        customerId: String,
+        discountCodes: [String],
+        discountAmount: Double
+    ) async throws -> OrderInfo {
+        
+        let payload = buildOrderPayload(
+            cartItems: cartItems,
+            deliveryFee: deliveryFee,
+            address: address,
+            customerId: customerId,
+            discountCodes: discountCodes,
+            discountAmount: discountAmount,
+            isPaid: true
+        )
+ 
+        let endpoint = CreateOrderEndpoint(payload: payload)
+        let result: RESTOrderResponse = try await networkClient.request(endpoint: endpoint)
+        
+        return OrderInfo(id: "gid://shopify/Order/\(result.order.id)", orderNumber: result.order.name)
+    }
 }
  
 extension UIViewController: STPAuthenticationContext {

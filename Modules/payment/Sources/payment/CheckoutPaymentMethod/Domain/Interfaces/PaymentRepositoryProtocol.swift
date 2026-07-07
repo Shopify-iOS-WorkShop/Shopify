@@ -32,4 +32,13 @@ public protocol PaymentRepositoryProtocol {
         discountCodes: [String],
         discountAmount: Double
     ) async throws -> OrderInfo
+
+    func placeApplePayOrder(
+        cartItems: [CartItem],
+        deliveryFee: Double,
+        address: CheckoutAddress,
+        customerId: String,
+        discountCodes: [String],
+        discountAmount: Double
+    ) async throws -> OrderInfo
 }

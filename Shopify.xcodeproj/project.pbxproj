@@ -35,6 +35,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		31D1E34A2FFD34CD005F34CF /* Shopify.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Shopify.entitlements; sourceTree = "<group>"; };
 		31D979202FF74DCE00FA3DD4 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
 		39EBC5CA2FF5B303009F5DA1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		7879208C2FF80BF2009EFC6F /* AppAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAssembly.swift; sourceTree = "<group>"; };
@@ -102,6 +103,7 @@
 		78BFEC892FEFCB6800358550 /* Shopify */ = {
 			isa = PBXGroup;
 			children = (
+				31D1E34A2FFD34CD005F34CF /* Shopify.entitlements */,
 				7879208C2FF80BF2009EFC6F /* AppAssembly.swift */,
 				39EBC5CA2FF5B303009F5DA1 /* GoogleService-Info.plist */,
 				78BFEC8A2FEFCB6800358550 /* ShopifyApp.swift */,
@@ -349,9 +351,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Shopify/Shopify.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Shopify/Preview Content\"";
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Shopify/Info.plist;
@@ -379,9 +383,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Shopify/Shopify.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Shopify/Preview Content\"";
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Shopify/Info.plist;

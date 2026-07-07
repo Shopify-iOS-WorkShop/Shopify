@@ -7,9 +7,14 @@
 import Foundation
 import SwiftUI
 import UIKit
+import StripePayments
+import StripeApplePay
+import Stripe
+import PassKit
 
 @MainActor
-public class PaymentMethodViewModel: ObservableObject {
+public class PaymentMethodViewModel: NSObject, ObservableObject {
+    
     @Published public var selectedMethod: PaymentType = .online
     @Published public var cardNumber: String = ""
     @Published public var expiry: String = ""
@@ -19,6 +24,7 @@ public class PaymentMethodViewModel: ObservableObject {
     @Published public var errorMessage: String?
     @Published public var orderSuccess: Bool = false
     
+    private var applePayContext: STPApplePayContext?
     private let placeOrderUseCase: PlaceOrderUseCaseProtocol
     private let cartItems: [CartItem]
     private let totalAmount: Double
@@ -88,6 +94,7 @@ public class PaymentMethodViewModel: ObservableObject {
         self.discountAmount = discountAmount
         self.currencyCode = currencyCode
         self.exchangeRate = exchangeRate
+        super.init()
     }
     
     public func processPayment() async {
@@ -102,10 +109,6 @@ public class PaymentMethodViewModel: ObservableObject {
         isLoading = true
         errorMessage = nil
         
-        let usdTotalAmount = totalAmount / exchangeRate
-        let usdDeliveryFee = deliveryFee / exchangeRate
-        let usdDiscountAmount = discountAmount / exchangeRate
-        
         do {
             let _ = try await placeOrderUseCase.execute(
                 cartItems: cartItems,
@@ -115,7 +118,7 @@ public class PaymentMethodViewModel: ObservableObject {
                 customerId: customerId,
                 discountCodes: discountCodes,
                 discountAmount: discountAmount,
-                currencyCode: "USD",            
+                currencyCode: "USD",
                 paymentType: selectedMethod,
                 cardNumber: cardNumber,
                 expiry: expiry,
@@ -153,5 +156,84 @@ public class PaymentMethodViewModel: ObservableObject {
             }
         }
         return true
+    }
+    
+    public func startApplePay() {
+        print("DEBUG: startApplePay called")
+        let pr = StripeAPI.paymentRequest(withMerchantIdentifier: "merchant.com.team5.test", country: "EG", currency: "USD")
+        
+        pr.paymentSummaryItems = [
+            PKPaymentSummaryItem(label: "Subtotal", amount: NSDecimalNumber(value: totalAmount - deliveryFee)),
+            PKPaymentSummaryItem(label: "Shipping", amount: NSDecimalNumber(value: deliveryFee)),
+            PKPaymentSummaryItem(label: "Your Store Name", amount: NSDecimalNumber(value: totalAmount))
+        ]
+        
+        if let applePayContext = STPApplePayContext(paymentRequest: pr, delegate: self) {
+            self.applePayContext = applePayContext
+            applePayContext.presentApplePay()
+        } else {
+            errorMessage = "Apple Pay is not configured or available on this device."
+        }
+    }
+    
+    private func finalizeOrderOnShopify() async {
+        isLoading = true
+        do {
+            guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                  let rootViewController = windowScene.windows.first(where: \.isKeyWindow)?.rootViewController else {
+                errorMessage = "System error: Unable to present UI."
+                return
+            }
+
+            let _ = try await placeOrderUseCase.execute(
+                cartItems: cartItems,
+                amount: totalAmount,
+                deliveryFee: deliveryFee,
+                address: address,
+                customerId: customerId,
+                discountCodes: discountCodes,
+                discountAmount: discountAmount,
+                currencyCode: "USD",
+                paymentType: .applePay,
+                cardNumber: "",
+                expiry: "",
+                cvv: "",
+                viewController: rootViewController
+            )
+            orderSuccess = true
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        isLoading = false
+    }
+}
+
+extension PaymentMethodViewModel: STPApplePayContextDelegate {
+    
+    public nonisolated func applePayContext(_ context: STPApplePayContext, didCreatePaymentMethod paymentMethod: STPPaymentMethod, paymentInformation: PKPayment, completion: @escaping STPIntentClientSecretCompletionBlock) {
+        Task { @MainActor in
+            do {
+                let clientSecret = try await StripeChargeService.shared.fetchClientSecret(amount: self.totalAmount)
+                completion(clientSecret, nil)
+            } catch {
+                completion(nil, error)
+            }
+        }
+    }
+    
+    public nonisolated func applePayContext(_ context: STPApplePayContext, didCompleteWith status: STPPaymentStatus, error: Error?) {
+        
+        Task { @MainActor in
+            switch status {
+            case .success:
+                await self.finalizeOrderOnShopify()
+            case .error:
+                self.errorMessage = error?.localizedDescription ?? "Payment failed."
+            case .userCancellation:
+                break
+            @unknown default:
+                break
+            }
+        }
     }
 }

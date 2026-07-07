@@ -84,6 +84,16 @@ public final class PlaceOrderUseCase: PlaceOrderUseCaseProtocol {
                 discountCodes: discountCodes,
                 discountAmount: discountAmount
             )
+            
+        case .applePay:
+            return try await repository.placeApplePayOrder(
+                cartItems: cartItems,
+                deliveryFee: deliveryFee,
+                address: address,
+                customerId: customerId,
+                discountCodes: discountCodes,
+                discountAmount: discountAmount
+            )
         }
     }
 }

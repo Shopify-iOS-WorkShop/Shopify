@@ -135,6 +135,32 @@ public struct PaymentMethodView: View {
         .navigationTitle("Checkout")
         .navigationBarTitleDisplayMode(.inline)
         .safeAreaInset(edge: .bottom) {
+        VStack(spacing: 12) {
+            if viewModel.selectedMethod == .online {
+                Button(action: {
+                    print("Apple Pay Tapped")
+                    viewModel.startApplePay()
+                }) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "applelogo")
+                            .font(.system(size: 18))
+                        Text("Pay")
+                            .font(.system(size: 18, weight: .semibold))
+                    }
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 45)
+                    .background(Color.black)
+                    .cornerRadius(8)
+                }
+                .padding(.horizontal, 40)
+                
+                Text("OR PAY WITH CARD")
+                    .font(.caption)
+                    .fontWeight(.bold)
+                    .foregroundColor(.secondary)
+            }
+            
             CheckoutBottomButton(title: viewModel.isLoading ? "Processing..." : "Place Order") {
                 Task {
                     await viewModel.processPayment()
@@ -142,6 +168,9 @@ public struct PaymentMethodView: View {
             }
             .disabled(viewModel.isLoading)
         }
+        .padding(.top, 12)
+        .background(.thinMaterial)
+    }
         .onTapGesture { UIApplication.shared.endEditing() }
         
         .onChange(of: viewModel.orderSuccess) { oldValue, isSuccess in
