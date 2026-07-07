@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@MainActor
 public struct AddressFlowView: View {
     @State private var coordinator = AddressCoordinator()
 

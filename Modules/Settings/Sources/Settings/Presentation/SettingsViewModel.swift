@@ -17,6 +17,9 @@ public final class SettingsViewModel {
     public private(set) var isLoadingRates: Bool = false
     public private(set) var errorMessage: String?
 
+    @ObservationIgnored
+    public var makeOrderDetailViewModel: ((String) -> OrderDetailViewModel)!
+    
     /// Proxy to the shared CurrencyStore — writing here updates every
     /// screen that observes CurrencyStore (Home, etc.) immediately.
     public var selectedCurrency: String {

@@ -76,9 +76,11 @@ public struct SettingsView: View {
                    let profile = viewModel.profile,
                    !profile.recentOrders.isEmpty {
                     Section("Recent Orders") {
-                        ForEach(profile.recentOrders) { order in
-                            OrderRowView(order: order)
-                        }
+                        ForEach(profile.recentOrders.prefix(3), id: \.id) { order in
+                            NavigationLink(value: SettingsRoute.orderDetail(order: order)) {
+                                OrderRowView(order: order, viewModel: viewModel)
+                            }
+                        }                        
                         NavigationLink("View All Orders", value: SettingsRoute.orderHistory)
                             .font(.subheadline)
                             .foregroundColor(Color(red: 233/255, green: 69/255, blue: 96/255))
@@ -195,22 +197,34 @@ public struct SettingsView: View {
                 ProgressView()
             }
         case .orderHistory:
-            OrderHistoryView(orders: viewModel.profile?.recentOrders ?? [])
+            OrderHistoryView(
+                orders: viewModel.profile?.recentOrders ?? [],
+                viewModel: viewModel
+            )
         case .editProfile:
             EditProfilePlaceholderView()
         case .addresses:
-            // Presented via the .sheet modifier instead — AddressFlowView owns its
-            // own NavigationStack, so it can't be pushed onto this one.
             EmptyView()
+
+        case .orderDetail(let order):
+            let detailViewModel = viewModel.makeOrderDetailViewModel(order.id)
+            OrderDetailView(viewModel: detailViewModel)
         }
+        
     }
 }
 
 
 private struct OrderHistoryView: View {
-    let orders: [CustomerOrder]
-    var body: some View {
-        List(orders) { order in OrderRowView(order: order) }
+        let orders: [CustomerOrder]
+        let viewModel: SettingsViewModel
+
+        var body: some View {
+            List(orders) { order in
+                NavigationLink(value: SettingsRoute.orderDetail(order: order)) {
+                    OrderRowView(order: order, viewModel: viewModel)
+                }
+            }
             .navigationTitle("Order History")
             .navigationBarTitleDisplayMode(.inline)
             .overlay {
@@ -222,7 +236,7 @@ private struct OrderHistoryView: View {
                     )
                 }
             }
-    }
+        }
 }
 
 

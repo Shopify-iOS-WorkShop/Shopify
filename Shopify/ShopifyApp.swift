@@ -35,6 +35,11 @@ struct ShopifyApp: App {
         _ = AppAssembly.shared.setup(with: modelContainer.mainContext)
         
         StripeAPI.defaultPublishableKey = ShopifyConfig.stripeTestKey
+        StripeAPI.paymentRequest(
+            withMerchantIdentifier: "merchant.com.team5.test",
+            country: "EG",
+            currency: "USD"
+        )
     }
 
     var body: some Scene {
