@@ -17,6 +17,7 @@ import ProductListing
 import ShopifyNetwork
 import Settings
 import Favorites
+import Addresss
 import Payment
 import search
 
@@ -51,8 +52,10 @@ class AppAssembly {
         ProductListingAssembly().assemble(container: container)
         SettingsAssembly().assemble(container: container)
         FavoritesAssembly().assemble(container: container)
+        AddressAssembly().assemble(container: container)
         PaymentAssembly().assemble(container: container)
         SearchAssembly().assemble(container: container)
+
     }
     func resolve<T>(_ type: T.Type) -> T {
         guard let resolved = container.resolve(type) else {

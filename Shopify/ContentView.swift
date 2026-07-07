@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Auth
+import Addresss
 import Common
 import Home
 import search
@@ -296,10 +297,18 @@ struct ContentView: View {
                 .toolbar(.hidden, for: .tabBar)
 
                 // Account tab
+//                AddressFlowView(
+//                    listViewModel: AppAssembly.shared.resolve(AddressListViewModel.self),
+//                    viewModelFactory: AppAssembly.shared.resolve(AddressViewModelFactory.self)
+//                )
+//                .tag(Common.Tab.account)
+//                .toolbar(.hidden, for: .tabBar)
+
                 SettingsView(viewModel: settingsViewModel)
                     .environment(appCoordinator.settingsCoordinator)
                     .tag(Common.Tab.account)
                     .toolbar(.hidden, for: .tabBar)
+
             }
             .environment(currencyStore) // Available globally to all tabs
             .toolbar(.hidden, for: .tabBar)
