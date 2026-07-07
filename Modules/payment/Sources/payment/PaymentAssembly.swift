@@ -58,11 +58,10 @@ public class PaymentAssembly: DIAssembly {
         
         container.register(PaymentMethodViewModel.self) { (
             resolver,
-            cartItems: [CartItem],
-            totalAmount: Double,
-            deliveryFee: Double,
-            address: CheckoutAddress,
-            customerId: String
+            cartItems: [CartItem], totalAmount: Double, deliveryFee: Double, address: CheckoutAddress, customerId: String,
+            discountCodes: [String], discountAmount: Double,
+            currencyCode: String,
+            exchangeRate: Double
         ) in
             MainActor.assumeIsolated {
                 PaymentMethodViewModel(
@@ -71,7 +70,11 @@ public class PaymentAssembly: DIAssembly {
                     totalAmount: totalAmount,
                     deliveryFee: deliveryFee,
                     address: address,
-                    customerId: customerId
+                    customerId: customerId,
+                    discountCodes: discountCodes,
+                    discountAmount: discountAmount,
+                    currencyCode: currencyCode,
+                    exchangeRate: exchangeRate
                 )
             }
         }

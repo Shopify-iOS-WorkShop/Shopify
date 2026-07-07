@@ -5,7 +5,7 @@
 
 import Foundation
 
-public struct CustomerOrder: Equatable, Identifiable {
+public struct CustomerOrder: Equatable, Identifiable,Hashable {
     public let id: String
     public let orderNumber: Int
     public let processedAt: Date

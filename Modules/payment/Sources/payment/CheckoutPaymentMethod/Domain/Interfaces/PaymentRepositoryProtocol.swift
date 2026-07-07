@@ -15,6 +15,8 @@ public protocol PaymentRepositoryProtocol {
         deliveryFee: Double,
         address: CheckoutAddress,
         customerId: String,
+        discountCodes: [String],
+        discountAmount: Double,
         cardNumber: String,
         expMonth: UInt,
         expYear: UInt,
@@ -26,6 +28,17 @@ public protocol PaymentRepositoryProtocol {
         cartItems: [CartItem],
         deliveryFee: Double,
         address: CheckoutAddress,
-        customerId: String
+        customerId: String,
+        discountCodes: [String],
+        discountAmount: Double
+    ) async throws -> OrderInfo
+
+    func placeApplePayOrder(
+        cartItems: [CartItem],
+        deliveryFee: Double,
+        address: CheckoutAddress,
+        customerId: String,
+        discountCodes: [String],
+        discountAmount: Double
     ) async throws -> OrderInfo
 }

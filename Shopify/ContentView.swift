@@ -310,7 +310,7 @@ struct ContentView: View {
                     .toolbar(.hidden, for: .tabBar)
 
             }
-            .environment(currencyStore) // Available globally to all tabs
+            .environment(currencyStore)
             .toolbar(.hidden, for: .tabBar)
 
             CustomTabBar(
@@ -335,12 +335,27 @@ struct ContentView: View {
                 CheckoutAddressView(
                     viewModel: AppAssembly.shared.resolve(CheckoutAddressViewModel.self)
                 )
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button {
+                            appCoordinator.isShowingCheckout = false
+                            appCoordinator.checkoutAddressCoordinator.popToRoot()
+                        } label: {
+                            HStack(spacing: 4) {
+                                Image(systemName: "chevron.left")
+                                    .fontWeight(.semibold)
+                                Text("Cart")
+                            }
+                        }
+                    }
+                }
                 .navigationDestination(for: CheckoutAddressRoute.self) { route in
                     switch route {
                     case .payment:
                         let safeAddress = appCoordinator.checkoutAddressCoordinator.selectedAddress
                             ?? CheckoutAddress(address1: "N/A", city: "N/A", country: "EG", firstName: "Customer", lastName: "", phone: "")
                         let customerId = sessionStore.current?.customerId ?? ""
+
 
                         PaymentMethodView(
                             viewModel: AppAssembly.shared.container.resolve(
@@ -350,19 +365,33 @@ struct ContentView: View {
                                     appCoordinator.checkoutAddressCoordinator.totalAmount,
                                     appCoordinator.checkoutAddressCoordinator.deliveryFee,
                                     safeAddress,
-                                    customerId
+                                    customerId,
+                                    cartViewModel?.cart?.discountCodes.map { $0.code } ?? [],
+                                    max(
+                                        0,
+                                        Double(truncating: cartViewModel?.cart?.cost.subtotalAmount.amount as? NSNumber ?? 0)
+                                        -
+                                        Double(truncating: cartViewModel?.cart?.cost.totalAmount.amount as? NSNumber ?? 0)
+                                    ),
+                                    currencyStore.selectedCurrency,
+                                    currencyStore.exchangeRates?.convert(1.0, to: currencyStore.selectedCurrency) ?? 1.0
                             )!
                         )
 
-                    case .success:
-                        CheckoutResultView(
-                            onTrackOrder: {
-                                appCoordinator.checkoutAddressCoordinator.onCheckoutComplete?()
-                            },
-                            onContinueShopping: {
-                                appCoordinator.checkoutAddressCoordinator.onCheckoutComplete?()
-                            }
-                        )
+
+                        case .success:
+                            CheckoutResultView(
+                                onTrackOrder: {
+                                    Task { await cartViewModel?.confirmClearCart() }
+                                    appCoordinator.checkoutAddressCoordinator.onCheckoutComplete?()
+                                    selectedTab = .account
+                                },
+                                onContinueShopping: {
+                                    Task { await cartViewModel?.confirmClearCart() }
+                                    appCoordinator.checkoutAddressCoordinator.onCheckoutComplete?()
+                                    selectedTab = .home
+                                }
+                            )
                     }
                 }
             }
