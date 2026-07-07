@@ -76,7 +76,7 @@ public struct SettingsView: View {
                    let profile = viewModel.profile,
                    !profile.recentOrders.isEmpty {
                     Section("Recent Orders") {
-                        ForEach(profile.recentOrders, id: \.id) { order in
+                        ForEach(profile.recentOrders.prefix(3), id: \.id) { order in
                             NavigationLink(value: SettingsRoute.orderDetail(order: order)) {
                                 OrderRowView(order: order, viewModel: viewModel)
                             }
@@ -203,7 +203,6 @@ public struct SettingsView: View {
             )
         case .editProfile:
             EditProfilePlaceholderView()
-        case .addresses:
         case .addresses:
             EmptyView()
 

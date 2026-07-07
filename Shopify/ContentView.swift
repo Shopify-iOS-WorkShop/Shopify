@@ -335,6 +335,20 @@ struct ContentView: View {
                 CheckoutAddressView(
                     viewModel: AppAssembly.shared.resolve(CheckoutAddressViewModel.self)
                 )
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button {
+                            appCoordinator.isShowingCheckout = false
+                            appCoordinator.checkoutAddressCoordinator.popToRoot()
+                        } label: {
+                            HStack(spacing: 4) {
+                                Image(systemName: "chevron.left")
+                                    .fontWeight(.semibold)
+                                Text("Cart")
+                            }
+                        }
+                    }
+                }
                 .navigationDestination(for: CheckoutAddressRoute.self) { route in
                     switch route {
                     case .payment:
@@ -342,17 +356,7 @@ struct ContentView: View {
                             ?? CheckoutAddress(address1: "N/A", city: "N/A", country: "EG", firstName: "Customer", lastName: "", phone: "")
                         let customerId = sessionStore.current?.customerId ?? ""
 
-                        PaymentMethodView(
-                            viewModel: AppAssembly.shared.container.resolve(
-                                PaymentMethodViewModel.self,
-                                arguments:
-                                    appCoordinator.checkoutAddressCoordinator.cartItems,
-                                    appCoordinator.checkoutAddressCoordinator.totalAmount,
-                                    appCoordinator.checkoutAddressCoordinator.deliveryFee,
-                                    safeAddress,
-                                    customerId
-                            )!
-                        )
+
                         PaymentMethodView(
                             viewModel: AppAssembly.shared.container.resolve(
                                 PaymentMethodViewModel.self,
@@ -373,20 +377,7 @@ struct ContentView: View {
                                     currencyStore.exchangeRates?.convert(1.0, to: currencyStore.selectedCurrency) ?? 1.0
                             )!
                         )
-                        .toolbar {
-                            ToolbarItem(placement: .navigationBarLeading) {
-                                Button {
-                                    appCoordinator.isShowingCheckout = false
-                                    appCoordinator.checkoutAddressCoordinator.popToRoot()
-                                } label: {
-                                    HStack(spacing: 4) {
-                                        Image(systemName: "chevron.left")
-                                            .fontWeight(.semibold)
-                                        Text("Cart")
-                                    }
-                                }
-                            }
-                        }
+
 
                         case .success:
                             CheckoutResultView(

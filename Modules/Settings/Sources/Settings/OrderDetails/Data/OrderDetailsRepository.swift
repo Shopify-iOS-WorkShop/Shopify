@@ -36,7 +36,7 @@ public final class OrderDetailsRepository: OrderDetailsRepositoryProtocol {
 
         let data = try await client.fetch(query: query)
 
-        guard let node = data.customer?.orders.edges.first?.node else {
+        guard let node = data.customer?.orders.edges.first(where: { $0.node.id == orderId })?.node else {
             throw OrderDetailsError.notFound
         }
 
