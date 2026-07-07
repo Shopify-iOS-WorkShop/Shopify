@@ -53,6 +53,7 @@ struct ContentView: View {
     @State private var guestPromptContext: GuestPromptContext? = nil
 
     @AppStorage("settings_colorScheme") private var colorSchemeRaw: Int = 0
+    @AppStorage("has_completed_onboarding") private var hasCompletedOnboarding: Bool = false
 
     @StateObject private var homeViewModel: HomeViewModel = AppAssembly.shared.resolve(HomeViewModel.self)
     @State private var settingsViewModel: SettingsViewModel = AppAssembly.shared.resolve(SettingsViewModel.self)
@@ -75,6 +76,10 @@ struct ContentView: View {
         Group {
             if !sessionChecked {
                 Color(uiColor: .systemBackground).ignoresSafeArea()
+            } else if !hasCompletedOnboarding {
+                OnBoardingScreen {
+                    hasCompletedOnboarding = true
+                }
             } else if !appCoordinator.hasCompletedAuth {
                 authFlow
             } else {
