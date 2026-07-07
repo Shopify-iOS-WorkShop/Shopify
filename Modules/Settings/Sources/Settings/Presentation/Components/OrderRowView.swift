@@ -7,14 +7,15 @@ import SwiftUI
 
 public struct OrderRowView: View {
     let order: CustomerOrder
+    let viewModel: SettingsViewModel
 
-    public init(order: CustomerOrder) {
+    public init(order: CustomerOrder, viewModel: SettingsViewModel) {
         self.order = order
+        self.viewModel = viewModel
     }
 
     public var body: some View {
         HStack(spacing: 12) {
-            // Thumbnail
             ZStack {
                 RoundedRectangle(cornerRadius: 8)
                     .fill(Color(UIColor.tertiarySystemFill))
@@ -56,7 +57,7 @@ public struct OrderRowView: View {
             Spacer()
 
             VStack(alignment: .trailing, spacing: 4) {
-                Text("\(order.currencyCode) \(order.totalAmount)")
+                Text(viewModel.convert(amount: Double(order.totalAmount) ?? 0.0))
                     .font(.subheadline)
                     .fontWeight(.medium)
 

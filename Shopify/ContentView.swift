@@ -235,7 +235,7 @@ struct ContentView: View {
                     .tag(Common.Tab.account)
                     .toolbar(.hidden, for: .tabBar)
             }
-            .environment(currencyStore) // Available globally to all tabs
+            .environment(currencyStore)
             .toolbar(.hidden, for: .tabBar)
 
             CustomTabBar(
@@ -260,12 +260,35 @@ struct ContentView: View {
                         CheckoutAddressView(
                             viewModel: AppAssembly.shared.resolve(CheckoutAddressViewModel.self)
                         )
+                        .toolbar {
+                            ToolbarItem(placement: .navigationBarLeading) {
+                                Button {
+                                    appCoordinator.isShowingCheckout = false
+                                    appCoordinator.checkoutAddressCoordinator.popToRoot()
+                                } label: {
+                                    HStack(spacing: 4) {
+                                        Image(systemName: "chevron.left")
+                                            .fontWeight(.semibold)
+                                        Text("Cart")
+                                    }
+                                }
+                            }
+                        }
                         .navigationDestination(for: CheckoutAddressRoute.self) { route in
                             switch route {
                             case .payment:
                                 let safeAddress = appCoordinator.checkoutAddressCoordinator.selectedAddress
                                     ?? CheckoutAddress(address1: "N/A", city: "N/A", country: "EG", firstName: "Customer", lastName: "", phone: "")
                                 let customerId = sessionStore.current?.customerId ?? ""
+
+                                let appliedCodes = cartViewModel?.cart?.discountCodes.map { $0.code } ?? []
+                                
+                                let originalSubtotal = Double(truncating: cartViewModel?.cart?.cost.subtotalAmount.amount as? NSNumber ?? 0)
+                                let discountedSubtotal = Double(truncating: cartViewModel?.cart?.cost.totalAmount.amount as? NSNumber ?? 0)
+                                let exactDiscountAmount = max(0, originalSubtotal - discountedSubtotal)
+                                
+                                let activeCurrency = currencyStore.selectedCurrency
+                                let activeExchangeRate = currencyStore.exchangeRates?.convert(1.0, to: activeCurrency) ?? 1.0
 
                                 PaymentMethodView(
                                     viewModel: AppAssembly.shared.container.resolve(
@@ -275,17 +298,25 @@ struct ContentView: View {
                                             appCoordinator.checkoutAddressCoordinator.totalAmount,
                                             appCoordinator.checkoutAddressCoordinator.deliveryFee,
                                             safeAddress,
-                                            customerId
+                                            customerId,
+                                            appliedCodes,
+                                            exactDiscountAmount,
+                                            activeCurrency,
+                                            activeExchangeRate
                                     )!
                                 )
 
                             case .success:
                                 CheckoutResultView(
                                     onTrackOrder: {
+                                        Task { await cartViewModel?.confirmClearCart() }
                                         appCoordinator.checkoutAddressCoordinator.onCheckoutComplete?()
+                                        selectedTab = .account
                                     },
                                     onContinueShopping: {
+                                        Task { await cartViewModel?.confirmClearCart() }
                                         appCoordinator.checkoutAddressCoordinator.onCheckoutComplete?()
+                                        selectedTab = .home
                                     }
                                 )
                             }
@@ -296,7 +327,7 @@ struct ContentView: View {
                 .onChange(of: selectedTab) { oldTab, newTab in
                     if newTab == .wishlist && sessionStore.current == nil {
                         appCoordinator.showGuestSignInPrompt = true
-                        selectedTab = oldTab // revert
+                        selectedTab = oldTab
                     }
                 }
     }

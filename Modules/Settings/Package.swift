@@ -11,6 +11,7 @@ let package = Package(
         .package(path: "../Common"),
         .package(path: "../shopify-network"),
         .package(path: "../DependencyInjection"),
+        .package(path: "../Auth")
     ],
     targets: [
         .target(
@@ -19,6 +20,7 @@ let package = Package(
                 .product(name: "Common", package: "Common"),
                 .product(name: "ShopifyNetwork", package: "shopify-network"),
                 .product(name: "DependencyInjection", package: "DependencyInjection"),
+                .product(name: "Auth", package: "Auth"),
             ]
         ),
         .testTarget(
