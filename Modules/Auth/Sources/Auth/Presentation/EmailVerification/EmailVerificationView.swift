@@ -30,7 +30,7 @@ public struct EmailVerificationView: View {
                 HStack {
                     Button(action: {
                         viewModel.cancelRegistration()
-                        coordinator.popToRoot()
+                        coordinator.path = NavigationPath() // Clear navigation stack
                     }) {
                         Image(systemName: "chevron.left")
                             .font(.system(size: 28, weight: .medium))
@@ -130,7 +130,7 @@ public struct EmailVerificationView: View {
                 // Cancel Button
                 Button(action: {
                     viewModel.cancelRegistration()
-                    coordinator.popToRoot()
+                    coordinator.path = NavigationPath() // Clear navigation stack
                 }) {
                     Text("Cancel Registration")
                         .font(.system(size: 16))

@@ -17,7 +17,7 @@ public final class EmailVerificationViewModel: ObservableObject {
     @Published public var successMessage: String?
     @Published public var isEmailVerified: Bool = false
     
-    private let email: String
+    public let email: String // Made public so view can display it
     private let firstName: String
     private let lastName: String
     private let firebaseUID: String
@@ -39,7 +39,8 @@ public final class EmailVerificationViewModel: ObservableObject {
     }
     
     deinit {
-        stopVerificationCheck()
+        // Timer invalidation is safe from any context
+        verificationCheckTimer?.invalidate()
     }
     
     // MARK: - Start Verification Check
@@ -116,7 +117,6 @@ public final class EmailVerificationViewModel: ObservableObject {
         }
     }
     
-    // MARK: - Resend Verification Email
     
     public func resendVerificationEmail() {
         guard !isResendingEmail else { return }

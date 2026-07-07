@@ -29,7 +29,9 @@ public struct ResetPasswordView: View {
                         .foregroundColor(.black)
                     
                     HStack {
-                        Button(action: { coordinator.popToRoot() }) {
+                        Button(action: { 
+                            coordinator.path = NavigationPath() // Pop to root
+                        }) {
                             Image(systemName: "chevron.left")
                                 .font(.system(size: 28, weight: .medium))
                                 .foregroundColor(.black)
@@ -157,9 +159,8 @@ public struct ResetPasswordView: View {
             
             Spacer()
             
-            // Back to Login Button
             PrimaryButton(title: "Back to Sign In") {
-                coordinator.popToRoot()
+                coordinator.path = NavigationPath() // Pop to root (login screen)
             }
             .padding(.bottom, 24)
         }
