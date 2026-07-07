@@ -26,6 +26,11 @@ public final class RegistrationViewModel: ObservableObject {
     @Published public private(set) var completedSession: Session? = nil
     @Published public private(set) var pendingSocialUser: SocialSignInResult? = nil
     @Published public private(set) var activeSession: UserSession? = nil
+    @Published public var shouldNavigateToVerification: Bool = false
+    @Published public var verificationEmail: String = ""
+    @Published public var verificationFirstName: String = ""
+    @Published public var verificationLastName: String = ""
+    @Published public var verificationFirebaseUID: String = ""
 
     // MARK: - Dependencies
     private let signUpUseCase: SignUpUseCaseProtocol
@@ -97,8 +102,13 @@ public final class RegistrationViewModel: ObservableObject {
 
             isLoading = false
             switch result {
-            case .success(let session):
-                completedSession = session
+            case .success(let tempSession):
+                // Don't complete registration yet - navigate to email verification
+                verificationEmail = email.trimmingCharacters(in: .whitespacesAndNewlines)
+                verificationFirstName = nameParts.firstName
+                verificationLastName = nameParts.lastName
+                verificationFirebaseUID = tempSession.firebaseUID
+                shouldNavigateToVerification = true
             case .failure(let error):
                 errorMessage = error.userFacingMessage
             }
@@ -117,12 +127,10 @@ public final class RegistrationViewModel: ObservableObject {
             isLoading = false
             switch result {
             case .success(let socialResult):
-                pendingSocialUser = socialResult
+                // Google Sign-In now completes immediately (no password needed with REST API)
                 switch socialResult {
-                case .existingUser(let session):
+                case .existingUser(let session), .newUser(let session):
                     completedSession = session
-                case .newUser:
-                    errorMessage = "Set a password to finish connecting your Shopify account."
                 }
             case .failure(let error):
                 errorMessage = error.userFacingMessage

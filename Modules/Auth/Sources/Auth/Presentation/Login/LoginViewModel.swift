@@ -63,13 +63,10 @@ public final class LoginViewModel: ObservableObject {
             isLoading = false
             switch result {
             case .success(let socialResult):
-                pendingSocialUser = socialResult
+                // With REST API, both new and existing users complete immediately
                 switch socialResult {
-                case .existingUser(let session):
-                    completedSession = session      // existing user → auto-login
-                case .newUser:
-                    break                           // LoginView observes pendingSocialUser
-                                                    // and pushes SetPasswordView
+                case .existingUser(let session), .newUser(let session):
+                    completedSession = session
                 }
             case .failure(let error):
                 errorMessage = error.userFacingMessage

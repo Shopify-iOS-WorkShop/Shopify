@@ -14,4 +14,6 @@ public enum AuthRoute: Hashable {
     case register
     case forgotPassword
     case setPassword(email: String, displayName: String?)
+    case emailVerification(email: String, firstName: String, lastName: String, firebaseUID: String)
+    case resetPassword(email: String)
 }
