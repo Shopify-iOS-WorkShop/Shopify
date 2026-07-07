@@ -26,6 +26,10 @@ final class FirebaseAuthDataSource {
     func sendVerificationEmail() async throws {
         try await Auth.auth().currentUser?.sendEmailVerification()
     }
+    
+    func sendPasswordReset(email: String) async throws {
+        try await Auth.auth().sendPasswordReset(withEmail: email)
+    }
 
     func signOut() throws {
         try Auth.auth().signOut()

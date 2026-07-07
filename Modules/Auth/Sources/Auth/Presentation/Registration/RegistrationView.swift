@@ -126,6 +126,17 @@ public struct RegistrationView: View {
         .onReceive(viewModel.$completedSession.compactMap { $0 }) { session in
             coordinator.onLoginSuccess?()
         }
+        .onChange(of: viewModel.shouldNavigateToVerification) { _, shouldNavigate in
+            if shouldNavigate {
+                coordinator.push(.emailVerification(
+                    email: viewModel.verificationEmail,
+                    firstName: viewModel.verificationFirstName,
+                    lastName: viewModel.verificationLastName,
+                    firebaseUID: viewModel.verificationFirebaseUID
+                ))
+                viewModel.shouldNavigateToVerification = false
+            }
+        }
         .navigationBarHidden(true)
     }
 }
