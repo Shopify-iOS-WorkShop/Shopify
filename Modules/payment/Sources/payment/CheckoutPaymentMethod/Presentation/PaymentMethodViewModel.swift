@@ -25,23 +25,46 @@ public class PaymentMethodViewModel: ObservableObject {
     private let deliveryFee: Double
     private let address: CheckoutAddress
     private let customerId: String
+    private let discountCodes: [String]
+    private let discountAmount: Double
+    
+    private let currencyCode: String
+    private let exchangeRate: Double
     
     public var totalItems: Int {
         cartItems.reduce(0) { $0 + $1.quantity }
     }
     
     public var subtotalFormatted: String {
-        String(format: "$%.2f", totalAmount - deliveryFee)
+        let localValue = (totalAmount - deliveryFee) * exchangeRate
+        return String(format: "%@ %.2f", currencyCode.uppercased(), localValue)
     }
     
     public var deliveryFeeFormatted: String {
-        String(format: "$%.2f", deliveryFee)
+        let localValue = deliveryFee * exchangeRate
+        return String(format: "%@ %.2f", currencyCode.uppercased(), localValue)
     }
     
     public var totalFormatted: String {
-        String(format: "$%.2f", totalAmount)
+        let localValue = totalAmount * exchangeRate
+        return String(format: "%@ %.2f", currencyCode.uppercased(), localValue)
     }
     
+    public var usdSubtotalFormatted: String? {
+        guard currencyCode.uppercased() != "USD" else { return nil }
+        let usdValue = totalAmount - deliveryFee
+        return String(format: "(USD %.2f)", usdValue)
+    }
+    
+    public var usdDeliveryFeeFormatted: String? {
+        guard currencyCode.uppercased() != "USD" else { return nil }
+        return String(format: "(USD %.2f)", deliveryFee)
+    }
+    
+    public var usdTotalFormatted: String? {
+        guard currencyCode.uppercased() != "USD" else { return nil }
+        return String(format: "(USD %.2f)", totalAmount)
+    }
     
     public init(
         placeOrderUseCase: PlaceOrderUseCaseProtocol,
@@ -49,7 +72,11 @@ public class PaymentMethodViewModel: ObservableObject {
         totalAmount: Double,
         deliveryFee: Double,
         address: CheckoutAddress,
-        customerId: String
+        customerId: String,
+        discountCodes: [String] = [],
+        discountAmount: Double = 0.0,
+        currencyCode: String,
+        exchangeRate: Double = 1.0
     ) {
         self.placeOrderUseCase = placeOrderUseCase
         self.cartItems = cartItems
@@ -57,6 +84,10 @@ public class PaymentMethodViewModel: ObservableObject {
         self.deliveryFee = deliveryFee
         self.address = address
         self.customerId = customerId
+        self.discountCodes = discountCodes
+        self.discountAmount = discountAmount
+        self.currencyCode = currencyCode
+        self.exchangeRate = exchangeRate
     }
     
     public func processPayment() async {
@@ -71,6 +102,10 @@ public class PaymentMethodViewModel: ObservableObject {
         isLoading = true
         errorMessage = nil
         
+        let usdTotalAmount = totalAmount / exchangeRate
+        let usdDeliveryFee = deliveryFee / exchangeRate
+        let usdDiscountAmount = discountAmount / exchangeRate
+        
         do {
             let _ = try await placeOrderUseCase.execute(
                 cartItems: cartItems,
@@ -78,6 +113,9 @@ public class PaymentMethodViewModel: ObservableObject {
                 deliveryFee: deliveryFee,
                 address: address,
                 customerId: customerId,
+                discountCodes: discountCodes,
+                discountAmount: discountAmount,
+                currencyCode: "USD",            
                 paymentType: selectedMethod,
                 cardNumber: cardNumber,
                 expiry: expiry,

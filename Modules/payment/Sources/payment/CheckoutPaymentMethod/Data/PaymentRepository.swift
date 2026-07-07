@@ -10,129 +10,80 @@ import StripePayments
 import ShopifyNetwork
 import SwiftUI
 import ShopifyAdminNetwork
- 
-public struct CartItem {
-    public let variantId: String
-    public let quantity: Int
- 
-    public init(variantId: String, quantity: Int) {
-        self.variantId = variantId
-        self.quantity = quantity
-    }
-}
 
-public struct CheckoutAddress {
-    public let address1: String
-    public let city: String
-    public let country: String
-    public let firstName: String
-    public let lastName: String
-    public let phone: String
- 
-    public init(address1: String, city: String, country: String, firstName: String, lastName: String, phone: String) {
-        self.address1 = address1
-        self.city = city
-        self.country = country
-        self.firstName = firstName
-        self.lastName = lastName
-        self.phone = phone
-    }
-}
- 
 public final class PaymentRepository: PaymentRepositoryProtocol {
+    
+    private let networkClient: NetworkClient
  
-    public init() {}
- 
-    private func perform<Mutation: GraphQLMutation>(_ mutation: Mutation) async throws -> Mutation.Data {
-        try await withCheckedThrowingContinuation { continuation in
-            AdminGraphQLClient.shared.apollo.perform(mutation: mutation) { result in
-                switch result {
-                case .success(let response):
-                    if let data = response.data {
-                        continuation.resume(returning: data)
-                    } else {
-                        let message = response.errors?.map { $0.message ?? "" }.joined(separator: ", ")
-                            ?? "Unknown GraphQL Error"
-                        continuation.resume(throwing: NSError(
-                            domain: "PaymentError", code: -1,
-                            userInfo: [NSLocalizedDescriptionKey: message]
-                        ))
-                    }
-                case .failure(let error):
-                    continuation.resume(throwing: error)
-                }
-            }
-        }
+    public init(networkClient: NetworkClient = URLSessionNetworkClient()) {
+        self.networkClient = networkClient
     }
  
-    private func buildDraftOrderInput(
+    private func buildOrderPayload(
         cartItems: [CartItem],
         deliveryFee: Double,
         address: CheckoutAddress,
-        customerId: String
-    ) -> ShopifyAdminAPI.DraftOrderInput {
-
-        let formattedCustomerId = customerId.hasPrefix("gid://")
-                ? customerId
-                : "gid://shopify/Customer/\(customerId)"
-
-        let purchasingEntity = ShopifyAdminAPI.PurchasingEntityInput(
-            customerId: .some(formattedCustomerId)
-        )
+        customerId: String,
+        discountCodes: [String],
+        discountAmount: Double,
+        isPaid: Bool
+    ) -> RESTOrderPayload {
+        
+        let rawCustomerId = Int(customerId.components(separatedBy: "/").last ?? customerId) ?? 0
         
         let lineItems = cartItems.map { item in
-            ShopifyAdminAPI.DraftOrderLineItemInput(
-                quantity: item.quantity,
-                variantId: .some(item.variantId)
-            )
+            let rawVariantId = Int(item.variantId.components(separatedBy: "/").last ?? item.variantId) ?? 0
+            return RESTLineItem(variant_id: rawVariantId, quantity: item.quantity)
         }
-
-        let parsedCountry = ShopifyAdminAPI.CountryCode(rawValue: address.country) ?? .eg
-        let countryCodeEnum = GraphQLEnum<ShopifyAdminAPI.CountryCode>.case(parsedCountry)
-
-        let shopifyAddress = ShopifyAdminAPI.MailingAddressInput(
-            address1: .some(address.address1),
-            city: .some(address.city),
-            countryCode: .some(countryCodeEnum),
-            firstName: .some(address.firstName),
-            lastName: .some(address.lastName),
-            phone: .some(address.phone)
-        )
-
-        let shippingLine = ShopifyAdminAPI.ShippingLineInput(
-            priceWithCurrency: .some(
-                ShopifyAdminAPI.MoneyInput(
-                    amount: String(format: "%.2f", deliveryFee),
-                    currencyCode: .case(.usd)
-                )
-            ),
-            title: .some("Standard Shipping")
+        
+        let restAddress = RESTAddress(
+            first_name: address.firstName,
+            last_name: address.lastName,
+            address1: address.address1,
+            city: address.city,
+            country: address.country,
+            phone: address.phone
         )
         
-        return ShopifyAdminAPI.DraftOrderInput(
-            billingAddress: .some(shopifyAddress),
-            lineItems: .some(lineItems),
-            shippingAddress: .some(shopifyAddress),
-            shippingLine: .some(shippingLine),
-            purchasingEntity: .some(purchasingEntity)
+        let shippingLine = RESTShippingLine(
+            title: "Standard Shipping",
+            price: String(format: "%.2f", deliveryFee)
         )
+        
+        let restDiscounts = discountCodes.map {
+            RESTDiscountCode(code: $0, amount: String(format: "%.2f", discountAmount), type: "fixed_amount")
+        }
+        
+        let orderData = RESTOrderData(
+            line_items: lineItems,
+            customer: RESTCustomer(id: rawCustomerId),
+            billing_address: restAddress,
+            shipping_address: restAddress,
+            financial_status: isPaid ? "paid" : "pending",
+            shipping_lines: [shippingLine],
+            discount_codes: restDiscounts.isEmpty ? nil : restDiscounts,
+            currency: "USD",
+            presentment_currency: "USD"
+        )
+        
+        return RESTOrderPayload(order: orderData)
     }
-
+    
     public func placeOnlineOrder(
         cartItems: [CartItem],
         amount: Double,
         deliveryFee: Double,
         address: CheckoutAddress,
         customerId: String,
+        discountCodes: [String],
+        discountAmount: Double,
         cardNumber: String,
         expMonth: UInt,
         expYear: UInt,
         cvv: String,
         viewController: UIViewController
     ) async throws -> OrderInfo {
- 
         let clientSecret = try await StripeChargeService.shared.fetchClientSecret(amount: amount)
- 
         let cardParams = STPPaymentMethodCardParams()
         cardParams.number = cardNumber
         cardParams.expMonth = NSNumber(value: expMonth)
@@ -155,90 +106,47 @@ public final class PaymentRepository: PaymentRepositoryProtocol {
         }
  
         guard confirmStatus == .succeeded else {
-            throw NSError(domain: "PaymentError", code: 3,
-                          userInfo: [NSLocalizedDescriptionKey: "Card payment failed."])
+            throw NSError(domain: "PaymentError", code: 3, userInfo: [NSLocalizedDescriptionKey: "Card payment failed."])
         }
  
-        let draftInput = buildDraftOrderInput(
+        let payload = buildOrderPayload(
             cartItems: cartItems,
             deliveryFee: deliveryFee,
             address: address,
-            customerId: customerId
+            customerId: customerId,
+            discountCodes: discountCodes,
+            discountAmount: discountAmount,
+            isPaid: true
         )
+        let endpoint = CreateOrderEndpoint(payload: payload)
+        let result: RESTOrderResponse = try await networkClient.request(endpoint: endpoint)
  
-        let createMutation = ShopifyAdminAPI.CreateDraftOrderMutation(input: draftInput)
-        let createResult = try await perform(createMutation)
- 
-        if let errors = createResult.draftOrderCreate?.userErrors, !errors.isEmpty {
-            throw NSError(domain: "PaymentError", code: 1,
-                          userInfo: [NSLocalizedDescriptionKey: errors.map { $0.message }.joined(separator: ", ")])
-        }
- 
-        guard let draftOrderId = createResult.draftOrderCreate?.draftOrder?.id else {
-            throw NSError(domain: "PaymentError", code: 1,
-                          userInfo: [NSLocalizedDescriptionKey: "Failed to create draft order."])
-        }
- 
-        let completeMutation = ShopifyAdminAPI.CompleteDraftOrderAsPaidMutation(id: draftOrderId)
-        let completeResult = try await perform(completeMutation)
- 
-        if let errors = completeResult.draftOrderComplete?.userErrors, !errors.isEmpty {
-            throw NSError(domain: "PaymentError", code: 2,
-                          userInfo: [NSLocalizedDescriptionKey: errors.map { $0.message }.joined(separator: ", ")])
-        }
- 
-        guard let finalOrder = completeResult.draftOrderComplete?.draftOrder?.order else {
-            throw NSError(domain: "PaymentError", code: 2,
-                          userInfo: [NSLocalizedDescriptionKey: "Failed to complete draft order."])
-        }
- 
-        return OrderInfo(id: finalOrder.id, orderNumber: finalOrder.name)
+        return OrderInfo(id: "gid://shopify/Order/\(result.order.id)", orderNumber: result.order.name)
     }
  
     public func placeCODOrder(
         cartItems: [CartItem],
         deliveryFee: Double,
         address: CheckoutAddress,
-        customerId: String
+        customerId: String,
+        discountCodes: [String],
+        discountAmount: Double
     ) async throws -> OrderInfo {
- 
-        let draftInput = buildDraftOrderInput(
+        
+        let payload = buildOrderPayload(
             cartItems: cartItems,
             deliveryFee: deliveryFee,
             address: address,
-            customerId: customerId
+            customerId: customerId,
+            discountCodes: discountCodes,
+            discountAmount: discountAmount,
+            isPaid: false
         )
  
-        let createMutation = ShopifyAdminAPI.CreateDraftOrderMutation(input: draftInput)
-        let createResult = try await perform(createMutation)
- 
-        if let errors = createResult.draftOrderCreate?.userErrors, !errors.isEmpty {
-            throw NSError(domain: "PaymentError", code: 1,
-                          userInfo: [NSLocalizedDescriptionKey: errors.map { $0.message }.joined(separator: ", ")])
-        }
- 
-        guard let draftOrderId = createResult.draftOrderCreate?.draftOrder?.id else {
-            throw NSError(domain: "PaymentError", code: 1,
-                          userInfo: [NSLocalizedDescriptionKey: "Failed to create draft order."])
-        }
- 
-        let completeMutation = ShopifyAdminAPI.CompleteDraftOrderAsCODMutation(
-            id: draftOrderId,
-            paymentGatewayId: .none
-        )
-        let completeResult = try await perform(completeMutation)
- 
-        if let errors = completeResult.draftOrderComplete?.userErrors, !errors.isEmpty {
-            throw NSError(domain: "PaymentError", code: 2,
-                          userInfo: [NSLocalizedDescriptionKey: errors.map { $0.message }.joined(separator: ", ")])
-        }
- 
-        guard let finalOrder = completeResult.draftOrderComplete?.draftOrder?.order else {
-            throw NSError(domain: "PaymentError", code: 2,
-                          userInfo: [NSLocalizedDescriptionKey: "Failed to complete draft order."])
-        }
- 
-        return OrderInfo(id: finalOrder.id, orderNumber: finalOrder.name)
+        let endpoint = CreateOrderEndpoint(payload: payload)
+        let result: RESTOrderResponse = try await networkClient.request(endpoint: endpoint)
+        
+        return OrderInfo(id: "gid://shopify/Order/\(result.order.id)", orderNumber: result.order.name)
     }
 }
  
