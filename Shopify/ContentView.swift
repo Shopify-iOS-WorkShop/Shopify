@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Auth
+import Addresss
 import Common
 import Home
 import search
@@ -19,6 +20,27 @@ import Cart
 import Payment
 import Settings
 
+enum GuestPromptContext {
+    case addToCart
+    case addToFavorites
+    
+    var title: String {
+        switch self {
+        case .addToCart: return "Sign In to Add to Cart"
+        case .addToFavorites: return "Sign In to Add to Favorites"
+        }
+    }
+    
+    var message: String {
+        switch self {
+        case .addToCart:
+            return "Please sign in to add items to your cart and manage your shopping."
+        case .addToFavorites:
+            return "Please sign in to save items to your favorites and access them across devices."
+        }
+    }
+}
+
 struct ContentView: View {
 
 
@@ -28,6 +50,8 @@ struct ContentView: View {
     @State private var sessionChecked: Bool = false
     @State private var selectedTab: Common.Tab = .home
     @State private var cartViewModel: CartViewModel? = nil
+    @State private var guestPromptContext: GuestPromptContext? = nil
+
     @AppStorage("settings_colorScheme") private var colorSchemeRaw: Int = 0
 
     @StateObject private var homeViewModel: HomeViewModel = AppAssembly.shared.resolve(HomeViewModel.self)
@@ -122,14 +146,28 @@ struct ContentView: View {
         }
 
         // ── Guest action prompt ───────────────────────────────────────
-        .alert("Sign In Required", isPresented: $appCoordinator.showGuestSignInPrompt) {
+        .alert(
+            guestPromptContext?.title ?? "Sign In Required",
+            isPresented: Binding(
+                get: { guestPromptContext != nil },
+                set: { if !$0 { 
+                    guestPromptContext = nil
+                    appCoordinator.showGuestSignInPrompt = false
+                } }
+            )
+        ) {
             Button("Sign In") {
                 appCoordinator.authCoordinator.path = NavigationPath()
                 appCoordinator.hasCompletedAuth     = false
+                guestPromptContext = nil
+                appCoordinator.showGuestSignInPrompt = false
             }
-            Button("Continue Browsing", role: .cancel) {}
+            Button("Continue Browsing", role: .cancel) {
+                guestPromptContext = nil
+                appCoordinator.showGuestSignInPrompt = false
+            }
         } message: {
-            Text("Please sign in to add items to your cart and access your account.")
+            Text(guestPromptContext?.message ?? "Please sign in to access this feature.")
         }
     }
 
@@ -155,7 +193,7 @@ struct ContentView: View {
                         favoritedIDs: favoritesViewModel.favoritedIDs,
                         onFavoriteTap: { product in
                             guard sessionStore.current != nil else {
-                                appCoordinator.showGuestSignInPrompt = true
+                                guestPromptContext = .addToFavorites
                                 return
                             }
                             favoritesViewModel.toggleFavorite(
@@ -188,52 +226,89 @@ struct ContentView: View {
                 .toolbar(.hidden, for: .tabBar)
 
                 // Cart tab
-                                NavigationStack(path: $appCoordinator.cartCoordinator.navigationPath) {
-                                    Group {
-                                        if let cartViewModel {
-                                            CartView(
-                                                viewModel: cartViewModel,
-                                                onGoShopping: { selectedTab = .home },
-                                                onProductTapped: { productId in
-                                                    let rawId = productId.components(separatedBy: "/").last ?? productId
-                                                    appCoordinator.cartCoordinator.navigationPath.append(
-                                                        CartRoute.productDetails(productId: rawId, handle: "")
-                                                    )
-                                                }
-                                            )
-                                            .onAppear {
-                                                cartViewModel.onCheckoutRequested = {
-                                                    guard let cart = cartViewModel.cart else { return }
-                                                    appCoordinator.cartCoordinator.navigateTo(.checkout(cart: cart))
-                                                }
-                                                
-                                                cartViewModel.onSignInRequired = {
-                                                    appCoordinator.showGuestSignInPrompt = true
-                                                }
-                                            }
-                                        } else {
-                                            ProgressView()
-                                        }
-                                    }
-                                    .navigationDestination(for: CartRoute.self) { cartDestination(for: $0) }
+                NavigationStack(path: $appCoordinator.cartCoordinator.navigationPath) {
+                    Group {
+                        if sessionStore.current == nil {
+                            // Guest mode - show sign in prompt
+                            GuestSignInView(
+                                icon: "cart.badge.questionmark",
+                                title: "Sign In to View Cart",
+                                message: "Please sign in to add items to your cart and manage your shopping.",
+                                onSignInTapped: {
+                                    appCoordinator.authCoordinator.path = NavigationPath()
+                                    appCoordinator.hasCompletedAuth = false
+                                },
+                                onBrowseTapped: { selectedTab = .home }
+                            )
+                            .navigationTitle("Cart")
+                        } else if let cartViewModel {
+                            CartView(
+                                viewModel: cartViewModel,
+                                onGoShopping: { selectedTab = .home },
+                                onProductTapped: { productId in
+                                    let rawId = productId.components(separatedBy: "/").last ?? productId
+                                    appCoordinator.cartCoordinator.navigationPath.append(
+                                        CartRoute.productDetails(productId: rawId, handle: "")
+                                    )
                                 }
-                                .environment(appCoordinator.cartCoordinator)
-                                .tag(Common.Tab.cart)
-                                .toolbar(.hidden, for: .tabBar)
+                            )
+                            .onAppear {
+                                cartViewModel.onCheckoutRequested = {
+                                    guard let cart = cartViewModel.cart else { return }
+                                    appCoordinator.cartCoordinator.navigateTo(.checkout(cart: cart))
+                                }
+                                
+                                cartViewModel.onSignInRequired = {
+                                    appCoordinator.showGuestSignInPrompt = true
+                                }
+                            }
+                        } else {
+                            ProgressView()
+                        }
+                    }
+                    .navigationDestination(for: CartRoute.self) { cartDestination(for: $0) }
+                }
+                .environment(appCoordinator.cartCoordinator)
+                .tag(Common.Tab.cart)
+                .toolbar(.hidden, for: .tabBar)
 
+                // Wishlist tab
                 NavigationStack(path: $appCoordinator.favoritesCoordinator.path) {
-                    FavoritesView(viewModel: favoritesViewModel)
-                        .navigationDestination(for: FavoritesRoute.self) { favoritesDestination(for: $0) }
+                    if sessionStore.current == nil {
+                        // Guest mode - show sign in prompt
+                        GuestSignInView(
+                            icon: "heart.slash",
+                            title: "Sign In to View Wishlist",
+                            message: "Please sign in to save items to your favorites and access them across devices.",
+                            onSignInTapped: {
+                                appCoordinator.authCoordinator.path = NavigationPath()
+                                appCoordinator.hasCompletedAuth = false
+                            },
+                            onBrowseTapped: { selectedTab = .home }
+                        )
+                        .navigationTitle("Wishlist")
+                    } else {
+                        FavoritesView(viewModel: favoritesViewModel)
+                            .navigationDestination(for: FavoritesRoute.self) { favoritesDestination(for: $0) }
+                    }
                 }
                 .environment(appCoordinator.favoritesCoordinator)
                 .tag(Common.Tab.wishlist)
                 .toolbar(.hidden, for: .tabBar)
 
                 // Account tab
+//                AddressFlowView(
+//                    listViewModel: AppAssembly.shared.resolve(AddressListViewModel.self),
+//                    viewModelFactory: AppAssembly.shared.resolve(AddressViewModelFactory.self)
+//                )
+//                .tag(Common.Tab.account)
+//                .toolbar(.hidden, for: .tabBar)
+
                 SettingsView(viewModel: settingsViewModel)
                     .environment(appCoordinator.settingsCoordinator)
                     .tag(Common.Tab.account)
                     .toolbar(.hidden, for: .tabBar)
+
             }
             .environment(currencyStore)
             .toolbar(.hidden, for: .tabBar)
@@ -250,15 +325,53 @@ struct ContentView: View {
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
         .onChange(of: cartViewModel?.cartItemCount) { _, newValue in
-                    appCoordinator.homeCoordinator.cartBadgeCount = newValue ?? 0
-                }
-                .task {
-                    appCoordinator.homeCoordinator.cartBadgeCount = cartViewModel?.cartItemCount ?? 0
-                }
-                .fullScreenCover(isPresented: $appCoordinator.isShowingCheckout) {
-                    NavigationStack(path: $appCoordinator.checkoutAddressCoordinator.path) {
-                        CheckoutAddressView(
-                            viewModel: AppAssembly.shared.resolve(CheckoutAddressViewModel.self)
+            appCoordinator.homeCoordinator.cartBadgeCount = newValue ?? 0
+        }
+        .task {
+            appCoordinator.homeCoordinator.cartBadgeCount = cartViewModel?.cartItemCount ?? 0
+        }
+        .fullScreenCover(isPresented: $appCoordinator.isShowingCheckout) {
+            NavigationStack(path: $appCoordinator.checkoutAddressCoordinator.path) {
+                CheckoutAddressView(
+                    viewModel: AppAssembly.shared.resolve(CheckoutAddressViewModel.self)
+                )
+                .navigationDestination(for: CheckoutAddressRoute.self) { route in
+                    switch route {
+                    case .payment:
+                        let safeAddress = appCoordinator.checkoutAddressCoordinator.selectedAddress
+                            ?? CheckoutAddress(address1: "N/A", city: "N/A", country: "EG", firstName: "Customer", lastName: "", phone: "")
+                        let customerId = sessionStore.current?.customerId ?? ""
+
+                        PaymentMethodView(
+                            viewModel: AppAssembly.shared.container.resolve(
+                                PaymentMethodViewModel.self,
+                                arguments:
+                                    appCoordinator.checkoutAddressCoordinator.cartItems,
+                                    appCoordinator.checkoutAddressCoordinator.totalAmount,
+                                    appCoordinator.checkoutAddressCoordinator.deliveryFee,
+                                    safeAddress,
+                                    customerId
+                            )!
+                        )
+                        PaymentMethodView(
+                            viewModel: AppAssembly.shared.container.resolve(
+                                PaymentMethodViewModel.self,
+                                arguments:
+                                    appCoordinator.checkoutAddressCoordinator.cartItems,
+                                    appCoordinator.checkoutAddressCoordinator.totalAmount,
+                                    appCoordinator.checkoutAddressCoordinator.deliveryFee,
+                                    safeAddress,
+                                    customerId,
+                                    cartViewModel?.cart?.discountCodes.map { $0.code } ?? [],
+                                    max(
+                                        0,
+                                        Double(truncating: cartViewModel?.cart?.cost.subtotalAmount.amount as? NSNumber ?? 0)
+                                        -
+                                        Double(truncating: cartViewModel?.cart?.cost.totalAmount.amount as? NSNumber ?? 0)
+                                    ),
+                                    currencyStore.selectedCurrency,
+                                    currencyStore.exchangeRates?.convert(1.0, to: currencyStore.selectedCurrency) ?? 1.0
+                            )!
                         )
                         .toolbar {
                             ToolbarItem(placement: .navigationBarLeading) {
@@ -274,62 +387,26 @@ struct ContentView: View {
                                 }
                             }
                         }
-                        .navigationDestination(for: CheckoutAddressRoute.self) { route in
-                            switch route {
-                            case .payment:
-                                let safeAddress = appCoordinator.checkoutAddressCoordinator.selectedAddress
-                                    ?? CheckoutAddress(address1: "N/A", city: "N/A", country: "EG", firstName: "Customer", lastName: "", phone: "")
-                                let customerId = sessionStore.current?.customerId ?? ""
 
-                                let appliedCodes = cartViewModel?.cart?.discountCodes.map { $0.code } ?? []
-                                
-                                let originalSubtotal = Double(truncating: cartViewModel?.cart?.cost.subtotalAmount.amount as? NSNumber ?? 0)
-                                let discountedSubtotal = Double(truncating: cartViewModel?.cart?.cost.totalAmount.amount as? NSNumber ?? 0)
-                                let exactDiscountAmount = max(0, originalSubtotal - discountedSubtotal)
-                                
-                                let activeCurrency = currencyStore.selectedCurrency
-                                let activeExchangeRate = currencyStore.exchangeRates?.convert(1.0, to: activeCurrency) ?? 1.0
-
-                                PaymentMethodView(
-                                    viewModel: AppAssembly.shared.container.resolve(
-                                        PaymentMethodViewModel.self,
-                                        arguments:
-                                            appCoordinator.checkoutAddressCoordinator.cartItems,
-                                            appCoordinator.checkoutAddressCoordinator.totalAmount,
-                                            appCoordinator.checkoutAddressCoordinator.deliveryFee,
-                                            safeAddress,
-                                            customerId,
-                                            appliedCodes,
-                                            exactDiscountAmount,
-                                            activeCurrency,
-                                            activeExchangeRate
-                                    )!
-                                )
-
-                            case .success:
-                                CheckoutResultView(
-                                    onTrackOrder: {
-                                        Task { await cartViewModel?.confirmClearCart() }
-                                        appCoordinator.checkoutAddressCoordinator.onCheckoutComplete?()
-                                        selectedTab = .account
-                                    },
-                                    onContinueShopping: {
-                                        Task { await cartViewModel?.confirmClearCart() }
-                                        appCoordinator.checkoutAddressCoordinator.onCheckoutComplete?()
-                                        selectedTab = .home
-                                    }
-                                )
-                            }
-                        }
-                    }
-                    .environment(appCoordinator.checkoutAddressCoordinator)
-                }
-                .onChange(of: selectedTab) { oldTab, newTab in
-                    if newTab == .wishlist && sessionStore.current == nil {
-                        appCoordinator.showGuestSignInPrompt = true
-                        selectedTab = oldTab
+                        case .success:
+                            CheckoutResultView(
+                                onTrackOrder: {
+                                    Task { await cartViewModel?.confirmClearCart() }
+                                    appCoordinator.checkoutAddressCoordinator.onCheckoutComplete?()
+                                    selectedTab = .account
+                                },
+                                onContinueShopping: {
+                                    Task { await cartViewModel?.confirmClearCart() }
+                                    appCoordinator.checkoutAddressCoordinator.onCheckoutComplete?()
+                                    selectedTab = .home
+                                }
+                            )
                     }
                 }
+            }
+            .environment(appCoordinator.checkoutAddressCoordinator)
+        }
+
     }
 
 
@@ -344,6 +421,19 @@ struct ContentView: View {
             ForgotPasswordView(viewModel: ForgotPasswordViewModel())
         case .setPassword(let email, let displayName):
             SetPasswordView(viewModel: SetPasswordViewModel(email: email, displayName: displayName))
+        case .emailVerification(let email, let firstName, let lastName, let firebaseUID):
+            EmailVerificationView(
+                viewModel: EmailVerificationViewModel(
+                    email: email,
+                    firstName: firstName,
+                    lastName: lastName,
+                    firebaseUID: firebaseUID
+                )
+            )
+        case .resetPassword(let email):
+            // Note: oobCode would come from Firebase deep link
+            // For now, this is a placeholder - actual implementation would extract oobCode from URL
+            Text("Reset Password for \(email)")
         }
     }
 
@@ -372,7 +462,7 @@ struct ContentView: View {
                 },
                 onToggleFavorite: { [weak favoritesViewModel] id, title, vendor, price, rating, imageURL in
                     guard sessionStore.current != nil else {
-                        appCoordinator.showGuestSignInPrompt = true
+                        guestPromptContext = .addToFavorites
                         return
                     }
                     guard let vm = favoritesViewModel else { return }
@@ -394,7 +484,7 @@ struct ContentView: View {
                 onAddToCart: { [cartViewModel] variantId, quantity in
                     // Block guests — sessionStore is a class ref, checked at call time
                     guard sessionStore.current != nil else {
-                        appCoordinator.showGuestSignInPrompt = true
+                        guestPromptContext = .addToCart
                         return nil
                     }
                     guard let cartViewModel else { return "Cart not initialized" }
@@ -423,7 +513,7 @@ struct ContentView: View {
                 },
                 onToggleFavorite: { [weak favoritesViewModel] id, title, vendor, price, rating, imageURL in
                     guard sessionStore.current != nil else {
-                        appCoordinator.showGuestSignInPrompt = true
+                        guestPromptContext = .addToFavorites
                         return
                     }
                     guard let vm = favoritesViewModel else { return }
@@ -443,6 +533,10 @@ struct ContentView: View {
                     }
                 },
                 onAddToCart: { [cartViewModel] variantId, quantity in
+                    guard sessionStore.current != nil else {
+                        guestPromptContext = .addToCart
+                        return nil
+                    }
                     guard let cartViewModel else { return "Cart not initialized" }
                     return await cartViewModel.addLine(variantId: variantId, quantity: quantity)
                 }
@@ -462,7 +556,7 @@ struct ContentView: View {
                 },
                 onToggleFavorite: { [weak favoritesViewModel] id, title, vendor, price, rating, imageURL in
                     guard sessionStore.current != nil else {
-                        appCoordinator.showGuestSignInPrompt = true
+                        guestPromptContext = .addToFavorites
                         return
                     }
                     guard let vm = favoritesViewModel else { return }
@@ -482,6 +576,10 @@ struct ContentView: View {
                     }
                 },
                 onAddToCart: { [cartViewModel] variantId, quantity in
+                    guard sessionStore.current != nil else {
+                        guestPromptContext = .addToCart
+                        return nil
+                    }
                     guard let cartViewModel else { return "Cart not initialized" }
                     return await cartViewModel.addLine(variantId: variantId, quantity: quantity)
                 }
@@ -512,7 +610,7 @@ struct ContentView: View {
                     },
                     onToggleFavorite: { [weak favoritesViewModel] id, title, vendor, price, rating, imageURL in
                         guard sessionStore.current != nil else {
-                            appCoordinator.showGuestSignInPrompt = true
+                            guestPromptContext = .addToFavorites
                             return
                         }
                         guard let vm = favoritesViewModel else { return }
@@ -533,7 +631,7 @@ struct ContentView: View {
                     },
                     onAddToCart: { [cartViewModel] variantId, quantity in
                         guard sessionStore.current != nil else {
-                            appCoordinator.showGuestSignInPrompt = true
+                            guestPromptContext = .addToCart
                             return nil
                         }
                         guard let cartViewModel else { return "Cart not initialized" }

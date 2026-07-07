@@ -39,7 +39,14 @@ public struct RegistrationView: View {
                 .padding(.top, 18)
 
                 VStack(spacing: 16) {
-                    CustomInputField(title: "Full Name", placeholder: "Enter your name", text: $viewModel.fullName)
+                    VStack(alignment: .leading, spacing: 4) {
+                        CustomInputField(title: "Full Name", placeholder: "Enter your name", text: $viewModel.fullName)
+                        if let error = viewModel.nameValidationError {
+                            Text(error)
+                                .font(.caption)
+                                .foregroundColor(.red)
+                        }
+                    }
 
                     VStack(alignment: .leading, spacing: 8) {
                         CustomInputField(title: "Email", placeholder: "example@email.com", text: $viewModel.email)
@@ -118,6 +125,17 @@ public struct RegistrationView: View {
         .background(Color(.systemBackground))
         .onReceive(viewModel.$completedSession.compactMap { $0 }) { session in
             coordinator.onLoginSuccess?()
+        }
+        .onChange(of: viewModel.shouldNavigateToVerification) { _, shouldNavigate in
+            if shouldNavigate {
+                coordinator.push(.emailVerification(
+                    email: viewModel.verificationEmail,
+                    firstName: viewModel.verificationFirstName,
+                    lastName: viewModel.verificationLastName,
+                    firebaseUID: viewModel.verificationFirebaseUID
+                ))
+                viewModel.shouldNavigateToVerification = false
+            }
         }
         .navigationBarHidden(true)
     }

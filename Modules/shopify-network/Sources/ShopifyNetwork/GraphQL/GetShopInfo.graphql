@@ -1,0 +1,15 @@
+query GetShopInfo {
+  shop {
+    name
+    description
+    primaryDomain {
+      url
+      host
+    }
+    paymentSettings {
+      currencyCode
+      acceptedCardBrands
+      enabledPresentmentCurrencies
+    }
+  }
+}

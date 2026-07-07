@@ -21,12 +21,12 @@ public class AuthAssembly: DIAssembly {
             ShopifyCustomerDataSource()
         }
         
-        container.register(SessionLocalDataSource.self) { _ in
-            SessionLocalDataSource()
+        container.register(ShopifyCustomerRESTDataSource.self) { _ in
+            ShopifyCustomerRESTDataSource()
         }
         
-        container.register(KeychainDataSource.self) { _ in
-            KeychainDataSource()
+        container.register(SessionLocalDataSource.self) { _ in
+            SessionLocalDataSource()
         }
         
         // Register Repository
@@ -34,9 +34,9 @@ public class AuthAssembly: DIAssembly {
             AuthRepository(
                 firebaseDataSource: resolver.resolve(FirebaseAuthDataSource.self)!,
                 googleDataSource: resolver.resolve(GoogleSignInDataSource.self)!,
-                shopifyDataSource: resolver.resolve(ShopifyCustomerDataSource.self)!,
+                shopifyRESTDataSource: resolver.resolve(ShopifyCustomerRESTDataSource.self)!,
+                shopifyGraphQLDataSource: resolver.resolve(ShopifyCustomerDataSource.self)!,
                 sessionLocalDataSource: resolver.resolve(SessionLocalDataSource.self)!,
-                keychainDataSource: resolver.resolve(KeychainDataSource.self)!,
                 sessionStore: resolver.resolve(SessionProviding.self)!
             )
         }
