@@ -99,15 +99,9 @@ public struct LoginView: View {
             }
             .padding(.bottom, 32)
         }
-        // Existing user (email or returning Google) → complete login
+        // With REST API, both existing and new users complete login immediately
         .onReceive(viewModel.$completedSession.compactMap { $0 }) { _ in
             coordinator.onLoginSuccess?()
-        }
-        // New Google user (first sign-in, no Shopify account yet) → set password
-        .onReceive(viewModel.$pendingSocialUser.compactMap { $0 }) { result in
-            if case .newUser(let email, let displayName, _) = result {
-                coordinator.push(.setPassword(email: email, displayName: displayName ?? ""))
-            }
         }
         .navigationBarHidden(true)
     }

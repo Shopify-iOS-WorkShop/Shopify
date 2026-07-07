@@ -12,23 +12,9 @@ public final class SetPasswordForSocialUserUseCase: SetPasswordForSocialUserUseC
     }
 
     public func execute(email: String, password: String, confirmPassword: String, firstName: String, lastName: String) async -> Result<Session, AuthError> {
-        if let nameError = AuthInputValidator.validateName(firstName: firstName, lastName: lastName) {
-            return .failure(nameError)
-        }
-
-        if let emailError = AuthInputValidator.validateEmail(email) {
-            return .failure(emailError)
-        }
-
-        if let passwordError = AuthInputValidator.validateConfirmedPassword(password, confirmPassword) {
-            return .failure(passwordError)
-        }
-
-        return await repository.setPasswordForSocialUser(
-            email: email.trimmingCharacters(in: .whitespacesAndNewlines),
-            password: password,
-            firstName: firstName.trimmingCharacters(in: .whitespacesAndNewlines),
-            lastName: lastName.trimmingCharacters(in: .whitespacesAndNewlines)
-        )
+        // NOTE: This use case is deprecated with REST API approach
+        // Social users (Google/Apple) now complete registration immediately without setting passwords
+        // This is kept for backward compatibility but should not be called
+        return .failure(.authentication("Password setup is no longer required for social sign-in users with REST API"))
     }
 }

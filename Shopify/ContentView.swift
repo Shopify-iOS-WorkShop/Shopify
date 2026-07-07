@@ -374,6 +374,19 @@ struct ContentView: View {
             ForgotPasswordView(viewModel: ForgotPasswordViewModel())
         case .setPassword(let email, let displayName):
             SetPasswordView(viewModel: SetPasswordViewModel(email: email, displayName: displayName))
+        case .emailVerification(let email, let firstName, let lastName, let firebaseUID):
+            EmailVerificationView(
+                viewModel: EmailVerificationViewModel(
+                    email: email,
+                    firstName: firstName,
+                    lastName: lastName,
+                    firebaseUID: firebaseUID
+                )
+            )
+        case .resetPassword(let email):
+            // Note: oobCode would come from Firebase deep link
+            // For now, this is a placeholder - actual implementation would extract oobCode from URL
+            Text("Reset Password for \(email)")
         }
     }
 
