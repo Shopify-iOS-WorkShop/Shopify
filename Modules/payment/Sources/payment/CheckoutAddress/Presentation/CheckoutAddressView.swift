@@ -108,6 +108,7 @@ public struct CheckoutAddressView: View {
                 .opacity(viewModel.selectedAddress == nil ? 0.5 : 1.0)
             }
         }
+        .background(DS.background.ignoresSafeArea())
         .onTapGesture { UIApplication.shared.endEditing() }
         .navigationTitle("Checkout")
         .navigationBarTitleDisplayMode(.inline)
@@ -161,8 +162,8 @@ public struct CheckoutAddressView: View {
             .padding(.vertical, 16)
         }
         .background(
-            DS.cardBG
-                .shadow(color: .black.opacity(0.08), radius: 10, y: -4)
+            DS.background
+                .shadow(color: .black.opacity(0.12), radius: 12, y: -4)
         )
         .background(DS.background.ignoresSafeArea())
         .alert("Save Changes?", isPresented: $viewModel.showUpdateAlert) {

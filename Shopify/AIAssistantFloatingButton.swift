@@ -7,6 +7,7 @@
 
 import SwiftUI
 import AIAssistant
+import Common
 
 struct AIAssistantFloatingButton: View {
     let onProductSelected: (ShopifyProduct) -> Void
@@ -126,22 +127,22 @@ struct AIFeaturesDrawer: View {
                             HStack(spacing: 16) {
                                 ZStack {
                                     Circle()
-                                        .fill(Color.indigo.opacity(0.1))
+                                        .fill(DS.red.opacity(0.12))
                                         .frame(width: 50, height: 50)
                                     
                                     Image(systemName: feature.icon)
                                         .font(.title3)
-                                        .foregroundColor(.indigo)
+                                        .foregroundColor(DS.red)
                                 }
                                 
                                 VStack(alignment: .leading, spacing: 4) {
                                     Text(LocalizedStringKey(feature.rawValue))
                                         .font(.system(size: 16, weight: .semibold))
-                                        .foregroundColor(.primary)
+                                        .foregroundColor(DS.textPri)
                                     
                                     Text(LocalizedStringKey(feature.description))
                                         .font(.system(size: 13))
-                                        .foregroundColor(.secondary)
+                                        .foregroundColor(DS.textSec)
                                         .lineLimit(2)
                                 }
                                 
@@ -149,35 +150,38 @@ struct AIFeaturesDrawer: View {
                                 
                                 Image(systemName: "chevron.right")
                                     .font(.system(size: 14, weight: .semibold))
-                                    .foregroundColor(.gray)
+                                    .foregroundColor(DS.textSec)
                             }
                             .padding(.vertical, 8)
                         }
                         .buttonStyle(.plain)
+                        .listRowBackground(DS.cardBG)
                     }
                 } header: {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("AI-Powered Features")
                             .font(.title2)
                             .fontWeight(.bold)
-                            .foregroundColor(.primary)
+                            .foregroundColor(DS.textPri)
                         
                         Text("Enhance your shopping experience with intelligent assistants")
                             .font(.subheadline)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(DS.textSec)
                     }
                     .textCase(nil)
                     .padding(.bottom, 8)
                 }
             }
             .listStyle(.insetGrouped)
+            .scrollContentBackground(.hidden)
+            .background(DS.background.ignoresSafeArea())
             .navigationTitle("AI Assistant")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: { dismiss() }) {
                         Image(systemName: "xmark.circle.fill")
-                            .foregroundColor(.gray)
+                            .foregroundColor(DS.textSec)
                     }
                 }
             }
