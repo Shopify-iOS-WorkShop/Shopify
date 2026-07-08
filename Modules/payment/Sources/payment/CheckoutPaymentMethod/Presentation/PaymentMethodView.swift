@@ -140,6 +140,7 @@ public struct PaymentMethodView: View {
             .padding(.horizontal, 20)
             .padding(.bottom, 20)
         }
+        .background(DS.background.ignoresSafeArea())
         .navigationTitle("Checkout")
         .navigationBarTitleDisplayMode(.inline)
         .safeAreaInset(edge: .bottom) {
@@ -155,11 +156,15 @@ public struct PaymentMethodView: View {
                         Text("Pay")
                             .font(.system(size: 18, weight: .semibold))
                     }
-                    .foregroundColor(.white)
+                    .foregroundColor(.black)
                     .frame(maxWidth: .infinity)
                     .frame(height: 45)
-                    .background(Color.black)
+                    .background(Color.white)
                     .cornerRadius(8)
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(Color.white.opacity(0.6), lineWidth: 1.5)
+                    }
                 }
                 .padding(.horizontal, 40)
                 
@@ -177,9 +182,12 @@ public struct PaymentMethodView: View {
             .disabled(viewModel.isLoading)
         }
         .padding(.top, 12)
-        .background(.thinMaterial)
-    }
+        .background(
+            DS.background
+                .shadow(color: .black.opacity(0.15), radius: 12, y: -4)
+        )
         .background(DS.background.ignoresSafeArea())
+    }
         .onTapGesture { UIApplication.shared.endEditing() }
         
         .onChange(of: viewModel.orderSuccess) { oldValue, isSuccess in
