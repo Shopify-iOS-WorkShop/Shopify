@@ -69,6 +69,32 @@ public struct ProductDetailView: View {
         .navigationBarHidden(true)
 
         .onAppear { viewModel.onAppear() }
+        .sheet(isPresented: Binding(
+            get: { viewModel.isReviewEditorPresented },
+            set: { if !$0 { viewModel.dismissReviewEditor() } }
+        )) {
+            ReviewEditorView(
+                isEditing: viewModel.editingReview != nil,
+                rating: $viewModel.reviewRating,
+                title: $viewModel.reviewTitle,
+                reviewBody: $viewModel.reviewBody,
+                isSubmitting: viewModel.isReviewSubmitting,
+                error: viewModel.reviewError,
+                onCancel: { viewModel.dismissReviewEditor() },
+                onSubmit: { viewModel.submitReview() }
+            )
+            .presentationDetents([.medium, .large])
+            .presentationDragIndicator(.visible)
+        }
+        .alert("Delete review?", isPresented: Binding(
+            get: { viewModel.reviewPendingDeletion != nil },
+            set: { if !$0 { viewModel.cancelDeleteReview() } }
+        )) {
+            Button("Cancel", role: .cancel) { viewModel.cancelDeleteReview() }
+            Button("Delete", role: .destructive) { viewModel.confirmDeleteReview() }
+        } message: {
+            Text("This removes your review from the product.")
+        }
 
     }
 
@@ -213,7 +239,15 @@ public struct ProductDetailView: View {
 
                 // Reviews
 
-                ReviewsView(reviews: product.reviews)
+                ReviewsView(
+                    reviews: product.reviews,
+                    isSubmitting: viewModel.isReviewSubmitting,
+                    message: viewModel.reviewMessage,
+                    error: viewModel.reviewError,
+                    onAddReview: { viewModel.beginCreateReview() },
+                    onEditReview: { viewModel.beginEditReview($0) },
+                    onDeleteReview: { viewModel.requestDeleteReview($0) }
+                )
 
 
 
