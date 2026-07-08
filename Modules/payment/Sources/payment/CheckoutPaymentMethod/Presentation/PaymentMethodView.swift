@@ -115,7 +115,7 @@ public struct PaymentMethodView: View {
                             Text(viewModel.totalFormatted)
                                 .font(.headline)
                                 .fontWeight(.bold)
-                                .foregroundColor(.red)
+                                .foregroundColor(DS.red)
                             
                             if let usdText = viewModel.usdTotalFormatted {
                                 Text(usdText)
@@ -150,7 +150,7 @@ public struct PaymentMethodView: View {
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .frame(height: 45)
-                    .background(Color.black)
+                    .background(DS.fieldBG)
                     .cornerRadius(8)
                 }
                 .padding(.horizontal, 40)
@@ -171,6 +171,7 @@ public struct PaymentMethodView: View {
         .padding(.top, 12)
         .background(.thinMaterial)
     }
+        .background(DS.background.ignoresSafeArea())
         .onTapGesture { UIApplication.shared.endEditing() }
         
         .onChange(of: viewModel.orderSuccess) { oldValue, isSuccess in

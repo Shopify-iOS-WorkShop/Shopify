@@ -21,9 +21,10 @@ struct LabeledField: View {
 
             TextField(placeholder, text: $text)
                 .keyboardType(keyboardType)
+                .environment(\.colorScheme, .light)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 12)
-                .background(AddressDS.fieldBG, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .background(Color.white, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
         }
     }
 }
@@ -53,16 +54,18 @@ struct DialCodeField: View {
                             .font(.caption2)
                             .foregroundStyle(AddressDS.textSec)
                     }
+                    .environment(\.colorScheme, .light)
                     .padding(.horizontal, 12)
                     .padding(.vertical, 12)
-                    .background(AddressDS.fieldBG, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    .background(Color.white, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
                 }
 
                 TextField("201 555-0123", text: $mobileNumber)
                     .keyboardType(.phonePad)
+                    .environment(\.colorScheme, .light)
                     .padding(.horizontal, 14)
                     .padding(.vertical, 12)
-                    .background(AddressDS.fieldBG, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    .background(Color.white, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
             }
         }
     }

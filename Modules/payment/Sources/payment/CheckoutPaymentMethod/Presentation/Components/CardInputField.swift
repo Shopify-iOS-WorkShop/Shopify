@@ -37,8 +37,9 @@ public struct CardInputField: View {
                         .foregroundColor(.secondary)
                 }
             }
+            .environment(\.colorScheme, .light)
             .padding()
-            .background(Color(.systemGray6))
+            .background(Color.white)
             .cornerRadius(8)
         }
     }

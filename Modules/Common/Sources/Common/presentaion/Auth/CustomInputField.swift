@@ -44,9 +44,10 @@ public struct CustomInputField: View {
                     .padding(.trailing, 16)
                 }
             }
+            .environment(\.colorScheme, .light)
             .padding()
             .frame(minHeight: 56)
-            .background(DS.fieldBG)
+            .background(Color.white)
             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
             .overlay {
                 RoundedRectangle(cornerRadius: 12, style: .continuous)

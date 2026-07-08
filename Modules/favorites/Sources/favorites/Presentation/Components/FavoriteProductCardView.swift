@@ -84,8 +84,12 @@ public struct FavoriteProductCardView: View {
             }
             .padding(12)
             .background(DS.cardBG)
-            .cornerRadius(16)
-            .shadow(color: .black.opacity(0.06), radius: 8, x: 0, y: 3)
+            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .stroke(DS.lightGray.opacity(0.8), lineWidth: 1)
+            }
+            .shadow(color: DS.shadow.opacity(0.08), radius: 10, x: 0, y: 5)
         }
         .buttonStyle(.plain)
     }

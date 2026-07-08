@@ -24,6 +24,7 @@ public struct ProductDetailView: View {
     public var body: some View {
 
         ZStack(alignment: .bottom) {
+            Color(DS.background).ignoresSafeArea()
 
             ScrollView(showsIndicators: false) {
 
@@ -46,6 +47,7 @@ public struct ProductDetailView: View {
                     }
 
                 }
+                .animation(.spring(), value: String(describing: viewModel.state))
 
             }
 

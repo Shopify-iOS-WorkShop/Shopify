@@ -46,23 +46,26 @@ public struct CheckoutResultView: View {
                     .foregroundColor(.white)
                     .cornerRadius(12)
                 }
+                .primaryButtonStyle()
                 
                 Button(action: onContinueShopping) {
                     Text("Continue Shopping")
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color.white)
-                        .foregroundColor(Color(red: 0.2, green: 0.24, blue: 0.3))
+                        .background(DS.cardBG)
+                        .foregroundColor(DS.textPri)
                         .cornerRadius(12)
                         .overlay(
                             RoundedRectangle(cornerRadius: 12)
-                                .stroke(Color(red: 0.2, green: 0.24, blue: 0.3), lineWidth: 1)
+                                .stroke(DS.textSec, lineWidth: 1)
                         )
                 }
+                .primaryButtonStyle()
             }
             .padding(.horizontal, 24)
             .padding(.bottom, 32)
         }
+        .background(DS.background.ignoresSafeArea())
         .navigationBarBackButtonHidden(true)
     }
 }

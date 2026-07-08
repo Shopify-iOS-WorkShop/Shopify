@@ -12,6 +12,7 @@ import Common
 public struct SettingsView: View {
     @State var viewModel: SettingsViewModel
     @Environment(SettingsCoordinator.self) private var coordinator
+    @AppStorage("settings_colorScheme") private var colorSchemeRaw: Int = 0
 
     public init(viewModel: SettingsViewModel) {
         self.viewModel = viewModel
@@ -95,16 +96,13 @@ public struct SettingsView: View {
                             coordinator.isShowingAddresses = true
                         } label: {
                             Label("Addresses", systemImage: "map")
-                                .foregroundColor(.primary)
+                                .foregroundColor(DS.textPri)
                         }
                     }
                 }
 
                 Section("Appearance") {
-                    Picker("Theme", selection: Binding(
-                        get: { viewModel.colorSchemeRaw },
-                        set: { viewModel.setColorScheme($0) }
-                    )) {
+                    Picker("Theme", selection: $colorSchemeRaw) {
                         Text("System").tag(0)
                         Text("Light").tag(1)
                         Text("Dark").tag(2)

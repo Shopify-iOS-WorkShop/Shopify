@@ -103,6 +103,7 @@ public struct ProductListingView: View {
                 .padding(.bottom, 20)
             }
         }
+        .animation(.easeInOut(duration: 0.3), value: viewModel.filteredProducts.map { $0.id })
         .background(DS.background.ignoresSafeArea())
         .task {
             await viewModel.fetchProducts()

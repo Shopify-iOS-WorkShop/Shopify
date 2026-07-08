@@ -57,6 +57,8 @@ public struct CommonCatalogGridView: View {
                     }
                 }
             }
+            .background(DS.background.ignoresSafeArea())
+            .animation(.spring(), value: viewModel.isLoading)
             .navigationTitle(type.navigationTitle)
             .task {
                 await viewModel.loadCatalogData()
