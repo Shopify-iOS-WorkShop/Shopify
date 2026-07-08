@@ -4,6 +4,7 @@ import SwiftUI
 public struct ChatView: View {
 
     let agent: ShoppingAssistantAgent
+    private static let typingIndicatorID = "typing"
 
     @State private var messages: [AIMessage] = []
     @State private var inputText = ""
@@ -30,17 +31,25 @@ public struct ChatView: View {
                         }
                         if isLoading {
                             TypingIndicator()
-                                .id("typing")
+                                .id(Self.typingIndicatorID)
                         }
                     }
                     .padding(.horizontal, 16)
                     .padding(.vertical, 12)
                 }
                 .onChange(of: messages.count) { _ in
-                    withAnimation { proxy.scrollTo(messages.last?.id ?? "typing", anchor: .bottom) }
+                    withAnimation {
+                        if let lastMessageID = messages.last?.id {
+                            proxy.scrollTo(lastMessageID, anchor: .bottom)
+                        } else {
+                            proxy.scrollTo(Self.typingIndicatorID, anchor: .bottom)
+                        }
+                    }
                 }
                 .onChange(of: isLoading) { loading in
-                    if loading { withAnimation { proxy.scrollTo("typing", anchor: .bottom) } }
+                    if loading {
+                        withAnimation { proxy.scrollTo(Self.typingIndicatorID, anchor: .bottom) }
+                    }
                 }
             }
 

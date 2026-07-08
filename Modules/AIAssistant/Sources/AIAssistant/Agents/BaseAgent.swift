@@ -6,7 +6,6 @@ import Foundation
 
 public protocol AIAgent: Sendable {
     var agentType: AgentType { get }
-    var config: AIAssistantConfig { get }
 }
 
 /// Shared helper methods available to all agents via extension.

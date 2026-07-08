@@ -196,7 +196,8 @@ struct ContentView: View {
 
     @MainActor
     private var mainFlow: some View {
-        VStack(spacing: 0) {
+        ZStack(alignment: .bottomTrailing) {
+            VStack(spacing: 0) {
             TabView(selection: $selectedTab) {
                 // Home tab
                 NavigationStack(path: $appCoordinator.homeCoordinator.path) {
@@ -348,7 +349,7 @@ struct ContentView: View {
                     viewModel: AppAssembly.shared.resolve(CheckoutAddressViewModel.self)
                 )
                 .toolbar {
-                    ToolbarItem(placement: .navigationBarLeading) {
+                    ToolbarItem(placement: .topBarLeading) {
                         Button {
                             appCoordinator.isShowingCheckout = false
                             appCoordinator.checkoutAddressCoordinator.popToRoot()
@@ -408,6 +409,12 @@ struct ContentView: View {
                 }
             }
             .environment(appCoordinator.checkoutAddressCoordinator)
+        }
+
+            // ── AI Assistant floating button ─────────────────────────────
+            // Sits above every tab, bottom-right corner, 80 pt above tab bar
+            	AIAssistantFloatingButton()
+                .padding(.bottom, 60) // clears the custom tab bar height
         }
 
     }
