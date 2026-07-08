@@ -33,15 +33,23 @@ public struct AddressListView: View {
                         AddressCardView(
                             address: address,
                             icon: icon(for: address, index: index),
+                            canDelete: viewModel.canDelete(address),
                             onEdit: {
                                 coordinator.push(.addOrEdit(editing: address))
                             },
                             onDelete: {
+                                guard viewModel.canDelete(address) else {
+                                    viewModel.errorMessage = AddressError.cannotDeleteDefault.localizedDescription
+                                    return
+                                }
                                 pendingDelete = address
                             },
                             onSelect: coordinator.onAddressSelected == nil
                                 ? nil
-                                : { coordinator.onAddressSelected?(address) }
+                                : { coordinator.onAddressSelected?(address) },
+                            onSetDefault: coordinator.onAddressSelected == nil
+                                ? { Task { await viewModel.setDefault(address) } }
+                                : nil
                         )
                     }
 
@@ -60,12 +68,12 @@ public struct AddressListView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button {
-                    // Room for a future "sort / import from contacts" menu.
-                } label: {
-                    Image(systemName: "ellipsis")
-                        .foregroundStyle(AddressDS.textPri)
-                }
+//                Button {
+//                    // Room for a future "sort / import from contacts" menu.
+//                } label: {
+//                    Image(systemName: "ellipsis")
+//                        .foregroundStyle(AddressDS.textPri)
+//                }
             }
         }
         .task {

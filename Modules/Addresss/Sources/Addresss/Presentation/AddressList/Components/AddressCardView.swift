@@ -10,9 +10,11 @@ import SwiftUI
 struct AddressCardView: View {
     let address: Address
     let icon: String
+    var canDelete: Bool = true
     let onEdit: () -> Void
     let onDelete: () -> Void
     var onSelect: (() -> Void)?
+    var onSetDefault: (() -> Void)?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -70,7 +72,19 @@ struct AddressCardView: View {
                         Text("Delete")
                     }
                     .font(.footnote.weight(.medium))
-                    .foregroundStyle(AddressDS.red)
+                    .foregroundStyle(canDelete ? AddressDS.red : AddressDS.textSec.opacity(0.5))
+                }
+                .disabled(!canDelete)
+
+                if let onSetDefault, !address.isDefault {
+                    Button(action: onSetDefault) {
+                        HStack(spacing: 4) {
+                            Image(systemName: "star")
+                            Text("Set as Default")
+                        }
+                        .font(.footnote.weight(.medium))
+                        .foregroundStyle(AddressDS.textPri)
+                    }
                 }
 
                 Spacer()

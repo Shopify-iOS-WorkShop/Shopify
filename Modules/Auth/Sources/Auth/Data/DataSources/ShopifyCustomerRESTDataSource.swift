@@ -5,20 +5,17 @@ import ShopifyNetwork
 /// Uses Admin API with basic authentication (no password required for customer creation)
 final class ShopifyCustomerRESTDataSource {
     private let networkClient: NetworkClient
-    private let apiKey: String
     private let accessToken: String
     private let hostname: String
     private let apiVersion: String
     
     init(
         networkClient: NetworkClient = URLSessionNetworkClient(),
-        apiKey: String = ShopifyConfig.apiKey,
         accessToken: String = ShopifyConfig.accessToken,
         hostname: String = ShopifyConfig.hostname,
         apiVersion: String = ShopifyConfig.apiVersion
     ) {
         self.networkClient = networkClient
-        self.apiKey = apiKey
         self.accessToken = accessToken
         self.hostname = hostname
         self.apiVersion = apiVersion
@@ -37,6 +34,7 @@ final class ShopifyCustomerRESTDataSource {
         email: String,
         firstName: String,
         lastName: String,
+        password: String,
         verifiedEmail: Bool = true
     ) async throws -> String {
         let body: [String: Any] = [
@@ -44,6 +42,8 @@ final class ShopifyCustomerRESTDataSource {
                 "first_name": firstName,
                 "last_name": lastName,
                 "email": email,
+                "password": password,
+                "password_confirmation": password,
                 "verified_email": verifiedEmail,
                 "send_email_welcome": false
             ]
@@ -53,7 +53,8 @@ final class ShopifyCustomerRESTDataSource {
             baseURL: buildBaseURL(),
             path: "/admin/api/\(apiVersion)/customers.json",
             method: "POST",
-            body: try? JSONSerialization.data(withJSONObject: body)
+            body: try? JSONSerialization.data(withJSONObject: body),
+            accessToken: accessToken
         )
         
         let response: CustomerCreateRESTResponse = try await networkClient.request(endpoint: endpoint)
@@ -64,17 +65,37 @@ final class ShopifyCustomerRESTDataSource {
         
         return String(customerId)
     }
+
+    func updateCustomerPassword(customerId: String, password: String) async throws {
+        let body: [String: Any] = [
+            "customer": [
+                "id": customerId,
+                "password": password,
+                "password_confirmation": password
+            ]
+        ]
+
+        let endpoint = ShopifyAdminRESTEndpoint(
+            baseURL: buildBaseURL(),
+            path: "/admin/api/\(apiVersion)/customers/\(customerId).json",
+            method: "PUT",
+            body: try? JSONSerialization.data(withJSONObject: body),
+            accessToken: accessToken
+        )
+
+        let _: CustomerGetRESTResponse = try await networkClient.request(endpoint: endpoint)
+    }
     
     /// Find customer by email (used for login)
     /// - Parameter email: Customer email
     /// - Returns: Shopify customer ID if found
     func findCustomerByEmail(_ email: String) async throws -> String? {
-        let encodedEmail = email.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? email
         let endpoint = ShopifyAdminRESTEndpoint(
             baseURL: buildBaseURL(),
             path: "/admin/api/\(apiVersion)/customers/search.json",
             method: "GET",
-            queryItems: [URLQueryItem(name: "query", value: "email:\(encodedEmail)")]
+            queryItems: [URLQueryItem(name: "query", value: "email:\(email)")],
+            accessToken: accessToken
         )
         
         let response: CustomerSearchRESTResponse = try await networkClient.request(endpoint: endpoint)
@@ -94,7 +115,8 @@ final class ShopifyCustomerRESTDataSource {
         let endpoint = ShopifyAdminRESTEndpoint(
             baseURL: buildBaseURL(),
             path: "/admin/api/\(apiVersion)/customers/\(customerId).json",
-            method: "GET"
+            method: "GET",
+            accessToken: accessToken
         )
         
         let response: CustomerGetRESTResponse = try await networkClient.request(endpoint: endpoint)
@@ -104,7 +126,7 @@ final class ShopifyCustomerRESTDataSource {
     // MARK: - Helper Methods
     
     private func buildBaseURL() -> String {
-        "https://\(apiKey):\(accessToken)@\(hostname)"
+        "https://\(hostname)"
     }
 }
 
@@ -116,12 +138,14 @@ struct ShopifyAdminRESTEndpoint: Endpoint {
     let method: String
     var body: Data?
     var queryItems: [URLQueryItem]?
+    let accessToken: String
     
     var headers: [String: String]? {
+        var values = ["X-Shopify-Access-Token": accessToken]
         if method == "POST" || method == "PUT" {
-            return ["Content-Type": "application/json"]
+            values["Content-Type"] = "application/json"
         }
-        return nil
+        return values
     }
 }
 

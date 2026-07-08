@@ -13,7 +13,11 @@ extension Color {
 
 public struct OnBoardingScreen: View {
     @State private var currentPage = 0
-    
+
+    /// Called when the user taps "Get Started" on the last page, so the
+    /// caller can mark onboarding as complete and move on to auth/home.
+    private let onFinish: () -> Void
+
     public let pages: [OnboardingPage] = [
         OnboardingPage(
             title: "Welcome to Shopify",
@@ -35,7 +39,9 @@ public struct OnBoardingScreen: View {
         )
     ]
     
-    public init() {}
+    public init(onFinish: @escaping () -> Void = {}) {
+        self.onFinish = onFinish
+    }
 
     public var body: some View {
         VStack {
@@ -85,7 +91,7 @@ public struct OnBoardingScreen: View {
                     }
                 } else {
                     Button(action: {
-                       
+                        onFinish()
                     }) {
                         Text("Get Started")
                             .fontWeight(.bold)

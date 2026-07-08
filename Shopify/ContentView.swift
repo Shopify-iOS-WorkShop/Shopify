@@ -53,6 +53,7 @@ struct ContentView: View {
     @State private var guestPromptContext: GuestPromptContext? = nil
 
     @AppStorage("settings_colorScheme") private var colorSchemeRaw: Int = 0
+    @AppStorage("has_completed_onboarding") private var hasCompletedOnboarding: Bool = false
 
     @StateObject private var homeViewModel: HomeViewModel = AppAssembly.shared.resolve(HomeViewModel.self)
     @State private var settingsViewModel: SettingsViewModel = AppAssembly.shared.resolve(SettingsViewModel.self)
@@ -75,6 +76,10 @@ struct ContentView: View {
         Group {
             if !sessionChecked {
                 Color(uiColor: .systemBackground).ignoresSafeArea()
+            } else if !hasCompletedOnboarding {
+                OnBoardingScreen {
+                    hasCompletedOnboarding = true
+                }
             } else if !appCoordinator.hasCompletedAuth {
                 authFlow
             } else {
@@ -86,6 +91,13 @@ struct ContentView: View {
         .task {
             await restoreSession()
             sessionChecked = true
+        }
+        .task {
+            // Exchange rates used to only load once the user visited Settings,
+            // so Home showed unconverted prices until then. Fetch them once at
+            // launch instead, in parallel with session restore, so CurrencyStore
+            // is ready before Home (or anywhere else) needs to convert a price.
+            await settingsViewModel.loadExchangeRates()
         }
 
         .onAppear {
@@ -150,7 +162,7 @@ struct ContentView: View {
             guestPromptContext?.title ?? "Sign In Required",
             isPresented: Binding(
                 get: { guestPromptContext != nil },
-                set: { if !$0 { 
+                set: { if !$0 {
                     guestPromptContext = nil
                     appCoordinator.showGuestSignInPrompt = false
                 } }

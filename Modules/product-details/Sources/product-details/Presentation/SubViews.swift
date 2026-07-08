@@ -361,6 +361,8 @@ Button("Size Guide") {
 
 
 
+ScrollView(.horizontal, showsIndicators: false) {
+
 HStack(spacing: 10) {
 
 ForEach(sizes, id: \.self) { size in
@@ -377,7 +379,9 @@ Text(size.uppercased())
 
 .fontWeight(.medium)
 
-.frame(width: 48, height: 44)
+.frame(minWidth: 48, minHeight: 44)
+
+.padding(.horizontal, 8)
 
 .background(selected == size ? Color.pink : Color(.systemGray6))
 
@@ -396,6 +400,8 @@ RoundedRectangle(cornerRadius: 10)
 }
 
 .animation(.easeInOut(duration: 0.15), value: selected)
+
+}
 
 }
 
