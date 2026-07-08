@@ -8,6 +8,7 @@ public struct ProductListingView: View {
     @State private var showingFilterDrawer = false
     
     @Environment(ProductListingCoordinator.self) private var coordinator
+    @Environment(\.dismiss) private var dismiss
     
     private let columns = [
         GridItem(.flexible(), spacing: 16),
@@ -108,9 +109,21 @@ public struct ProductListingView: View {
         .task {
             await viewModel.fetchProducts()
         }
-        .navigationTitle(title)
+        .navigationTitle(LocalizedStringKey(title))
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
         .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: {
+                    dismiss()
+                }) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "chevron.backward")
+                            .font(.system(size: 16, weight: .semibold))
+                        Text(LocalizedStringKey("Back"))
+                    }
+                }
+            }
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
                     showingFilterDrawer = true
