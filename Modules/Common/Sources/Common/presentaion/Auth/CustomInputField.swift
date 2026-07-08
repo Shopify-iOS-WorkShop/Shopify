@@ -24,10 +24,10 @@ public struct CustomInputField: View {
     
     public var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(title.uppercased())
-                .font(.caption)
-                .bold()
-                .foregroundColor(.black)
+                Text(title.uppercased())
+                    .font(.caption)
+                    .bold()
+                    .foregroundColor(.black)
             
             ZStack(alignment: .trailing) {
                 if isSecure && !isPasswordVisible {

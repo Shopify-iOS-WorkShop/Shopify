@@ -63,7 +63,8 @@ public final class PaymentRepository: PaymentRepositoryProtocol {
             shipping_lines: [shippingLine],
             discount_codes: restDiscounts.isEmpty ? nil : restDiscounts,
             currency: "USD",
-            presentment_currency: "USD"
+            presentment_currency: "USD",
+            send_receipt: true
         )
         
         return RESTOrderPayload(order: orderData)

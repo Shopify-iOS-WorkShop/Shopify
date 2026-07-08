@@ -20,10 +20,12 @@ public struct CurrencyPickerView: View {
         self._currencyStore = State(wrappedValue: currencyStore)
     }
 
+    @State private var searchText = ""
+
     public var body: some View {
         List {
             Section("Base: \(rates.baseCurrency)") {
-                ForEach(rates.availableCurrencies, id: \.self) { code in
+                ForEach(filteredCurrencies, id: \.self) { code in
                     HStack {
                         VStack(alignment: .leading, spacing: 2) {
                             Text(code)
@@ -52,7 +54,15 @@ public struct CurrencyPickerView: View {
                 }
             }
         }
+        .searchable(text: $searchText, prompt: "Search Currency")
         .navigationTitle("Select Currency")
         .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private var filteredCurrencies: [String] {
+        if searchText.isEmpty {
+            return rates.availableCurrencies
+        }
+        return rates.availableCurrencies.filter { $0.localizedCaseInsensitiveContains(searchText) }
     }
 }

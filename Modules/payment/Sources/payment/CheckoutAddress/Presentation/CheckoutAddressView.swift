@@ -65,9 +65,13 @@ public struct CheckoutAddressView: View {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text("No Saved Addresses")
                                     .fontWeight(.semibold)
-                                Text("Fill out the form below.")
-                                    .font(.system(size: 14))
-                                    .foregroundColor(.secondary)
+                                Button(action: {
+                                    coordinator.onAddNewAddressRequested?()
+                                }) {
+                                    Text("Add a new address")
+                                        .font(.system(size: 14, weight: .medium))
+                                        .foregroundColor(DS.red)
+                                }
                             }
                             
                             Spacer()

@@ -11,11 +11,8 @@ public enum ProductListingEndpoint: Endpoint {
 
     public var path: String {
         switch self {
-        case .allProducts:
+        case .allProducts, .collectionProducts:
             return "/products.json"
-        case .collectionProducts(let id):
-            let numericId = id.components(separatedBy: "/").last ?? id
-            return "/collections/\(numericId)/products.json"
         }
     }
 
@@ -31,7 +28,13 @@ public enum ProductListingEndpoint: Endpoint {
     }
 
     public var queryItems: [URLQueryItem]? {
-        return nil
+        switch self {
+        case .collectionProducts(let id):
+            let numericId = id.components(separatedBy: "/").last ?? id
+            return [URLQueryItem(name: "collection_id", value: numericId)]
+        case .allProducts:
+            return nil
+        }
     }
 
     public var body: Data? {

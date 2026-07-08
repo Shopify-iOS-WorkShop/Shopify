@@ -33,26 +33,27 @@ public struct CartDiscountView: View {
             Text("Discount Code")
                 .font(.headline)
             
-            HStack {
-                CustomInputField(
-                    title: "",
-                    placeholder: "Enter code here",
-                    text: $codeInput
-                )
-                .disabled(isLoading)
+            HStack(spacing: 12) {
+                TextField("Enter code here", text: $codeInput)
+                    .padding(.horizontal, 16)
+                    .frame(height: 56)
+                    .background(Color(.systemGray6))
+                    .cornerRadius(12)
+                    .disabled(isLoading)
                 
                 Button(action: onApply) {
                     if isLoading {
                         ProgressView()
-                            .frame(width: 60)
+                            .frame(width: 80, height: 56)
+                            .background(Color.accentColor.opacity(0.8))
+                            .cornerRadius(12)
                     } else {
                         Text("Apply")
                             .fontWeight(.bold)
                             .foregroundColor(.white)
-                            .frame(width: 60)
-                            .padding(.vertical, 12)
+                            .frame(width: 80, height: 56)
                             .background(Color.accentColor)
-                            .cornerRadius(8)
+                            .cornerRadius(12)
                     }
                 }
                 .disabled(codeInput.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || isLoading)

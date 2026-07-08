@@ -21,6 +21,7 @@ struct RESTOrderData: Encodable {
     let discount_codes: [RESTDiscountCode]?
     let currency: String
     let presentment_currency: String  
+    let send_receipt: Bool
 }
 
 struct RESTLineItem: Encodable {

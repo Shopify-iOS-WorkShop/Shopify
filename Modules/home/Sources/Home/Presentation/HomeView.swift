@@ -67,15 +67,6 @@ public struct HomeView: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: {
-                    coordinator.onMenuTapped?()
-                }) {
-                    Image(systemName: "line.3.horizontal")
-                        .foregroundColor(DS.textPri)
-                        .font(.system(size: 18, weight: .medium))
-                }
-            }
             ToolbarItem(placement: .principal) {
                 Text("PocketShop")
                     .font(.system(size: 17, weight: .bold))
