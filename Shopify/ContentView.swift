@@ -483,6 +483,7 @@ struct ContentView: View {
         case .productDetail(let productId):
             ProductDetailFactory.makeView(
                 productId: productId,
+                sessionProvider: sessionStore,
                 checkIsFavorite: { [weak favoritesViewModel] id in
                     favoritesViewModel?.isFavorite(productId: id) ?? false
                 },
@@ -534,6 +535,7 @@ struct ContentView: View {
         case .productDetail(let productId):
             ProductDetailFactory.makeView(
                 productId: productId,
+                sessionProvider: sessionStore,
                 checkIsFavorite: { [weak favoritesViewModel] id in
                     favoritesViewModel?.isFavorite(productId: id) ?? false
                 },
@@ -577,6 +579,7 @@ struct ContentView: View {
         case .productDetail(let productId):
             ProductDetailFactory.makeView(
                 productId: productId,
+                sessionProvider: sessionStore,
                 checkIsFavorite: { [weak favoritesViewModel] id in
                     favoritesViewModel?.isFavorite(productId: id) ?? false
                 },
@@ -631,6 +634,7 @@ struct ContentView: View {
             if let idInt = Int(productId) {
                 ProductDetailFactory.makeView(
                     productId: idInt,
+                    sessionProvider: sessionStore,
                     checkIsFavorite: { [weak favoritesViewModel] id in
                         favoritesViewModel?.isFavorite(productId: id) ?? false
                     },

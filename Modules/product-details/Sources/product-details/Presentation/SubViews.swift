@@ -488,114 +488,299 @@ Text(text.isEmpty ? "No description available." : text)
 
 
 struct ReviewsView: View {
+    let reviews: [ReviewEntity]
+    let isSubmitting: Bool
+    let message: String?
+    let error: String?
+    let onAddReview: () -> Void
+    let onEditReview: (ReviewEntity) -> Void
+    let onDeleteReview: (ReviewEntity) -> Void
 
-let reviews: [ReviewEntity]
+    private var currentCustomerReview: ReviewEntity? {
+        reviews.first(where: \.isOwnedByCurrentCustomer)
+    }
 
+    var body: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            HStack(alignment: .center) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Reviews")
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                        .foregroundColor(DS.textPri)
 
+                    Text(reviews.isEmpty ? "Be the first to share feedback" : "\(reviews.count) customer \(reviews.count == 1 ? "review" : "reviews")")
+                        .font(.caption)
+                        .foregroundColor(DS.textSec)
+                }
 
-var body: some View {
+                Spacer()
 
-VStack(alignment: .leading, spacing: 16) {
+                Button(action: onAddReview) {
+                    Label(currentCustomerReview == nil ? "Add" : "Edit Mine", systemImage: currentCustomerReview == nil ? "plus" : "pencil")
+                        .font(.caption.weight(.semibold))
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .background(DS.red.opacity(0.12))
+                        .foregroundColor(DS.red)
+                        .clipShape(Capsule())
+                }
+                .disabled(isSubmitting)
+            }
 
-HStack {
+            if let message {
+                ReviewStatusPill(text: message, systemImage: "checkmark.circle.fill", color: .green)
+            }
 
-Text("Reviews")
+            if let error {
+                ReviewStatusPill(text: error, systemImage: "exclamationmark.circle.fill", color: DS.red)
+            }
 
-.font(.subheadline)
-
-.fontWeight(.semibold)
-
-Spacer()
-
-Button("View All") {
-
-// Navigate to all reviews
-
+            if reviews.isEmpty {
+                EmptyReviewView()
+            } else {
+                VStack(spacing: 12) {
+                    ForEach(reviews, id: \.id) { review in
+                        ReviewCardView(
+                            review: review,
+                            onEdit: { onEditReview(review) },
+                            onDelete: { onDeleteReview(review) }
+                        )
+                    }
+                }
+            }
+        }
+    }
 }
 
-.font(.caption)
+struct ReviewStatusPill: View {
+    let text: String
+    let systemImage: String
+    let color: Color
 
-.foregroundColor(DS.red)
-
+    var body: some View {
+        Label(text, systemImage: systemImage)
+            .font(.caption)
+            .foregroundColor(color)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(color.opacity(0.1))
+            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+    }
 }
 
+struct EmptyReviewView: View {
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "quote.bubble")
+                .font(.title3)
+                .foregroundColor(DS.red)
+                .frame(width: 42, height: 42)
+                .background(DS.red.opacity(0.1))
+                .clipShape(Circle())
 
+            VStack(alignment: .leading, spacing: 4) {
+                Text("No reviews yet")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundColor(DS.textPri)
 
-ForEach(reviews, id: \.id) { review in
-
-ReviewCardView(review: review)
-
+                Text("Your feedback helps other shoppers choose with confidence.")
+                    .font(.caption)
+                    .foregroundColor(DS.textSec)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .padding(14)
+        .background(DS.cardBG)
+        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .stroke(DS.border, lineWidth: 1)
+        )
+    }
 }
-
-}
-
-}
-
-}
-
-
 
 struct ReviewCardView: View {
+    let review: ReviewEntity
+    let onEdit: () -> Void
+    let onDelete: () -> Void
 
-let review: ReviewEntity
+    var body: some View {
+        HStack(alignment: .top, spacing: 12) {
+            Text(review.authorInitials)
+                .font(.caption)
+                .fontWeight(.bold)
+                .foregroundColor(.white)
+                .frame(width: 40, height: 40)
+                .background(DS.red.opacity(0.9))
+                .clipShape(Circle())
 
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(alignment: .top) {
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text(review.authorName)
+                            .font(.subheadline)
+                            .fontWeight(.semibold)
+                            .foregroundColor(DS.textPri)
 
+                        if let createdAtText {
+                            Text(createdAtText)
+                                .font(.caption2)
+                                .foregroundColor(DS.textSec)
+                        }
+                    }
 
-var body: some View {
+                    Spacer()
 
-HStack(alignment: .top, spacing: 12) {
+                    StarRatingView(rating: review.rating)
+                }
 
-// Avatar
+                if let title = review.title {
+                    Text(title)
+                        .font(.caption.weight(.semibold))
+                        .foregroundColor(DS.textPri)
+                }
 
-Text(review.authorInitials)
+                Text(review.body)
+                    .font(.caption)
+                    .foregroundColor(DS.textSec)
+                    .lineSpacing(4)
+                    .fixedSize(horizontal: false, vertical: true)
 
-.font(.caption)
+                if review.isOwnedByCurrentCustomer {
+                    HStack(spacing: 14) {
+                        Button(action: onEdit) {
+                            Label("Edit", systemImage: "pencil")
+                        }
 
-.fontWeight(.bold)
+                        Button(role: .destructive, action: onDelete) {
+                            Label("Delete", systemImage: "trash")
+                        }
+                    }
+                    .font(.caption.weight(.semibold))
+                    .buttonStyle(.plain)
+                    .foregroundColor(DS.red)
+                    .padding(.top, 2)
+                }
+            }
+        }
+        .padding(14)
+        .background(DS.cardBG)
+        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .stroke(DS.border.opacity(0.8), lineWidth: 1)
+        )
+    }
 
-.foregroundColor(.white)
-
-.frame(width: 36, height: 36)
-
-.background(DS.red.opacity(0.9))
-
-.clipShape(Circle())
-
-
-
-VStack(alignment: .leading, spacing: 4) {
-
-HStack {
-
-Text(review.authorName)
-
-.font(.subheadline)
-
-.fontWeight(.semibold)
-.foregroundColor(DS.textPri)
-
-Spacer()
-
-StarRatingView(rating: review.rating)
-
+    private var createdAtText: String? {
+        guard let date = review.createdAt else { return nil }
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        return formatter.string(from: date)
+    }
 }
 
-Text(review.body)
+struct ReviewEditorView: View {
+    let isEditing: Bool
+    @Binding var rating: Int
+    @Binding var title: String
+    @Binding var reviewBody: String
+    let isSubmitting: Bool
+    let error: String?
+    let onCancel: () -> Void
+    let onSubmit: () -> Void
 
-.font(.caption)
+    var body: some View {
+        NavigationStack {
+            VStack(alignment: .leading, spacing: 18) {
+                VStack(alignment: .leading, spacing: 8) {	
+                    Text(isEditing ? "Update your review" : "Add a review")
+                        .font(.title3.weight(.bold))
+                        .foregroundColor(DS.textPri)
 
-.foregroundColor(DS.textSec)
+                    Text("Share the details another shopper would want to know.")
+                        .font(.caption)
+                        .foregroundColor(DS.textSec)
+                }
 
-.lineSpacing(4)
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("Rating")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundColor(DS.textPri)
 
-.lineLimit(2)
+                    HStack(spacing: 8) {
+                        ForEach(1...5, id: \.self) { value in
+                            Button {
+                                rating = value
+                            } label: {
+                                Image(systemName: value <= rating ? "star.fill" : "star")
+                                    .font(.title3)
+                                    .foregroundColor(.orange)
+                                    .frame(width: 36, height: 36)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                }
 
-}
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("Title")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundColor(DS.textPri)
 
-}
+                    TextField("What stood out?", text: $title)
+                        .textInputAutocapitalization(.sentences)
+                        .padding(12)
+                        .background(DS.fieldBG)
+                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                }
 
-}
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("Review")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundColor(DS.textPri)
 
+                    TextEditor(text: $reviewBody)
+                        .frame(minHeight: 110)
+                        .scrollContentBackground(.hidden)
+                        .padding(8)
+                        .background(DS.fieldBG)
+                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                }
+
+                if let error {
+                    ReviewStatusPill(text: error, systemImage: "exclamationmark.circle.fill", color: DS.red)
+                }
+
+                Spacer(minLength: 0)
+            }
+            .padding(20)
+            .background(DS.background.ignoresSafeArea())
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel", action: onCancel)
+                        .disabled(isSubmitting)
+                }
+
+                ToolbarItem(placement: .confirmationAction) {
+                    Button {
+                        onSubmit()
+                    } label: {
+                        if isSubmitting {
+                            ProgressView()
+                        } else {
+                            Text(isEditing ? "Save" : "Post")
+                                .fontWeight(.semibold)
+                        }
+                    }
+                    .disabled(isSubmitting)
+                }
+            }
+        }
+    }
 }
 
 
