@@ -14,26 +14,27 @@ struct SearchFieldView: View {
     var body: some View {
         HStack(spacing: 8) {
             Image(systemName: "magnifyingglass")
-                .foregroundColor(.gray)
+                .foregroundColor(.pocketMuted)
             TextField("Search products...", text: $text)
                 .textFieldStyle(.plain)
                 .autocorrectionDisabled()
+                .foregroundColor(.pocketText)
             if !text.isEmpty {
                 Button {
                     text = ""
                 } label: {
                     Image(systemName: "xmark.circle.fill")
-                        .foregroundColor(.gray)
+                        .foregroundColor(.pocketMuted)
                 }
             }
         }
         .padding(.vertical, 10)
         .padding(.horizontal, 14)
-        .background(Color.white)
+        .background(Color.pocketCard)
         .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .stroke(Color.black.opacity(0.06), lineWidth: 1)
+                .stroke(Color.pocketBorder, lineWidth: 1)
         )
         .padding(.horizontal, 20)
         .padding(.bottom, 16)

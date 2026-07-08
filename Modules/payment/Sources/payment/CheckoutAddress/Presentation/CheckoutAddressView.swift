@@ -47,24 +47,30 @@ public struct CheckoutAddressView: View {
                             
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(currentAddress.title).fontWeight(.semibold)
+                                    .foregroundColor(DS.textPri)
                                 Text(currentAddress.details)
                                     .font(.system(size: 14))
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(DS.textSec)
                             }
                         }
                         .padding(16)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(Color(.systemGray6))
+                        .background(DS.cardBG)
                         .cornerRadius(12)
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(DS.border, lineWidth: 1)
+                        }
                     } else {
                         HStack(alignment: .center, spacing: 12) {
                             Image(systemName: "map.circle")
                                 .font(.system(size: 32))
-                                .foregroundColor(Color(.systemGray3))
+                                .foregroundColor(DS.textSec)
                             
                             VStack(alignment: .leading, spacing: 4) {
                                 Text("No Saved Addresses")
                                     .fontWeight(.semibold)
+                                    .foregroundColor(DS.textPri)
                                 Button(action: {
                                     coordinator.onAddNewAddressRequested?()
                                 }) {
@@ -78,8 +84,12 @@ public struct CheckoutAddressView: View {
                         }
                         .padding(16)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(Color(.systemGray6))
+                        .background(DS.cardBG)
                         .cornerRadius(12)
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(DS.border, lineWidth: 1)
+                        }
                     }
                 }
                 .padding(.horizontal, 20)
@@ -145,14 +155,16 @@ public struct CheckoutAddressView: View {
                 .background(viewModel.selectedAddress == nil ? Color.gray : DS.red)
                 .cornerRadius(12)
             }
+            .primaryButtonStyle()
             .disabled(viewModel.selectedAddress == nil)
             .padding(.horizontal, 20)
             .padding(.vertical, 16)
         }
         .background(
-            Color(UIColor.systemBackground)
-                .shadow(color: Color.black.opacity(0.08), radius: 10, y: -4)
+            DS.cardBG
+                .shadow(color: .black.opacity(0.08), radius: 10, y: -4)
         )
+        .background(DS.background.ignoresSafeArea())
         .alert("Save Changes?", isPresented: $viewModel.showUpdateAlert) {
             Button("Save & Proceed") {
                 Task {

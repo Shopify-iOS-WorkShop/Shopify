@@ -27,7 +27,7 @@ public struct CheckoutStepper: View {
         VStack(spacing: 8) {
             ZStack {
                 Circle()
-                    .fill(currentStep.rawValue >= step.rawValue ? DS.red : Color(.systemGray4))
+                    .fill(currentStep.rawValue >= step.rawValue ? DS.red : DS.lightGray)
                     .frame(width: 32, height: 32)
                 
                 if currentStep.rawValue > step.rawValue {
@@ -47,7 +47,7 @@ public struct CheckoutStepper: View {
         Rectangle()
             .frame(height: 2)
             .frame(maxWidth: 80)
-            .foregroundColor(Color(.systemGray4))
+            .foregroundColor(DS.border)
             .offset(y: -12)
             .padding(.horizontal, 4)
     }

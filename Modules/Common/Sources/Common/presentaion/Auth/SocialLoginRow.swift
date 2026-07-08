@@ -32,7 +32,7 @@ public struct SocialLoginRow: View {
                 Text(label)
                     .font(.caption)
                     .fontWeight(.semibold)
-                    .foregroundColor(Color(.systemGray3))
+                    .foregroundColor(DS.textSec)
                     .layoutPriority(1)
                 VStack { Divider() }
             }
@@ -46,7 +46,6 @@ public struct SocialLoginRow: View {
         }
     }
 }
-
 
 
 

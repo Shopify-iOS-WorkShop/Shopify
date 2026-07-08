@@ -32,28 +32,6 @@ public final class SettingsViewModel {
         get { currencyStore.exchangeRates }
     }
 
-    /// 0 = system, 1 = light, 2 = dark — persisted in UserDefaults.
-    /// ContentView reads this same key via @AppStorage, so the entire app
-    /// reacts the instant this value changes. No delay.
-    @ObservationIgnored
-    @AppStorage("settings_colorScheme")
-    public var colorSchemeRaw: Int = 0
-
-    public var preferredColorScheme: ColorScheme? {
-        switch colorSchemeRaw {
-        case 1: return .light
-        case 2: return .dark
-        default: return nil
-        }
-    }
-
-    public var colorSchemeLabel: String {
-        switch colorSchemeRaw {
-        case 1: return "Light"
-        case 2: return "Dark"
-        default: return "System"
-        }
-    }
 
     /// `true` when no customer session exists (user is browsing as guest).
     public var isGuest: Bool { sessionStore.current == nil }
@@ -118,12 +96,6 @@ public final class SettingsViewModel {
         if case .success(let rates) = result {
             currencyStore.exchangeRates = rates
         }
-    }
-
-    /// Persists the theme choice. ContentView's @AppStorage binding for the same
-    /// key fires immediately, applying the color scheme to the whole app.
-    public func setColorScheme(_ raw: Int) {
-        colorSchemeRaw = raw
     }
 
     public func requestSignOut() { isShowingSignOutConfirmation = true  }

@@ -16,7 +16,7 @@ public struct OrderDetailView: View {
     
     public var body: some View {
         ZStack {
-            Color(UIColor.systemGroupedBackground).ignoresSafeArea()
+            DS.background.ignoresSafeArea()
             
             if viewModel.isLoading || (viewModel.order == nil && viewModel.errorMessage == nil) {
                 ProgressView("Loading Order Details...")

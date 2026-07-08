@@ -14,6 +14,7 @@ public struct CurrencyPickerView: View {
     let rates: ExchangeRates
     /// The shared store is observed directly — no @Binding needed.
     @State var currencyStore: CurrencyStore
+    @Environment(\.colorScheme) private var colorScheme
 
     public init(rates: ExchangeRates, currencyStore: CurrencyStore) {
         self.rates = rates
@@ -30,10 +31,11 @@ public struct CurrencyPickerView: View {
                         VStack(alignment: .leading, spacing: 2) {
                             Text(code)
                                 .fontWeight(.medium)
+                                .foregroundColor(colorScheme == .dark ? .black : .primary)
                             if let rate = rates.rates[code] {
                                 Text("1 \(rates.baseCurrency) = \(String(format: "%.4f", rate)) \(code)")
                                     .font(.caption)
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(colorScheme == .dark ? .black.opacity(0.6) : DS.textSec)
                             }
                         }
 
@@ -41,11 +43,12 @@ public struct CurrencyPickerView: View {
 
                         if currencyStore.selectedCurrency == code {
                             Image(systemName: "checkmark")
-                                .foregroundColor(Color(red: 233/255, green: 69/255, blue: 96/255))
+                                .foregroundColor(DS.red)
                                 .fontWeight(.semibold)
                         }
                     }
                     .contentShape(Rectangle())
+                    .listRowBackground(colorScheme == .dark ? Color.white : Color(UIColor.secondarySystemBackground))
                     .onTapGesture {
                         // Writing to @Observable property — SwiftUI tracks this
                         // and re-renders immediately, showing the checkmark at once.
@@ -54,6 +57,8 @@ public struct CurrencyPickerView: View {
                 }
             }
         }
+        .scrollContentBackground(.hidden)
+        .background(colorScheme == .dark ? Color.white : DS.background)
         .searchable(text: $searchText, prompt: "Search Currency")
         .navigationTitle("Select Currency")
         .navigationBarTitleDisplayMode(.inline)

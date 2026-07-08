@@ -57,12 +57,17 @@ struct AddressMapPickerView: View {
                 .foregroundStyle(AddressDS.textSec)
 
             TextField("Search for a street or area", text: $viewModel.searchText)
+                .foregroundStyle(AddressDS.textPri)
                 .focused($searchFocused)
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 12)
-        .background(Color.white, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-        .shadow(color: .black.opacity(0.08), radius: 8, y: 3)
+        .background(AddressDS.cardBG, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .stroke(AddressDS.lightGray, lineWidth: 1)
+        }
+        .shadow(color: AddressDS.shadow.opacity(0.06), radius: 8, y: 3)
         .padding(.bottom, 10)
         .zIndex(1)
     }
@@ -89,10 +94,15 @@ struct AddressMapPickerView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 Divider()
+                    .background(AddressDS.lightGray)
             }
         }
-        .background(Color.white, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-        .shadow(color: .black.opacity(0.1), radius: 10, y: 4)
+        .background(AddressDS.cardBG, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .stroke(AddressDS.lightGray, lineWidth: 1)
+        }
+        .shadow(color: AddressDS.shadow.opacity(0.08), radius: 10, y: 4)
     }
 
     private var currentLocationButton: some View {
@@ -108,8 +118,12 @@ struct AddressMapPickerView: View {
                 }
             }
             .frame(width: 44, height: 44)
-            .background(Color.white, in: Circle())
-            .shadow(color: .black.opacity(0.12), radius: 6, y: 2)
+            .background(AddressDS.cardBG, in: Circle())
+            .overlay {
+                Circle()
+                    .stroke(AddressDS.lightGray, lineWidth: 1)
+            }
+            .shadow(color: AddressDS.shadow.opacity(0.10), radius: 6, y: 2)
         }
     }
 

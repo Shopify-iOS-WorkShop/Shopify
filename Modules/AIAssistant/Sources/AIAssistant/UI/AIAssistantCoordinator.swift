@@ -33,7 +33,7 @@ public struct AIAssistantCoordinator: View {
                         showingFeaturePicker.toggle()
                     } label: {
                         Image(systemName: "wand.and.stars")
-                            .foregroundColor(.indigo)
+                            .foregroundColor(DS.red)
                     }
                 }
             }
@@ -41,7 +41,7 @@ public struct AIAssistantCoordinator: View {
                 FeaturePickerSheet(selected: $selectedFeature)
             }
         }
-        .tint(.indigo)
+        .tint(DS.red)
         .onAppear {
             if let initial = initialFeature {
                 selectedFeature = initial
@@ -67,7 +67,7 @@ public struct AIAssistantCoordinator: View {
             .padding(.horizontal, 16)
             .padding(.vertical, 10)
         }
-        .background(Color(.systemGroupedBackground))
+        .background(DS.background)
         Divider()
     }
 
@@ -103,8 +103,8 @@ private struct FeatureTab: View {
             }
             .padding(.horizontal, 12)
             .padding(.vertical, 7)
-            .background(isSelected ? Color.indigo : Color(.secondarySystemGroupedBackground))
-            .foregroundColor(isSelected ? .white : .secondary)
+            .background(isSelected ? DS.red : DS.cardBG)
+            .foregroundColor(isSelected ? .white : DS.textSec)
             .clipShape(Capsule())
         }
         .buttonStyle(.plain)
@@ -124,11 +124,13 @@ private struct FeaturePickerSheet: View {
                     dismiss()
                 } label: {
                     Label(feature.rawValue, systemImage: feature.icon)
-                        .foregroundColor(.primary)
+                        .foregroundColor(DS.textPri)
                 }
             }
             .navigationTitle("AI Features")
             .navigationBarTitleDisplayMode(.inline)
+            .scrollContentBackground(.hidden)
+            .background(DS.background)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Done") { dismiss() }

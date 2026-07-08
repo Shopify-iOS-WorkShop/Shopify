@@ -57,7 +57,7 @@ placeholderImage
 
 default:
 
-Color(.systemGray5)
+DS.fieldBG
 
 .overlay(ProgressView())
 
@@ -79,7 +79,7 @@ Color(.systemGray5)
 
 .frame(height: 340)
 
-.background(Color(.systemGray6))
+.background(DS.fieldBG)
 
 
 
@@ -91,7 +91,7 @@ ForEach(0..<images.count, id: \.self) { i in
 
 Circle()
 
-.fill(i == currentIndex ? Color.primary : Color.secondary.opacity(0.4))
+.fill(i == currentIndex ? DS.textPri : DS.textSec.opacity(0.4))
 
 .frame(width: i == currentIndex ? 8 : 6, height: i == currentIndex ? 8 : 6)
 
@@ -121,15 +121,15 @@ Image(systemName: isFavorite ? "heart.fill" : "heart")
 
 .font(.system(size: 14, weight: .semibold))
 
-.foregroundColor(isFavorite ? .red : .red.opacity(0.5))
+.foregroundColor(isFavorite ? DS.red : DS.red.opacity(0.55))
 
 .frame(width: 38, height: 38)
 
-.background(Color(.systemBackground))
+.background(DS.cardBG)
 
 .clipShape(RoundedRectangle(cornerRadius: 12))
 
-.shadow(color: .black.opacity(0.08), radius: 4, y: 2)
+.shadow(color: DS.shadow.opacity(0.10), radius: 4, y: 2)
 
 }
 
@@ -159,15 +159,15 @@ Image(systemName: systemName)
 
 .font(.system(size: 14, weight: .semibold))
 
-.foregroundColor(.primary)
+.foregroundColor(DS.textPri)
 
 .frame(width: 38, height: 38)
 
-.background(Color(.systemBackground))
+.background(DS.cardBG)
 
 .clipShape(RoundedRectangle(cornerRadius: 12))
 
-.shadow(color: .black.opacity(0.08), radius: 4, y: 2)
+.shadow(color: DS.shadow.opacity(0.10), radius: 4, y: 2)
 
 }
 
@@ -179,13 +179,13 @@ private var placeholderImage: some View {
 
 Rectangle()
 
-.fill(Color(.systemGray5))
+.fill(DS.fieldBG)
 
 .overlay(
 
 Image(systemName: "photo")
 
-.foregroundColor(.secondary)
+.foregroundColor(DS.textSec)
 
 .font(.largeTitle)
 
@@ -227,7 +227,7 @@ Text(collection.uppercased())
 
 .fontWeight(.semibold)
 
-.foregroundColor(.secondary)
+.foregroundColor(DS.textSec)
 
 .tracking(1.2)
 
@@ -239,7 +239,7 @@ Text(title)
 
 .fontWeight(.bold)
 
-.foregroundColor(.primary)
+.foregroundColor(DS.textPri)
 
 
 
@@ -251,7 +251,7 @@ Text("(\(reviewCount) Reviews)")
 
 .font(.caption)
 
-.foregroundColor(.secondary)
+.foregroundColor(DS.textSec)
 
 }
 
@@ -263,7 +263,7 @@ Text(currencyStore.convert(price))
 
 .fontWeight(.bold)
 
-.foregroundColor(.pink)
+.foregroundColor(DS.red)
 
 }
 
@@ -355,7 +355,7 @@ Button("Size Guide") {
 
 .font(.caption)
 
-.foregroundColor(.pink)
+.foregroundColor(DS.red)
 
 }
 
@@ -383,9 +383,9 @@ Text(size.uppercased())
 
 .padding(.horizontal, 8)
 
-.background(selected == size ? Color.pink : Color(.systemGray6))
+.background(selected == size ? DS.red : DS.chipBG)
 
-.foregroundColor(selected == size ? .white : .primary)
+.foregroundColor(selected == size ? .white : DS.textPri)
 
 .cornerRadius(10)
 
@@ -393,7 +393,7 @@ Text(size.uppercased())
 
 RoundedRectangle(cornerRadius: 10)
 
-.stroke(selected == size ? Color.pink : Color.clear, lineWidth: 1.5)
+.stroke(selected == size ? DS.red : DS.border, lineWidth: 1.5)
 
 )
 
@@ -443,7 +443,7 @@ Text("Description")
 
 .fontWeight(.semibold)
 
-.foregroundColor(.primary)
+.foregroundColor(DS.textPri)
 
 Spacer()
 
@@ -451,7 +451,7 @@ Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
 
 .font(.caption)
 
-.foregroundColor(.secondary)
+.foregroundColor(DS.textSec)
 
 }
 
@@ -465,7 +465,7 @@ Text(text.isEmpty ? "No description available." : text)
 
 .font(.subheadline)
 
-.foregroundColor(.secondary)
+.foregroundColor(DS.textSec)
 
 .lineSpacing(5)
 
@@ -515,7 +515,7 @@ Button("View All") {
 
 .font(.caption)
 
-.foregroundColor(.pink)
+.foregroundColor(DS.red)
 
 }
 
@@ -557,7 +557,7 @@ Text(review.authorInitials)
 
 .frame(width: 36, height: 36)
 
-.background(Color.pink.opacity(0.8))
+.background(DS.red.opacity(0.9))
 
 .clipShape(Circle())
 
@@ -572,6 +572,7 @@ Text(review.authorName)
 .font(.subheadline)
 
 .fontWeight(.semibold)
+.foregroundColor(DS.textPri)
 
 Spacer()
 
@@ -583,7 +584,7 @@ Text(review.body)
 
 .font(.caption)
 
-.foregroundColor(.secondary)
+.foregroundColor(DS.textSec)
 
 .lineSpacing(4)
 
@@ -623,7 +624,7 @@ Image(systemName: "minus")
 
 .font(.system(size: 14, weight: .bold))
 
-.foregroundColor(.primary)
+.foregroundColor(DS.textPri)
 
 }
 
@@ -634,6 +635,7 @@ Text("\(quantity)")
 .font(.subheadline)
 
 .fontWeight(.semibold)
+.foregroundColor(DS.textPri)
 
 .frame(minWidth: 20)
 
@@ -645,7 +647,7 @@ Image(systemName: "plus")
 
 .font(.system(size: 14, weight: .bold))
 
-.foregroundColor(.primary)
+.foregroundColor(DS.textPri)
 
 }
 
@@ -655,7 +657,7 @@ Image(systemName: "plus")
 
 .padding(.vertical, 14)
 
-.background(Color(.systemGray6))
+.background(DS.chipBG)
 
 .cornerRadius(30)
 

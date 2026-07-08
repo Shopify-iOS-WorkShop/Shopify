@@ -32,28 +32,34 @@ public struct CartDiscountView: View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Discount Code")
                 .font(.headline)
+                .foregroundColor(DS.textPri)
             
             HStack(spacing: 12) {
                 TextField("Enter code here", text: $codeInput)
                     .padding(.horizontal, 16)
                     .frame(height: 56)
-                    .background(Color(.systemGray6))
-                    .cornerRadius(12)
+                    .foregroundColor(DS.textPri)
+                    .background(DS.fieldBG)
+                    .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+                            .stroke(DS.lightGray, lineWidth: 1)
+                    }
                     .disabled(isLoading)
                 
                 Button(action: onApply) {
                     if isLoading {
                         ProgressView()
                             .frame(width: 80, height: 56)
-                            .background(Color.accentColor.opacity(0.8))
-                            .cornerRadius(12)
+                            .background(DS.red.opacity(0.8))
+                            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                     } else {
                         Text("Apply")
                             .fontWeight(.bold)
                             .foregroundColor(.white)
                             .frame(width: 80, height: 56)
-                            .background(Color.accentColor)
-                            .cornerRadius(12)
+                            .background(DS.red)
+                            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                     }
                 }
                 .disabled(codeInput.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || isLoading)
@@ -68,7 +74,7 @@ public struct CartDiscountView: View {
             if let error = errorMessage {
                 Text(error)
                     .font(.caption)
-                    .foregroundColor(.red)
+                    .foregroundColor(DS.red)
             }
             
             // Applied Codes
@@ -76,7 +82,7 @@ public struct CartDiscountView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Applied Discounts:")
                         .font(.subheadline)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(DS.textSec)
                     
                     ForEach(codes, id: \.code) { discount in
                         HStack {
@@ -85,12 +91,13 @@ public struct CartDiscountView: View {
                             
                             Text(discount.code)
                                 .fontWeight(.medium)
+                                .foregroundColor(DS.textPri)
                             
                             Spacer()
                             
                             Button(action: { onRemove(discount.code) }) {
                                 Image(systemName: "xmark.circle.fill")
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(DS.textSec)
                             }
                             .disabled(isLoading)
                         }
@@ -113,7 +120,11 @@ public struct CartDiscountView: View {
             }
         }
         .padding()
-        .background(Color(UIColor.secondarySystemGroupedBackground))
-        .cornerRadius(12)
+        .background(DS.cardBG)
+        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .stroke(DS.lightGray, lineWidth: 1)
+        }
     }
 }

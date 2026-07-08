@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import Common
 
 @Observable
 public final class AuthCoordinator {

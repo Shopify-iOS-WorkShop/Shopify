@@ -31,13 +31,13 @@ public struct OrderAddressView: View {
                     Text(address.phone)
                 } else {
                     Text("No shipping address provided.")
-                        .foregroundColor(.secondary)
+                        .foregroundColor(DS.textSec)
                 }
             }
             .font(.subheadline)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding()
-            .background(Color(UIColor.secondarySystemGroupedBackground))
+            .background(DS.cardBG)
             .cornerRadius(12)
             .padding(.horizontal)
         }

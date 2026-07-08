@@ -32,12 +32,12 @@ public struct CommonCatalogGridView: View {
                             .font(.headline)
                         Text(errorMessage)
                             .font(.subheadline)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(DS.textSec)
                         Button("Retry") {
                             Task { await viewModel.loadCatalogData() }
                         }
                         .padding()
-                        .background(Color.accentColor)
+                        .background(DS.red)
                         .foregroundColor(.white)
                         .cornerRadius(10)
                     }
@@ -57,6 +57,8 @@ public struct CommonCatalogGridView: View {
                     }
                 }
             }
+            .background(DS.background.ignoresSafeArea())
+            .animation(.spring(), value: viewModel.isLoading)
             .navigationTitle(type.navigationTitle)
             .task {
                 await viewModel.loadCatalogData()
@@ -82,11 +84,11 @@ struct CatalogCell: View {
                             .scaledToFit()
                             .frame(width: 85, height: 85)
                             .clipShape(Circle())
-                            .overlay(Circle().stroke(Color(.systemGray5), lineWidth: 1))
+                            .overlay(Circle().stroke(DS.lightGray, lineWidth: 1))
                     case .failure:
                         Image(systemName: "photo.circle.fill")
                             .resizable()
-                            .foregroundColor(.gray)
+                            .foregroundColor(DS.textSec)
                             .frame(width: 85, height: 85)
                     @unknown default:
                         EmptyView()
@@ -96,7 +98,7 @@ struct CatalogCell: View {
             
             Text(item.name)
                 .font(.system(size: 14, weight: .semibold, design: .rounded))
-                .foregroundColor(.primary)
+                .foregroundColor(DS.textPri)
                 .multilineTextAlignment(.center)
                 .lineLimit(2)
         }

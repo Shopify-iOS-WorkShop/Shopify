@@ -28,8 +28,8 @@ public struct SetPasswordView: View {
                             .fill(
                                 LinearGradient(
                                     colors: [
-                                        Color(red: 233/255, green: 69/255, blue: 96/255).opacity(0.15),
-                                        Color(red: 233/255, green: 69/255, blue: 96/255).opacity(0.05)
+                                        DS.red.opacity(0.15),
+                                        DS.red.opacity(0.05)
                                     ],
                                     startPoint: .topLeading,
                                     endPoint: .bottomTrailing
@@ -39,21 +39,21 @@ public struct SetPasswordView: View {
 
                         Image(systemName: "lock.shield.fill")
                             .font(.system(size: 36))
-                            .foregroundColor(Color(red: 233/255, green: 69/255, blue: 96/255))
+                            .foregroundColor(DS.red)
                     }
                     .padding(.top, 32)
 
                     Text("Set a Password")
                         .font(.system(size: 24, weight: .bold))
-                        .foregroundColor(.primary)
+                        .foregroundColor(DS.textPri)
 
                     VStack(spacing: 4) {
                         Text("To complete your account, set a password for")
                             .font(.system(size: 14))
-                            .foregroundColor(.secondary)
+                            .foregroundColor(DS.textSec)
                         Text(viewModel.email)
                             .font(.system(size: 14, weight: .semibold))
-                            .foregroundColor(Color(red: 233/255, green: 69/255, blue: 96/255))
+                            .foregroundColor(DS.red)
                     }
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 16)
@@ -84,7 +84,7 @@ public struct SetPasswordView: View {
                         if let err = viewModel.passwordLengthError {
                             Text(err)
                                 .font(.caption)
-                                .foregroundColor(.red)
+                                .foregroundColor(DS.red)
                         }
                     }
 
@@ -98,7 +98,7 @@ public struct SetPasswordView: View {
                         if let err = viewModel.passwordMatchError {
                             Text(err)
                                 .font(.caption)
-                                .foregroundColor(.red)
+                                .foregroundColor(DS.red)
                         }
                     }
                 }
@@ -107,7 +107,7 @@ public struct SetPasswordView: View {
                 if let error = viewModel.errorMessage {
                     Text(error)
                         .font(.callout)
-                        .foregroundColor(.red)
+                        .foregroundColor(DS.red)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal)
                 }
@@ -127,14 +127,14 @@ public struct SetPasswordView: View {
                 // MARK: - Disclaimer
                 Text("This password will be used for your shopping account and is separate from your social login.")
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(DS.textSec)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 8)
                     .padding(.bottom, 24)
             }
             .padding(.horizontal, 20)
         }
-        .background(Color(.systemBackground))
+        .background(DS.background)
         .onReceive(viewModel.$completedSession.compactMap { $0 }) { session in
             coordinator.onLoginSuccess?()
         }

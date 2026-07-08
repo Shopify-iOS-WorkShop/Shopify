@@ -99,7 +99,12 @@ struct AddressCardView: View {
             }
         }
         .padding(16)
-        .background(AddressDS.cardBG, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-        .shadow(color: .black.opacity(0.04), radius: 8, y: 3)
+        .background(AddressDS.cardBG)
+        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .stroke(AddressDS.lightGray.opacity(0.8), lineWidth: 1)
+        }
+        .shadow(color: .black.opacity(0.08), radius: 10, x: 0, y: 5)
     }
 }

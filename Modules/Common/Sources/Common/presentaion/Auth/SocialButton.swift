@@ -23,11 +23,11 @@ public struct SocialButton: View {
                 .scaledToFit()
                 .frame(width: 24, height: 24)
                 .frame(width: 66, height: 66)
-                .background(Color(.systemGray6).opacity(0.5))
-                .cornerRadius(16)
+                .background(DS.cardBG)
+                .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
                 .overlay(
                     RoundedRectangle(cornerRadius: 16)
-                        .stroke(Color(.systemGray5), lineWidth: 1)
+                        .stroke(DS.lightGray, lineWidth: 1)
                 )
         }
     }

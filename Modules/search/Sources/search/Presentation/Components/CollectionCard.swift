@@ -27,7 +27,7 @@ struct CollectionCard: View {
                             ZStack {
                                 Color.pocketChip
                                 Image(systemName: "photo")
-                                    .foregroundColor(.gray)
+                                    .foregroundColor(.pocketMuted)
                             }
                         @unknown default:
                             EmptyView()
@@ -37,7 +37,7 @@ struct CollectionCard: View {
                     ZStack {
                         Color.pocketChip
                         Image(systemName: "folder")
-                            .foregroundColor(.gray)
+                            .foregroundColor(.pocketMuted)
                     }
                 }
             }
@@ -46,6 +46,7 @@ struct CollectionCard: View {
 
             Text(collection.title)
                 .font(.caption.weight(.medium))
+                .foregroundColor(.pocketText)
                 .lineLimit(1)
                 .frame(width: 96)
         }

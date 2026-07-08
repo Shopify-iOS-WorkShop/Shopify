@@ -25,7 +25,7 @@ public struct OrderHeaderView: View {
                 
                 Text(formattedDate(order.processedAt))
                     .font(.subheadline)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(DS.textSec)
             }
             Spacer()
             

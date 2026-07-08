@@ -31,7 +31,7 @@ public struct CartView: View {
                     Button("Clear") {
                         viewModel.requestClearCart()
                     }
-                    .foregroundStyle(.red)
+                    .foregroundStyle(DS.red)
                 }
             }
         }
@@ -109,6 +109,6 @@ public struct CartView: View {
             }
             .padding(.vertical)
         }
-        .background(Color(UIColor.systemGroupedBackground))
+        .background(DS.background)
     }
 }

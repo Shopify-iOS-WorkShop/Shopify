@@ -28,7 +28,7 @@ public struct CartSummaryView: View {
             VStack(spacing: 8) {
                 HStack {
                     Text("Subtotal")
-                        .foregroundColor(.secondary)
+                        .foregroundColor(DS.textSec)
                     Spacer()
                     // If we have a discount, the subtotal here should be the original price
                     Text(currencyStore.convert(originalSubtotal ?? cost.subtotalAmount.amount))
@@ -38,19 +38,19 @@ public struct CartSummaryView: View {
                 if let discount = discountAmount, discount > 0 {
                     HStack {
                         Text("Discount")
-                            .foregroundColor(.pink)
+                            .foregroundColor(DS.red)
                         Spacer()
                         Text("-" + currencyStore.convert(discount))
-                            .foregroundColor(.pink)
+                            .foregroundColor(DS.red)
                             .fontWeight(.medium)
                     }
                 } else if !activeDiscountCodes.isEmpty {
                     HStack {
                         Text("Discount")
-                            .foregroundColor(.pink)
+                            .foregroundColor(DS.red)
                         Spacer()
                         Text("Free Shipping")
-                            .foregroundColor(.pink)
+                            .foregroundColor(DS.red)
                             .fontWeight(.medium)
                     }
                 }
@@ -62,15 +62,17 @@ public struct CartSummaryView: View {
                     Text("Total")
                         .font(.title3)
                         .fontWeight(.bold)
+                        .foregroundColor(DS.textPri)
                     Spacer()
                     Text(currencyStore.convert(cost.totalAmount.amount))
                         .font(.title3)
                         .fontWeight(.bold)
+                        .foregroundColor(DS.textPri)
                 }
                 
                 Text("Taxes and shipping calculated at checkout")
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(DS.textSec)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
             
@@ -80,7 +82,11 @@ public struct CartSummaryView: View {
             )
         }
         .padding()
-        .background(Color(UIColor.secondarySystemGroupedBackground))
-        .cornerRadius(12)
+        .background(DS.cardBG)
+        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .stroke(DS.lightGray, lineWidth: 1)
+        }
     }
 }
