@@ -46,4 +46,7 @@
    <FileRef
       location = "group:Shopify.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "group:Modules/AIAssistant">
+   </FileRef>
 </Workspace>

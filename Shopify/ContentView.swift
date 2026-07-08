@@ -19,6 +19,7 @@ import Favorites
 import Cart
 import Payment
 import Settings
+import AIAssistant
 
 enum GuestPromptContext {
     case addToCart
@@ -196,7 +197,8 @@ struct ContentView: View {
 
     @MainActor
     private var mainFlow: some View {
-        VStack(spacing: 0) {
+        ZStack(alignment: .bottomTrailing) {
+            VStack(spacing: 0) {
             TabView(selection: $selectedTab) {
                 // Home tab
                 NavigationStack(path: $appCoordinator.homeCoordinator.path) {
@@ -348,7 +350,7 @@ struct ContentView: View {
                     viewModel: AppAssembly.shared.resolve(CheckoutAddressViewModel.self)
                 )
                 .toolbar {
-                    ToolbarItem(placement: .navigationBarLeading) {
+                    ToolbarItem(placement: .topBarLeading) {
                         Button {
                             appCoordinator.isShowingCheckout = false
                             appCoordinator.checkoutAddressCoordinator.popToRoot()
@@ -410,6 +412,22 @@ struct ContentView: View {
             .environment(appCoordinator.checkoutAddressCoordinator)
         }
 
+            // ── AI Assistant floating button ─────────────────────────────
+            // Sits above every tab, bottom-right corner, 80 pt above tab bar
+            AIAssistantFloatingButton { product in
+                openAIProduct(product)
+            }
+                .padding(.bottom, 60) // clears the custom tab bar height
+        }
+
+    }
+
+    @MainActor
+    private func openAIProduct(_ product: ShopifyProduct) {
+        let rawId = product.id.components(separatedBy: "/").last ?? product.id
+        guard let productId = Int(rawId) else { return }
+        selectedTab = .home
+        appCoordinator.homeCoordinator.push(.productDetail(productId: productId))
     }
 
 

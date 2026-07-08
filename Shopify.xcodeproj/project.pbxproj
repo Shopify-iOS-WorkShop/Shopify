@@ -26,6 +26,9 @@
 		6D0B9DB42FF817AC00F50859 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 6D0B9DB32FF817AC00F50859 /* GoogleSignIn */; };
 		6D0B9DB62FF817B500F50859 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 6D0B9DB52FF817B500F50859 /* FirebaseAnalytics */; };
 		6DBB6C442FF69B4C00E3E198 /* search in Frameworks */ = {isa = PBXBuildFile; productRef = 6DBB6C432FF69B4C00E3E198 /* search */; };
+		7823CFBE2FFDB050008A4700 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7823CFBD2FFDB050008A4700 /* Secrets.swift */; };
+		7823CFC02FFDB12F008A4700 /* AIAssistant in Frameworks */ = {isa = PBXBuildFile; productRef = 7823CFBF2FFDB12F008A4700 /* AIAssistant */; };
+		7823CFC22FFDB31A008A4700 /* AIAssistantFloatingButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7823CFC12FFDB31A008A4700 /* AIAssistantFloatingButton.swift */; };
 		7879208D2FF80BF2009EFC6F /* AppAssembly.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7879208C2FF80BF2009EFC6F /* AppAssembly.swift */; };
 		789931162FFADBE5009F76F7 /* Settings in Frameworks */ = {isa = PBXBuildFile; productRef = 789931152FFADBE5009F76F7 /* Settings */; };
 		78BFEC8B2FEFCB6800358550 /* ShopifyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78BFEC8A2FEFCB6800358550 /* ShopifyApp.swift */; };
@@ -39,6 +42,8 @@
 		31D1E34A2FFD34CD005F34CF /* Shopify.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Shopify.entitlements; sourceTree = "<group>"; };
 		31D979202FF74DCE00FA3DD4 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
 		39EBC5CA2FF5B303009F5DA1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		7823CFBD2FFDB050008A4700 /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
+		7823CFC12FFDB31A008A4700 /* AIAssistantFloatingButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIAssistantFloatingButton.swift; sourceTree = "<group>"; };
 		7879208C2FF80BF2009EFC6F /* AppAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAssembly.swift; sourceTree = "<group>"; };
 		78BFEC872FEFCB6800358550 /* Shopify.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Shopify.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		78BFEC8A2FEFCB6800358550 /* ShopifyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopifyApp.swift; sourceTree = "<group>"; };
@@ -60,6 +65,7 @@
 				789931162FFADBE5009F76F7 /* Settings in Frameworks */,
 				78DCBFF82FF8218100C552AF /* Cart in Frameworks */,
 				6DBB6C442FF69B4C00E3E198 /* search in Frameworks */,
+				7823CFC02FFDB12F008A4700 /* AIAssistant in Frameworks */,
 				6D0B9DAA2FF8178300F50859 /* DataPersistence in Frameworks */,
 				395A74B12FFD304C00A375C1 /* Addresss in Frameworks */,
 				6D0B9DAE2FF8179100F50859 /* ProductDetails in Frameworks */,
@@ -105,6 +111,8 @@
 		78BFEC892FEFCB6800358550 /* Shopify */ = {
 			isa = PBXGroup;
 			children = (
+				7823CFC12FFDB31A008A4700 /* AIAssistantFloatingButton.swift */,
+				7823CFBD2FFDB050008A4700 /* Secrets.swift */,
 				31D1E34A2FFD34CD005F34CF /* Shopify.entitlements */,
 				7879208C2FF80BF2009EFC6F /* AppAssembly.swift */,
 				39EBC5CA2FF5B303009F5DA1 /* GoogleService-Info.plist */,
@@ -162,6 +170,7 @@
 				31091F312FF9941000EA2C1C /* StripePayments */,
 				789931152FFADBE5009F76F7 /* Settings */,
 				395A74B02FFD304C00A375C1 /* Addresss */,
+				7823CFBF2FFDB12F008A4700 /* AIAssistant */,
 			);
 			productName = Shopify;
 			productReference = 78BFEC872FEFCB6800358550 /* Shopify.app */;
@@ -224,8 +233,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				31D979212FF74DCE00FA3DD4 /* AppCoordinator.swift in Sources */,
+				7823CFBE2FFDB050008A4700 /* Secrets.swift in Sources */,
 				7879208D2FF80BF2009EFC6F /* AppAssembly.swift in Sources */,
 				78BFEC8D2FEFCB6800358550 /* ContentView.swift in Sources */,
+				7823CFC22FFDB31A008A4700 /* AIAssistantFloatingButton.swift in Sources */,
 				78BFEC8B2FEFCB6800358550 /* ShopifyApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -536,6 +547,10 @@
 		6DBB6C432FF69B4C00E3E198 /* search */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = search;
+		};
+		7823CFBF2FFDB12F008A4700 /* AIAssistant */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AIAssistant;
 		};
 		789931152FFADBE5009F76F7 /* Settings */ = {
 			isa = XCSwiftPackageProductDependency;
