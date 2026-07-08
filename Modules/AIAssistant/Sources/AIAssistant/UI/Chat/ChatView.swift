@@ -63,7 +63,7 @@ public struct ChatView: View {
 
             inputBar
         }
-        .background(Color(.systemGroupedBackground))
+        .background(DS.background)
     }
 
 
@@ -71,12 +71,12 @@ public struct ChatView: View {
         VStack(spacing: 16) {
             Image(systemName: "bubble.left.and.bubble.right.fill")
                 .font(.system(size: 44))
-                .foregroundColor(.indigo.opacity(0.5))
+                .foregroundColor(DS.red.opacity(0.5))
             Text("AI Shopping Assistant")
                 .font(.title3).bold()
             Text("Ask me anything about our products.\nTry: \"What jackets do you have under $80?\"")
                 .font(.subheadline)
-                .foregroundColor(.secondary)
+                .foregroundColor(DS.textSec)
                 .multilineTextAlignment(.center)
 
             VStack(alignment: .leading, spacing: 8) {
@@ -88,8 +88,8 @@ public struct ChatView: View {
                         Text(prompt)
                             .font(.caption)
                             .padding(.horizontal, 12).padding(.vertical, 7)
-                            .background(Color.indigo.opacity(0.1))
-                            .foregroundColor(.indigo)
+                            .background(DS.red.opacity(0.1))
+                            .foregroundColor(DS.red)
                             .clipShape(Capsule())
                     }
                 }
@@ -106,7 +106,7 @@ public struct ChatView: View {
                 .textFieldStyle(.plain)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 10)
-                .background(Color(.secondarySystemGroupedBackground))
+                .background(DS.cardBG)
                 .clipShape(RoundedRectangle(cornerRadius: 20))
                 .focused($inputFocused)
                 .onSubmit { send() }
@@ -114,13 +114,13 @@ public struct ChatView: View {
             Button(action: send) {
                 Image(systemName: isLoading ? "stop.circle.fill" : "arrow.up.circle.fill")
                     .font(.system(size: 32))
-                    .foregroundColor(inputText.trimmingCharacters(in: .whitespaces).isEmpty && !isLoading ? .gray : .indigo)
+                    .foregroundColor(inputText.trimmingCharacters(in: .whitespaces).isEmpty && !isLoading ? DS.textSec : DS.red)
             }
             .disabled(inputText.trimmingCharacters(in: .whitespaces).isEmpty && !isLoading)
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 10)
-        .background(Color(.systemBackground))
+        .background(DS.cardBG)
     }
 
 
@@ -167,8 +167,8 @@ private struct MessageBubble: View {
                     .font(.body)
                     .padding(.horizontal, 14)
                     .padding(.vertical, 10)
-                    .background(isUser ? Color.indigo : Color(.secondarySystemGroupedBackground))
-                    .foregroundColor(isUser ? .white : .primary)
+                    .background(isUser ? DS.red : DS.cardBG)
+                    .foregroundColor(isUser ? .white : DS.textPri)
                     .clipShape(RoundedRectangle(cornerRadius: 18))
 
                 // Attached products chips
@@ -208,9 +208,9 @@ private struct ProductChip: View {
                         case .empty:
                             ProgressView()
                         case .failure:
-                            Color(.tertiarySystemGroupedBackground)
+                            DS.fieldBG
                         @unknown default:
-                            Color(.tertiarySystemGroupedBackground)
+                            DS.fieldBG
                         }
                     }
                     .frame(width: 132, height: 112)
@@ -220,18 +220,18 @@ private struct ProductChip: View {
                 VStack(alignment: .leading, spacing: 3) {
                     Text(product.title)
                         .font(.caption).bold()
-                        .foregroundColor(.primary)
+                        .foregroundColor(DS.textPri)
                         .lineLimit(2)
                     Text(product.minPrice)
                         .font(.caption2)
-                        .foregroundColor(.indigo)
+                        .foregroundColor(DS.red)
                 }
                 .frame(width: 132, alignment: .leading)
             }
             .padding(8)
-            .background(Color(.tertiarySystemGroupedBackground))
+            .background(DS.fieldBG)
             .clipShape(RoundedRectangle(cornerRadius: 10))
-            .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.indigo.opacity(0.2), lineWidth: 1))
+            .overlay(RoundedRectangle(cornerRadius: 10).stroke(DS.red.opacity(0.2), lineWidth: 1))
         }
         .buttonStyle(.plain)
         .disabled(onProductSelected == nil)
@@ -248,14 +248,14 @@ private struct TypingIndicator: View {
             ForEach(0..<3, id: \.self) { i in
                 Circle()
                     .frame(width: 8, height: 8)
-                    .foregroundColor(.gray)
+                    .foregroundColor(DS.textSec)
                     .scaleEffect(phase == i ? 1.3 : 1.0)
                     .animation(.easeInOut(duration: 0.3), value: phase)
             }
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(DS.cardBG)
         .clipShape(RoundedRectangle(cornerRadius: 18))
         .onReceive(timer) { _ in
             phase = (phase + 1) % 3
@@ -271,9 +271,9 @@ private struct ErrorBanner: View {
     var body: some View {
         HStack {
             Image(systemName: "exclamationmark.triangle.fill").foregroundColor(.orange)
-            Text(message).font(.caption).foregroundColor(.primary)
+            Text(message).font(.caption).foregroundColor(DS.textPri)
             Spacer()
-            Button(action: dismiss) { Image(systemName: "xmark").foregroundColor(.secondary) }
+            Button(action: dismiss) { Image(systemName: "xmark").foregroundColor(DS.textSec) }
         }
         .padding(.horizontal, 16).padding(.vertical, 10)
         .background(Color.orange.opacity(0.1))

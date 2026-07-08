@@ -15,7 +15,13 @@ public struct CategoryCardView: View {
     public var body: some View {
         ZStack(alignment: .bottomLeading) {
             RoundedRectangle(cornerRadius: 14)
-                .fill(DS.navy)
+                .fill(
+                    LinearGradient(
+                        colors: [DS.tertiary, DS.primary],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
                 .frame(height: 90)
 
             VStack(alignment: .leading, spacing: 4) {
@@ -29,6 +35,6 @@ public struct CategoryCardView: View {
             }
             .padding(14)
         }
+        .shadow(color: DS.shadow.opacity(0.10), radius: 8, x: 0, y: 4)
     }
 }
-

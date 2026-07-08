@@ -8,11 +8,11 @@
 import SwiftUI
 
 public struct PrimaryButton: View {
-    let title: String
+    let title: LocalizedStringKey
     var icon: String? = nil
     let action: () -> Void
 
-    public init(title: String, icon: String? = nil, action: @escaping () -> Void) {
+    public init(title: LocalizedStringKey, icon: String? = nil, action: @escaping () -> Void) {
         self.title = title
         self.icon = icon
         self.action = action
@@ -30,9 +30,9 @@ public struct PrimaryButton: View {
             .foregroundColor(.white)
             .frame(maxWidth: .infinity)
             .frame(height: 58)
-            .background(Color(.systemPink))
-            .cornerRadius(24)
-            .shadow(color: Color(.systemPink).opacity(0.3), radius: 10, x: 0, y: 5)
+            .background(DS.red)
+            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
         }
+        .primaryButtonStyle()
     }
 }

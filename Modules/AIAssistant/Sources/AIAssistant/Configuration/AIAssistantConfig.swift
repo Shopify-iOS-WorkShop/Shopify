@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+import ShopifyNetwork
 public enum AIProvider: String, Sendable {
     case gemini
     case groq
@@ -34,9 +34,9 @@ public struct AIAssistantConfig: Sendable {
     public static let shopWorkshop = AIAssistantConfig(
         provider:              .gemini,
         geminiAPIKey:          "",   // overridden by AIAssistantKit.configure(...)
-        shopifyHostname:       "mad46-ios-team5.myshopify.com",
-        storefrontAccessToken: "8842c04427c5f8a6e967f204266cd8bf",
-        apiVersion:            "2024-01",
+        shopifyHostname:       ShopifyConfig.hostname,
+        storefrontAccessToken: ShopifyConfig.storefrontToken,
+        apiVersion:            ShopifyConfig.apiVersion,
         agenticMode:           true,
         maxProductsInContext:  20
     )

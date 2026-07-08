@@ -86,7 +86,7 @@ public struct HomeView: View {
                                 .font(.system(size: 10, weight: .bold))
                                 .foregroundColor(.white)
                                 .frame(minWidth: 16, minHeight: 16)
-                                .background(Color.pink)
+                                .background(DS.red)
                                 .clipShape(Circle())
                                 .offset(x: 10, y: -8)
                         }

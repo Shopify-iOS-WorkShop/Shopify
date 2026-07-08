@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import Common
 import Observation
 
 public enum AuthRoute: Hashable {

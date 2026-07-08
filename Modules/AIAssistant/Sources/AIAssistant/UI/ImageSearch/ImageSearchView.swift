@@ -41,7 +41,7 @@ public struct ImageSearchView: View {
                         Label("Find Similar Products", systemImage: "camera.viewfinder")
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(isLoading ? Color.gray : Color.indigo)
+                            .background(isLoading ? DS.lightGray : DS.red)
                             .foregroundColor(.white)
                             .clipShape(RoundedRectangle(cornerRadius: 14))
                     }
@@ -66,7 +66,7 @@ public struct ImageSearchView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(DS.background)
         .photosPicker(isPresented: .constant(false), selection: $selectedItem, matching: .images)
         .onChange(of: selectedItem) { item in
             loadImage(from: item)
@@ -78,12 +78,12 @@ public struct ImageSearchView: View {
         VStack(spacing: 14) {
             Image(systemName: "camera.viewfinder")
                 .font(.system(size: 36))
-                .foregroundColor(.indigo)
+                .foregroundColor(DS.red)
             Text("AI Image Search")
                 .font(.title3).bold()
             Text("Upload a photo of any product — our AI will find similar items in our store.")
                 .font(.subheadline)
-                .foregroundColor(.secondary)
+                .foregroundColor(DS.textSec)
                 .multilineTextAlignment(.center)
 
             HStack(spacing: 12) {
@@ -91,7 +91,7 @@ public struct ImageSearchView: View {
                     Label("Photo Library", systemImage: "photo.on.rectangle")
                         .font(.subheadline)
                         .padding(.horizontal, 16).padding(.vertical, 10)
-                        .background(Color.indigo)
+                        .background(DS.red)
                         .foregroundColor(.white)
                         .clipShape(RoundedRectangle(cornerRadius: 12))
                 }
@@ -99,7 +99,7 @@ public struct ImageSearchView: View {
         }
         .frame(maxWidth: .infinity)
         .padding()
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(DS.cardBG)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -108,7 +108,7 @@ public struct ImageSearchView: View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
                 Text("Your Image")
-                    .font(.caption).foregroundColor(.secondary)
+                    .font(.caption).foregroundColor(DS.textSec)
                 Spacer()
                 Button("Remove") {
                     selectedImage = nil
@@ -117,7 +117,7 @@ public struct ImageSearchView: View {
                     result = nil
                 }
                 .font(.caption)
-                .foregroundColor(.red)
+                .foregroundColor(DS.red)
             }
             image
                 .resizable()
@@ -127,7 +127,7 @@ public struct ImageSearchView: View {
                 .frame(maxWidth: .infinity)
         }
         .padding()
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(DS.cardBG)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -136,7 +136,7 @@ public struct ImageSearchView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Or describe what you're looking for")
                 .font(.subheadline)
-                .foregroundColor(.secondary)
+                .foregroundColor(DS.textSec)
             HStack {
                 TextField("e.g. \"blue floral summer dress\"", text: $textQuery)
                     .textFieldStyle(.roundedBorder)
@@ -144,13 +144,13 @@ public struct ImageSearchView: View {
                 Button(action: searchWithText) {
                     Image(systemName: "magnifyingglass.circle.fill")
                         .font(.title2)
-                        .foregroundColor(.indigo)
+                        .foregroundColor(DS.red)
                 }
                 .disabled(textQuery.trimmingCharacters(in: .whitespaces).isEmpty || isLoading)
             }
         }
         .padding()
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(DS.cardBG)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -165,12 +165,12 @@ public struct ImageSearchView: View {
                 Spacer()
                 Text("\(Int(result.confidence * 100))% confidence")
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(DS.textSec)
             }
 
             Text(result.summary)
                 .font(.subheadline)
-                .foregroundColor(.secondary)
+                .foregroundColor(DS.textSec)
 
             ForEach(result.matchedProducts) { product in
                 MatchedProductRow(product: product, onProductSelected: onProductSelected)
@@ -180,11 +180,11 @@ public struct ImageSearchView: View {
                 withAnimation { self.result = nil }
             }
             .font(.subheadline)
-            .foregroundColor(.indigo)
+            .foregroundColor(DS.red)
             .frame(maxWidth: .infinity)
         }
         .padding()
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(DS.cardBG)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 
@@ -260,9 +260,9 @@ private struct MatchedProductRow: View {
                         case .empty:
                             ProgressView()
                         case .failure:
-                            Color(.tertiarySystemGroupedBackground)
+                            DS.fieldBG
                         @unknown default:
-                            Color(.tertiarySystemGroupedBackground)
+                            DS.fieldBG
                         }
                     }
                     .frame(width: 60, height: 60)
@@ -272,24 +272,24 @@ private struct MatchedProductRow: View {
                 VStack(alignment: .leading, spacing: 3) {
                     Text(product.title)
                         .font(.subheadline).bold()
-                        .foregroundColor(.primary)
+                        .foregroundColor(DS.textPri)
                         .lineLimit(2)
                     Text(product.minPrice)
                         .font(.caption)
-                        .foregroundColor(.indigo)
+                        .foregroundColor(DS.red)
                     if !product.productType.isEmpty {
                         Text(product.productType)
                             .font(.caption2)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(DS.textSec)
                     }
                 }
                 Spacer()
                 Image(systemName: "chevron.right")
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(DS.textSec)
             }
             .padding(10)
-            .background(Color(.tertiarySystemGroupedBackground))
+            .background(DS.fieldBG)
             .clipShape(RoundedRectangle(cornerRadius: 10))
         }
         .buttonStyle(.plain)

@@ -10,12 +10,12 @@ import SwiftUI
 import Common
 
 public struct PaymentMethodButton: View {
-    let title: String
+    let title: LocalizedStringKey
     let icon: String
     let type: PaymentType
     @Binding var selectedMethod: PaymentType
     
-    public init(title: String, icon: String, type: PaymentType, selectedMethod: Binding<PaymentType>) {
+    public init(title: LocalizedStringKey, icon: String, type: PaymentType, selectedMethod: Binding<PaymentType>) {
         self.title = title
         self.icon = icon
         self.type = type

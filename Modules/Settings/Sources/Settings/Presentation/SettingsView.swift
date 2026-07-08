@@ -6,11 +6,14 @@
 import SwiftUI
 import Addresss
 import DependencyInjection
+import Common
 
 @MainActor
 public struct SettingsView: View {
     @State var viewModel: SettingsViewModel
     @Environment(SettingsCoordinator.self) private var coordinator
+    @AppStorage("settings_colorScheme") private var colorSchemeRaw: Int = 0
+    @AppStorage("app_language") private var appLanguage: String = "en"
 
     public init(viewModel: SettingsViewModel) {
         self.viewModel = viewModel
@@ -46,12 +49,13 @@ public struct SettingsView: View {
                         VStack(spacing: 12) {
                             Image(systemName: "person.crop.circle.badge.questionmark")
                                 .font(.system(size: 44))
-                                .foregroundColor(.secondary)
+                                .foregroundColor(DS.textSec)
                             Text("You're browsing as a guest")
                                 .font(.headline)
+                                .foregroundColor(DS.textPri)
                             Text("Sign in to access your orders, addresses, and saved preferences.")
                                 .font(.subheadline)
-                                .foregroundColor(.secondary)
+                                .foregroundColor(DS.textSec)
                                 .multilineTextAlignment(.center)
                             Button {
                                 viewModel.onSignIn?()
@@ -60,7 +64,7 @@ public struct SettingsView: View {
                                     .fontWeight(.semibold)
                                     .frame(maxWidth: .infinity)
                                     .padding(.vertical, 10)
-                                    .background(Color(red: 233/255, green: 69/255, blue: 96/255))
+                                    .background(DS.red)
                                     .foregroundColor(.white)
                                     .clipShape(RoundedRectangle(cornerRadius: 10))
                             }
@@ -80,10 +84,12 @@ public struct SettingsView: View {
                             NavigationLink(value: SettingsRoute.orderDetail(order: order)) {
                                 OrderRowView(order: order, viewModel: viewModel)
                             }
+                            .listRowBackground(DS.cardBG)
                         }                        
                         NavigationLink("View All Orders", value: SettingsRoute.orderHistory)
                             .font(.subheadline)
-                            .foregroundColor(Color(red: 233/255, green: 69/255, blue: 96/255))
+                            .foregroundColor(DS.red)
+                            .listRowBackground(DS.cardBG)
                     }
                 }
 
@@ -93,22 +99,31 @@ public struct SettingsView: View {
                             coordinator.isShowingAddresses = true
                         } label: {
                             Label("Addresses", systemImage: "map")
-                                .foregroundColor(.primary)
+                                .foregroundColor(DS.textPri)
                         }
+                        .listRowBackground(DS.cardBG)
                     }
                 }
 
                 Section("Appearance") {
-                    Picker("Theme", selection: Binding(
-                        get: { viewModel.colorSchemeRaw },
-                        set: { viewModel.setColorScheme($0) }
-                    )) {
+                    Picker("Theme", selection: $colorSchemeRaw) {
                         Text("System").tag(0)
                         Text("Light").tag(1)
                         Text("Dark").tag(2)
                     }
                     .pickerStyle(.segmented)
                     .listRowSeparator(.hidden)
+                    .listRowBackground(DS.cardBG)
+                }
+
+                Section("Language") {
+                    Picker("Language", selection: $appLanguage) {
+                        Text("English").tag("en")
+                        Text("Arabic").tag("ar")
+                    }
+                    .pickerStyle(.segmented)
+                    .listRowSeparator(.hidden)
+                    .listRowBackground(DS.cardBG)
                 }
 
                 Section("Currency") {
@@ -120,17 +135,19 @@ public struct SettingsView: View {
                                 ProgressView()
                             } else {
                                 Text(viewModel.selectedCurrency)
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(DS.textSec)
                             }
                         }
                     }
                     .disabled(viewModel.exchangeRates == nil)
+                    .listRowBackground(DS.cardBG)
 
                     if let rates = viewModel.exchangeRates {
                         let sample = rates.convert(100, to: viewModel.selectedCurrency) ?? 100
                         Text("100 \(rates.baseCurrency) ≈ \(viewModel.selectedCurrency) \(String(format: "%.2f", sample))")
                             .font(.caption)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(DS.textSec)
+                            .listRowBackground(DS.cardBG)
                     }
                 }
 
@@ -140,17 +157,21 @@ public struct SettingsView: View {
                             viewModel.onSignIn?()
                         } label: {
                             Label("Sign In", systemImage: "person.badge.plus")
-                                .foregroundColor(Color(red: 233/255, green: 69/255, blue: 96/255))
+                                .foregroundColor(DS.red)
                         }
+                        .listRowBackground(DS.cardBG)
                     } else {
                         Button(role: .destructive) {
                             viewModel.requestSignOut()
                         } label: {
                             Label("Sign Out", systemImage: "rectangle.portrait.and.arrow.right")
                         }
+                        .listRowBackground(DS.cardBG)
                     }
                 }
             }
+            .scrollContentBackground(.hidden)
+            .background(DS.background.ignoresSafeArea())
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.large)
             .refreshable { await viewModel.onAppear() }
@@ -221,7 +242,10 @@ private struct OrderHistoryView: View {
                 NavigationLink(value: SettingsRoute.orderDetail(order: order)) {
                     OrderRowView(order: order, viewModel: viewModel)
                 }
+                .listRowBackground(DS.cardBG)
             }
+            .scrollContentBackground(.hidden)
+            .background(DS.background.ignoresSafeArea())
             .navigationTitle("Order History")
             .navigationBarTitleDisplayMode(.inline)
             .overlay {

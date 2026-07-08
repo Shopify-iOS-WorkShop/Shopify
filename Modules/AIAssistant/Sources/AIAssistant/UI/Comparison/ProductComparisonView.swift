@@ -29,13 +29,13 @@ public struct ProductComparisonView: View {
                         Button(action: compare) {
                             Image(systemName: "arrow.left.arrow.right.circle.fill")
                                 .font(.title2)
-                                .foregroundColor(.indigo)
+                                .foregroundColor(DS.red)
                         }
                         .disabled(query.trimmingCharacters(in: .whitespaces).isEmpty || isLoading)
                     }
                 }
                 .padding()
-                .background(Color(.secondarySystemGroupedBackground))
+                .background(DS.cardBG)
                 .clipShape(RoundedRectangle(cornerRadius: 14))
 
                 // Quick-start prompts
@@ -61,7 +61,7 @@ public struct ProductComparisonView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(DS.background)
     }
 
 
@@ -69,7 +69,7 @@ public struct ProductComparisonView: View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Try these comparisons")
                 .font(.subheadline)
-                .foregroundColor(.secondary)
+                .foregroundColor(DS.textSec)
             ForEach([
                 "Compare your two most popular items",
                 "Which is better value, hoodie or jacket?",
@@ -81,17 +81,17 @@ public struct ProductComparisonView: View {
                 } label: {
                     HStack {
                         Image(systemName: "arrow.left.arrow.right.circle")
-                            .foregroundColor(.indigo)
+                            .foregroundColor(DS.red)
                         Text(prompt)
                             .font(.subheadline)
-                            .foregroundColor(.primary)
+                            .foregroundColor(DS.textPri)
                         Spacer()
                         Image(systemName: "chevron.right")
                             .font(.caption)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(DS.textSec)
                     }
                     .padding()
-                    .background(Color(.secondarySystemGroupedBackground))
+                    .background(DS.cardBG)
                     .clipShape(RoundedRectangle(cornerRadius: 12))
                 }
                 .buttonStyle(.plain)
@@ -114,13 +114,13 @@ public struct ProductComparisonView: View {
             if !result.summary.isEmpty {
                 VStack(alignment: .leading, spacing: 6) {
                     Label("Summary", systemImage: "text.alignleft")
-                        .font(.caption).foregroundColor(.secondary)
+                        .font(.caption).foregroundColor(DS.textSec)
                     Text(result.summary)
                         .font(.subheadline)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
-                .background(Color(.secondarySystemGroupedBackground))
+                .background(DS.cardBG)
                 .clipShape(RoundedRectangle(cornerRadius: 12))
             }
 
@@ -128,14 +128,14 @@ public struct ProductComparisonView: View {
             if !result.dimensionScores.isEmpty {
                 VStack(alignment: .leading, spacing: 10) {
                     Label("Head-to-Head", systemImage: "chart.bar.xaxis")
-                        .font(.caption).foregroundColor(.secondary)
+                        .font(.caption).foregroundColor(DS.textSec)
                     ForEach(Array(result.dimensionScores.keys.sorted()), id: \.self) { dimension in
                         DimensionRow(dimension: dimension, scores: result.dimensionScores[dimension] ?? [:])
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
-                .background(Color(.secondarySystemGroupedBackground))
+                .background(DS.cardBG)
                 .clipShape(RoundedRectangle(cornerRadius: 12))
             }
 
@@ -143,14 +143,14 @@ public struct ProductComparisonView: View {
             if !result.recommendation.isEmpty {
                 HStack(alignment: .top, spacing: 10) {
                     Image(systemName: "star.circle.fill")
-                        .foregroundColor(.indigo)
+                        .foregroundColor(DS.red)
                         .font(.title3)
                     Text(result.recommendation)
                         .font(.subheadline)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
-                .background(Color.indigo.opacity(0.08))
+                .background(DS.red.opacity(0.08))
                 .clipShape(RoundedRectangle(cornerRadius: 12))
             }
 
@@ -159,7 +159,7 @@ public struct ProductComparisonView: View {
                 withAnimation { self.result = nil; query = "" }
             }
             .font(.subheadline)
-            .foregroundColor(.indigo)
+            .foregroundColor(DS.red)
         }
     }
 
@@ -168,7 +168,7 @@ public struct ProductComparisonView: View {
             Image(systemName: "exclamationmark.triangle.fill").foregroundColor(.orange)
             Text(message).font(.subheadline)
             Spacer()
-            Button("Retry") { compare() }.foregroundColor(.indigo)
+            Button("Retry") { compare() }.foregroundColor(DS.red)
         }
         .padding()
         .background(Color.orange.opacity(0.1))
@@ -212,9 +212,9 @@ private struct ProductCard: View {
                         case .empty:
                             ProgressView()
                         case .failure:
-                            Color(.tertiarySystemGroupedBackground)
+                            DS.fieldBG
                         @unknown default:
-                            Color(.tertiarySystemGroupedBackground)
+                            DS.fieldBG
                         }
                     }
                     .frame(height: 100)
@@ -223,20 +223,20 @@ private struct ProductCard: View {
 
                 Text(product.title)
                     .font(.caption).bold()
-                    .foregroundColor(.primary)
+                    .foregroundColor(DS.textPri)
                     .lineLimit(2)
                 Text(product.minPrice)
                     .font(.caption2)
-                    .foregroundColor(.indigo)
+                    .foregroundColor(DS.red)
                 if !product.productType.isEmpty {
                     Text(product.productType)
                         .font(.caption2)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(DS.textSec)
                 }
             }
             .padding(10)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color(.secondarySystemGroupedBackground))
+            .background(DS.cardBG)
             .clipShape(RoundedRectangle(cornerRadius: 12))
         }
         .buttonStyle(.plain)
@@ -253,14 +253,14 @@ private struct DimensionRow: View {
         VStack(alignment: .leading, spacing: 4) {
             Text(dimension.capitalized)
                 .font(.caption2)
-                .foregroundColor(.secondary)
+                .foregroundColor(DS.textSec)
                 .textCase(.uppercase)
             HStack {
                 ForEach(Array(scores.keys.sorted()), id: \.self) { key in
                     VStack(alignment: .leading, spacing: 2) {
                         Text(key)
                             .font(.caption2)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(DS.textSec)
                             .lineLimit(1)
                         Text(scores[key] ?? "—")
                             .font(.caption)

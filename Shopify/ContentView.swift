@@ -25,14 +25,14 @@ enum GuestPromptContext {
     case addToCart
     case addToFavorites
     
-    var title: String {
+    var title: LocalizedStringKey {
         switch self {
         case .addToCart: return "Sign In to Add to Cart"
         case .addToFavorites: return "Sign In to Add to Favorites"
         }
     }
     
-    var message: String {
+    var message: LocalizedStringKey {
         switch self {
         case .addToCart:
             return "Please sign in to add items to your cart and manage your shopping."
@@ -50,6 +50,7 @@ struct ContentView: View {
     @StateObject private var searchViewModel = AppAssembly.shared.makeSearchViewModel()
     @State private var sessionChecked: Bool = false
     @State private var selectedTab: Common.Tab = .home
+    @AppStorage("app_language") private var appLanguage: String = "en"
     @State private var cartViewModel: CartViewModel? = nil
     @State private var guestPromptContext: GuestPromptContext? = nil
 
@@ -76,7 +77,7 @@ struct ContentView: View {
     var body: some View {
         Group {
             if !sessionChecked {
-                Color(uiColor: .systemBackground).ignoresSafeArea()
+                DS.background.ignoresSafeArea()
             } else if !hasCompletedOnboarding {
                 OnBoardingScreen {
                     hasCompletedOnboarding = true
@@ -148,7 +149,6 @@ struct ContentView: View {
        
         .onChange(of: appCoordinator.hasCompletedAuth) { _, isAuthenticated in
             guard isAuthenticated else { return }
-            selectedTab = .home
             appCoordinator.homeCoordinator.path = NavigationPath() // always show initial Home
             // Recreate cart (picks up new session owner key) and load immediately
             cartViewModel = AppAssembly.shared.resolve(CartViewModel.self)
@@ -329,6 +329,7 @@ struct ContentView: View {
                     .toolbar(.hidden, for: .tabBar)
 
             }
+            .id(appLanguage)
             .environment(currencyStore)
             .toolbar(.hidden, for: .tabBar)
 
@@ -483,6 +484,7 @@ struct ContentView: View {
         case .productDetail(let productId):
             ProductDetailFactory.makeView(
                 productId: productId,
+                sessionProvider: sessionStore,
                 checkIsFavorite: { [weak favoritesViewModel] id in
                     favoritesViewModel?.isFavorite(productId: id) ?? false
                 },
@@ -534,6 +536,7 @@ struct ContentView: View {
         case .productDetail(let productId):
             ProductDetailFactory.makeView(
                 productId: productId,
+                sessionProvider: sessionStore,
                 checkIsFavorite: { [weak favoritesViewModel] id in
                     favoritesViewModel?.isFavorite(productId: id) ?? false
                 },
@@ -577,6 +580,7 @@ struct ContentView: View {
         case .productDetail(let productId):
             ProductDetailFactory.makeView(
                 productId: productId,
+                sessionProvider: sessionStore,
                 checkIsFavorite: { [weak favoritesViewModel] id in
                     favoritesViewModel?.isFavorite(productId: id) ?? false
                 },
@@ -631,6 +635,7 @@ struct ContentView: View {
             if let idInt = Int(productId) {
                 ProductDetailFactory.makeView(
                     productId: idInt,
+                    sessionProvider: sessionStore,
                     checkIsFavorite: { [weak favoritesViewModel] id in
                         favoritesViewModel?.isFavorite(productId: id) ?? false
                     },

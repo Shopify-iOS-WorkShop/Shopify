@@ -14,7 +14,7 @@ import AIAssistant
 
 @main
 struct ShopifyApp: App {
-    
+    @AppStorage("app_language") private var appLanguage: String = "en"
     let modelContainer: ModelContainer
     
     init() {
@@ -59,6 +59,16 @@ struct ShopifyApp: App {
         WindowGroup {
             ContentView()
                 .modelContainer(modelContainer)
+                .environment(\.locale, Locale(identifier: appLanguage))
+                .environment(\.layoutDirection, appLanguage == "ar" ? .rightToLeft : .leftToRight)
+                .onAppear {
+                    let semantic: UISemanticContentAttribute = appLanguage == "ar" ? .forceRightToLeft : .forceLeftToRight
+                    UIView.appearance().semanticContentAttribute = semantic
+                }
+                .onChange(of: appLanguage) { _, newLang in
+                    let semantic: UISemanticContentAttribute = newLang == "ar" ? .forceRightToLeft : .forceLeftToRight
+                    UIView.appearance().semanticContentAttribute = semantic
+                }
         }
     }
 }

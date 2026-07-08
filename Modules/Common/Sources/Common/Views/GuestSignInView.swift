@@ -2,15 +2,15 @@ import SwiftUI
 
 public struct GuestSignInView: View {
     let icon: String
-    let title: String
-    let message: String
+    let title: LocalizedStringKey
+    let message: LocalizedStringKey
     let onSignInTapped: () -> Void
     let onBrowseTapped: () -> Void
     
     public init(
         icon: String,
-        title: String,
-        message: String,
+        title: LocalizedStringKey,
+        message: LocalizedStringKey,
         onSignInTapped: @escaping () -> Void,
         onBrowseTapped: @escaping () -> Void
     ) {
@@ -29,16 +29,17 @@ public struct GuestSignInView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 100, height: 100)
-                .foregroundColor(.secondary.opacity(0.5))
+                .foregroundColor(DS.textSec.opacity(0.5))
             
             VStack(spacing: 8) {
                 Text(title)
                     .font(.title2)
                     .fontWeight(.bold)
+                    .foregroundColor(DS.textPri)
                 
                 Text(message)
                     .font(.body)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(DS.textSec)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 32)
             }
@@ -51,9 +52,9 @@ public struct GuestSignInView: View {
                 .padding(.horizontal, 32)
                 
                 Button(action: onBrowseTapped) {
-                    Text("Continue Browsing")
+                    Text(LocalizedStringKey("Continue Browsing"))
                         .font(.system(size: 16, weight: .semibold))
-                        .foregroundColor(.secondary)
+                        .foregroundColor(DS.textSec)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 16)
                 }
@@ -62,6 +63,6 @@ public struct GuestSignInView: View {
             
             Spacer()
         }
-        .background(Color(UIColor.systemGroupedBackground))
+        .background(DS.background.ignoresSafeArea())
     }
 }

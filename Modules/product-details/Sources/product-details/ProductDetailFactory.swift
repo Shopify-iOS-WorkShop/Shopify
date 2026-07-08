@@ -1,4 +1,5 @@
 import SwiftUI
+import Common
 import ShopifyNetwork
 
 public enum ProductDetailFactory {
@@ -7,11 +8,12 @@ public enum ProductDetailFactory {
     public static func makeView(
         productId: Int,
         networkClient: NetworkClient = URLSessionNetworkClient(),
+        sessionProvider: SessionProviding? = nil,
         checkIsFavorite: ((String) -> Bool)? = nil,
         onToggleFavorite: ((String, String, String, Double, Double, String?) -> Void)? = nil,
         onAddToCart: ProductDetailViewModel.AddToCartAction? = nil
     ) -> some View {
-        let repository = ProductDetailRepository(networkClient: networkClient)
+        let repository = ProductDetailRepository(networkClient: networkClient, sessionProvider: sessionProvider)
         let useCase = FetchProductDetailUseCase(repository: repository)
         
         let viewModel = ProductDetailViewModel(

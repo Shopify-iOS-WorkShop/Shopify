@@ -28,17 +28,17 @@ public struct OrderItemsView: View {
                 ForEach(items) { item in
                     HStack(spacing: 12) {
                         ZStack {
-                            Color(UIColor.tertiarySystemFill)
+                            DS.fieldBG
                             if let url = item.imageURL {
                                 AsyncImage(url: url) { image in
                                     image.resizable().scaledToFill()
                                 } placeholder: {
                                     Image(systemName: "photo")
-                                        .foregroundColor(.secondary)
+                                        .foregroundColor(DS.textSec)
                                 }
                             } else {
                                 Image(systemName: "photo")
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(DS.textSec)
                             }
                         }
                         .frame(width: 60, height: 60)
@@ -53,12 +53,12 @@ public struct OrderItemsView: View {
                             if let variant = item.variantTitle, !variant.isEmpty {
                                 Text(variant)
                                     .font(.caption)
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(DS.textSec)
                             }
                             
                             Text("Qty: \(item.quantity)")
                                 .font(.caption)
-                                .foregroundColor(.secondary)
+                                .foregroundColor(DS.textSec)
                         }
                         
                         Spacer()
@@ -74,7 +74,7 @@ public struct OrderItemsView: View {
                     }
                 }
             }
-            .background(Color(UIColor.secondarySystemGroupedBackground))
+            .background(DS.cardBG)
             .cornerRadius(12)
             .padding(.horizontal)
         }

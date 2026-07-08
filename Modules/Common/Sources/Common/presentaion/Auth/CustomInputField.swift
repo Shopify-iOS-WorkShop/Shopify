@@ -8,14 +8,14 @@
 import SwiftUI
 
 public struct CustomInputField: View {
-    let title: String
-    let placeholder: String
+    let title: LocalizedStringKey
+    let placeholder: LocalizedStringKey
     @Binding var text: String
     var isSecure: Bool = false
     
     @State private var isPasswordVisible: Bool = false
 
-    public init(title: String, placeholder: String, text: Binding<String>, isSecure: Bool = false) {
+    public init(title: LocalizedStringKey, placeholder: LocalizedStringKey, text: Binding<String>, isSecure: Bool = false) {
         self.title = title
         self.placeholder = placeholder
         self._text = text
@@ -24,30 +24,37 @@ public struct CustomInputField: View {
     
     public var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-                Text(title.uppercased())
-                    .font(.caption)
-                    .bold()
-                    .foregroundColor(.black)
+            Text(title)
+                .textCase(.uppercase)
+                .font(.caption)
+                .bold()
+                .foregroundColor(DS.textPri)
             
             ZStack(alignment: .trailing) {
                 if isSecure && !isPasswordVisible {
                     SecureField(placeholder, text: $text)
+                        .foregroundColor(DS.textPri)
                 } else {
                     TextField(placeholder, text: $text)
+                        .foregroundColor(DS.textPri)
                 }
                 
                 if isSecure {
                     Button(action: { isPasswordVisible.toggle() }) {
                         Image(systemName: isPasswordVisible ? "eye.slash" : "eye")
-                            .foregroundColor(.gray)
+                            .foregroundColor(DS.textSec)
                     }
                     .padding(.trailing, 16)
                 }
             }
             .padding()
             .frame(minHeight: 56)
-            .background(Color(.systemGray6))
-            .cornerRadius(12)
+            .background(DS.fieldBG)
+            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .stroke(DS.border, lineWidth: 1)
+            }
         }
     }
 }

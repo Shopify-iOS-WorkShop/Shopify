@@ -25,7 +25,7 @@ public struct AIAssistantCoordinator: View {
                 featureContent
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-            .navigationTitle(selectedFeature.rawValue)
+            .navigationTitle(LocalizedStringKey(selectedFeature.rawValue))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -33,7 +33,7 @@ public struct AIAssistantCoordinator: View {
                         showingFeaturePicker.toggle()
                     } label: {
                         Image(systemName: "wand.and.stars")
-                            .foregroundColor(.indigo)
+                            .foregroundColor(DS.red)
                     }
                 }
             }
@@ -41,7 +41,7 @@ public struct AIAssistantCoordinator: View {
                 FeaturePickerSheet(selected: $selectedFeature)
             }
         }
-        .tint(.indigo)
+        .tint(DS.red)
         .onAppear {
             if let initial = initialFeature {
                 selectedFeature = initial
@@ -67,7 +67,7 @@ public struct AIAssistantCoordinator: View {
             .padding(.horizontal, 16)
             .padding(.vertical, 10)
         }
-        .background(Color(.systemGroupedBackground))
+        .background(DS.background)
         Divider()
     }
 
@@ -97,14 +97,14 @@ private struct FeatureTab: View {
             HStack(spacing: 6) {
                 Image(systemName: feature.icon)
                     .font(.caption)
-                Text(feature.rawValue.components(separatedBy: " ").dropFirst().joined(separator: " "))
+                Text(LocalizedStringKey(feature.rawValue.components(separatedBy: " ").dropFirst().joined(separator: " ")))
                     .font(.caption)
                     .fontWeight(.medium)
             }
             .padding(.horizontal, 12)
             .padding(.vertical, 7)
-            .background(isSelected ? Color.indigo : Color(.secondarySystemGroupedBackground))
-            .foregroundColor(isSelected ? .white : .secondary)
+            .background(isSelected ? DS.red : DS.cardBG)
+            .foregroundColor(isSelected ? .white : DS.textSec)
             .clipShape(Capsule())
         }
         .buttonStyle(.plain)
@@ -123,12 +123,14 @@ private struct FeaturePickerSheet: View {
                     selected = feature
                     dismiss()
                 } label: {
-                    Label(feature.rawValue, systemImage: feature.icon)
-                        .foregroundColor(.primary)
+                    Label(LocalizedStringKey(feature.rawValue), systemImage: feature.icon)
+                        .foregroundColor(DS.textPri)
                 }
             }
             .navigationTitle("AI Features")
             .navigationBarTitleDisplayMode(.inline)
+            .scrollContentBackground(.hidden)
+            .background(DS.background)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Done") { dismiss() }

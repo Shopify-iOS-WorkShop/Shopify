@@ -32,7 +32,7 @@ public struct CartLineItemView: View {
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                 } placeholder: {
-                    Color.gray.opacity(0.2)
+                    DS.fieldBG
                         .overlay {
                             ProgressView()
                         }
@@ -42,11 +42,11 @@ public struct CartLineItemView: View {
                 .onTapGesture(perform: onProductTap)
             } else {
                 RoundedRectangle(cornerRadius: 8)
-                    .fill(Color.gray.opacity(0.2))
+                    .fill(DS.fieldBG)
                     .frame(width: 80, height: 80)
                     .overlay {
                         Image(systemName: "photo")
-                            .foregroundColor(.gray)
+                            .foregroundColor(DS.textSec)
                     }
                     .onTapGesture(perform: onProductTap)
             }
@@ -56,6 +56,7 @@ public struct CartLineItemView: View {
                 HStack(alignment: .top) {
                     Text(line.productTitle)
                         .font(.headline)
+                        .foregroundColor(DS.textPri)
                         .lineLimit(2)
                         .onTapGesture(perform: onProductTap)
                     
@@ -63,7 +64,7 @@ public struct CartLineItemView: View {
                     
                     Button(action: onRemove) {
                         Image(systemName: "trash")
-                            .foregroundColor(.red)
+                            .foregroundColor(DS.red)
                     }
                 }
                 
@@ -71,7 +72,7 @@ public struct CartLineItemView: View {
                 if !line.variantTitle.isEmpty && line.variantTitle.lowercased() != "default title" {
                     Text(line.variantTitle)
                         .font(.subheadline)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(DS.textSec)
                 }
                 
                 // Price
@@ -82,7 +83,7 @@ public struct CartLineItemView: View {
                     if let compareAt = line.compareAtPrice, compareAt.amount > line.price.amount {
                         Text(currencyStore.convert(compareAt.amount))
                             .strikethrough()
-                            .foregroundColor(.secondary)
+                            .foregroundColor(DS.textSec)
                             .font(.caption)
                     }
                 }
@@ -91,7 +92,7 @@ public struct CartLineItemView: View {
                 HStack {
                     Button(action: onDecrease) {
                         Image(systemName: "minus.circle.fill")
-                            .foregroundColor(.secondary)
+                            .foregroundColor(DS.textSec)
                             .imageScale(.large)
                     }
                     
@@ -101,7 +102,7 @@ public struct CartLineItemView: View {
                     
                     Button(action: onIncrease) {
                         Image(systemName: "plus.circle.fill")
-                            .foregroundColor(.primary)
+                            .foregroundColor(DS.tertiary)
                             .imageScale(.large)
                     }
                     .disabled(line.quantityAvailable != nil && line.quantity >= line.quantityAvailable!)
@@ -118,7 +119,11 @@ public struct CartLineItemView: View {
             }
         }
         .padding()
-        .background(Color(UIColor.secondarySystemGroupedBackground))
-        .cornerRadius(12)
+        .background(DS.cardBG)
+        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .stroke(DS.lightGray, lineWidth: 1)
+        }
     }
 }

@@ -113,29 +113,65 @@ public struct ProductDetailVariantEntity {
 public struct ReviewEntity {
 
     public let id: String
+    public let metafieldId: Int?
 
     public let authorInitials: String
 
     public let authorName: String
 
     public let rating: Double
+    public let title: String?
 
     public let body: String
+    public let createdAt: Date?
+    public let ownerCustomerId: String?
+    public let ownerFirebaseUID: String?
+    public let isOwnedByCurrentCustomer: Bool
 
 
 
-    public init(id: String, authorInitials: String, authorName: String, rating: Double, body: String) {
+    public init(
+        id: String,
+        metafieldId: Int? = nil,
+        authorInitials: String,
+        authorName: String,
+        rating: Double,
+        title: String? = nil,
+        body: String,
+        createdAt: Date? = nil,
+        ownerCustomerId: String? = nil,
+        ownerFirebaseUID: String? = nil,
+        isOwnedByCurrentCustomer: Bool = false
+    ) {
 
         self.id = id
+        self.metafieldId = metafieldId
 
         self.authorInitials = authorInitials
 
         self.authorName = authorName
 
         self.rating = rating
+        self.title = title
 
         self.body = body
+        self.createdAt = createdAt
+        self.ownerCustomerId = ownerCustomerId
+        self.ownerFirebaseUID = ownerFirebaseUID
+        self.isOwnedByCurrentCustomer = isOwnedByCurrentCustomer
 
     }
 
+}
+
+public struct ReviewInput: Equatable {
+    public let rating: Int
+    public let title: String
+    public let body: String
+
+    public init(rating: Int, title: String, body: String) {
+        self.rating = rating
+        self.title = title
+        self.body = body
+    }
 }

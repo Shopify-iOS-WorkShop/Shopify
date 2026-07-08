@@ -16,16 +16,17 @@ public struct EmptyCartView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 100, height: 100)
-                .foregroundColor(.secondary.opacity(0.5))
+                .foregroundColor(DS.textSec.opacity(0.6))
             
             VStack(spacing: 8) {
                 Text("Your Cart is Empty")
                     .font(.title2)
                     .fontWeight(.bold)
+                    .foregroundColor(DS.textPri)
                 
                 Text("Looks like you haven't added anything to your cart yet.")
                     .font(.body)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(DS.textSec)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 32)
             }
@@ -39,6 +40,6 @@ public struct EmptyCartView: View {
             
             Spacer()
         }
-        .background(Color(UIColor.systemGroupedBackground))
+        .background(DS.background)
     }
 }

@@ -30,7 +30,7 @@ struct ProductRow: View {
                             ZStack {
                                 Color.pocketChip
                                 Image(systemName: "photo")
-                                    .foregroundColor(.gray)
+                                    .foregroundColor(.pocketMuted)
                             }
                         @unknown default:
                             EmptyView()
@@ -40,7 +40,7 @@ struct ProductRow: View {
                     ZStack {
                         Color.pocketChip
                         Image(systemName: "bag")
-                            .foregroundColor(.gray)
+                            .foregroundColor(.pocketMuted)
                     }
                 }
             }
@@ -50,10 +50,11 @@ struct ProductRow: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(product.title)
                     .font(.subheadline.weight(.semibold))
+                    .foregroundColor(.pocketText)
                     .lineLimit(2)
                 Text(product.vendor)
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(.pocketMuted)
                 Text(currencyStore.convert(Double(product.price) ?? 0))
                     .font(.subheadline.weight(.bold))
                     .foregroundColor(.pocketPink)
@@ -62,11 +63,11 @@ struct ProductRow: View {
             Spacer()
         }
         .padding(12)
-        .background(Color.white)
+        .background(Color.pocketCard)
         .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .stroke(Color.black.opacity(0.05), lineWidth: 1)
+                .stroke(Color.pocketBorder, lineWidth: 1)
         )
         .contentShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
         .onTapGesture { onTap?(product) }

@@ -4,6 +4,7 @@
 //
 
 import SwiftUI
+import Common
 
 public struct ProfileHeaderView: View {
     let profile: CustomerProfile
@@ -19,8 +20,8 @@ public struct ProfileHeaderView: View {
                     .fill(
                         LinearGradient(
                             colors: [
-                                Color(red: 233/255, green: 69/255, blue: 96/255),
-                                Color(red: 200/255, green: 50/255, blue: 80/255)
+                                DS.red,
+                                DS.tertiary
                             ],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
@@ -37,22 +38,27 @@ public struct ProfileHeaderView: View {
                 Text(profile.fullName)
                     .font(.title3)
                     .fontWeight(.semibold)
+                    .foregroundColor(DS.textPri)
 
                 Text(profile.email)
                     .font(.subheadline)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(DS.textSec)
 
                 if let phone = profile.phone, !phone.isEmpty {
                     Text(phone)
                         .font(.caption)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(DS.textSec)
                 }
             }
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 24)
-        .background(Color(UIColor.secondarySystemGroupedBackground))
-        .cornerRadius(16)
+        .background(DS.cardBG)
+        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .stroke(DS.lightGray, lineWidth: 1)
+        }
     }
 
     private var initials: String {

@@ -20,6 +20,7 @@ struct SearchResultsListView: View {
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Collections")
                             .font(.system(size: 16, weight: .bold))
+                            .foregroundColor(.pocketText)
                             .padding(.horizontal, 20)
 
                         ScrollView(.horizontal, showsIndicators: false) {
@@ -41,6 +42,7 @@ struct SearchResultsListView: View {
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Products")
                             .font(.system(size: 16, weight: .bold))
+                            .foregroundColor(.pocketText)
                             .padding(.horizontal, 20)
 
                         VStack(spacing: 12) {

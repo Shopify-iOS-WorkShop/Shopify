@@ -26,7 +26,7 @@ public struct ResetPasswordView: View {
                 ZStack {
                     Text("Reset Password")
                         .font(.system(size: 23, weight: .bold))
-                        .foregroundColor(.black)
+                        .foregroundColor(DS.textPri)
                     
                     HStack {
                         Button(action: { 
@@ -34,7 +34,7 @@ public struct ResetPasswordView: View {
                         }) {
                             Image(systemName: "chevron.left")
                                 .font(.system(size: 28, weight: .medium))
-                                .foregroundColor(.black)
+                                .foregroundColor(DS.textPri)
                         }
                         Spacer()
                     }
@@ -49,7 +49,7 @@ public struct ResetPasswordView: View {
             }
             .padding(.horizontal, 18)
         }
-        .background(Color(.systemBackground))
+        .background(DS.background)
         .navigationBarHidden(true)
     }
     
@@ -61,14 +61,14 @@ public struct ResetPasswordView: View {
             VStack(alignment: .leading, spacing: 8) {
                 Text("Resetting password for:")
                     .font(.system(size: 14))
-                    .foregroundColor(Color(.darkGray))
+                    .foregroundColor(DS.textSec)
                 
                 Text(viewModel.email)
                     .font(.system(size: 16, weight: .semibold))
-                    .foregroundColor(.black)
+                    .foregroundColor(DS.textPri)
                     .padding()
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(Color(.systemGray6))
+                    .background(DS.fieldBG)
                     .cornerRadius(12)
             }
             .padding(.top, 8)
@@ -84,7 +84,7 @@ public struct ResetPasswordView: View {
                 if let error = viewModel.passwordLengthError {
                     Text(error)
                         .font(.caption)
-                        .foregroundColor(.red)
+                        .foregroundColor(DS.red)
                 }
             }
             
@@ -99,7 +99,7 @@ public struct ResetPasswordView: View {
                 if let error = viewModel.passwordMatchError {
                     Text(error)
                         .font(.caption)
-                        .foregroundColor(.red)
+                        .foregroundColor(DS.red)
                 }
             }
             
@@ -107,7 +107,7 @@ public struct ResetPasswordView: View {
             if let error = viewModel.errorMessage {
                 Text(error)
                     .font(.callout)
-                    .foregroundColor(.red)
+                    .foregroundColor(DS.red)
                     .multilineTextAlignment(.center)
             }
             
@@ -148,11 +148,11 @@ public struct ResetPasswordView: View {
             VStack(spacing: 10) {
                 Text("Password Reset!")
                     .font(.system(size: 22, weight: .bold))
-                    .foregroundColor(.black)
+                    .foregroundColor(DS.textPri)
                 
                 Text("Your password has been reset successfully.\nYou can now sign in with your new password.")
                     .font(.system(size: 15))
-                    .foregroundColor(Color(.darkGray))
+                    .foregroundColor(DS.textSec)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 20)
             }

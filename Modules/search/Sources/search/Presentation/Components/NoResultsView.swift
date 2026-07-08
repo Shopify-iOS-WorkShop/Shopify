@@ -29,9 +29,10 @@ struct NoResultsView: View {
             VStack(spacing: 6) {
                 Text("No results found")
                     .font(.headline)
+                    .foregroundColor(.pocketText)
                 Text("We couldn't find any products matching your search. Try checking your spelling or use more general terms.")
                     .font(.subheadline)
-                    .foregroundColor(.gray)
+                    .foregroundColor(.pocketMuted)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 32)
             }

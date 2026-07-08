@@ -69,45 +69,49 @@ public struct PaymentMethodView: View {
                 VStack(spacing: 12) {
                     HStack {
                         Text("Subtotal (\(viewModel.totalItems) items)")
-                            .foregroundColor(.secondary)
+                            .foregroundColor(DS.textSec)
                         
                         Spacer()
                         
                         VStack(alignment: .trailing, spacing: 2) {
                             Text(viewModel.subtotalFormatted)
+                                .foregroundColor(DS.textPri)
                             
                             if let usdText = viewModel.usdSubtotalFormatted {
                                 Text(usdText)
                                     .font(.caption)
-                                    .foregroundColor(.gray)
+                                    .foregroundColor(DS.textSec)
                             }
                         }
                     }
                     
                     HStack {
                         Text("Shipping Fee")
-                            .foregroundColor(.secondary)
+                            .foregroundColor(DS.textSec)
                         
                         Spacer()
                         
                         VStack(alignment: .trailing, spacing: 2) {
                             Text(viewModel.deliveryFeeFormatted)
+                                .foregroundColor(DS.textPri)
                             
                             if let usdText = viewModel.usdDeliveryFeeFormatted {
                                 Text(usdText)
                                     .font(.caption)
-                                    .foregroundColor(.gray)
+                                    .foregroundColor(DS.textSec)
                             }
                         }
                     }
                     
                     Divider()
+                        .background(DS.border)
                         .padding(.vertical, 4)
                     
                     HStack {
                         Text("Total Amount")
                             .font(.headline)
                             .fontWeight(.bold)
+                            .foregroundColor(DS.textPri)
                         
                         Spacer()
                         
@@ -115,23 +119,28 @@ public struct PaymentMethodView: View {
                             Text(viewModel.totalFormatted)
                                 .font(.headline)
                                 .fontWeight(.bold)
-                                .foregroundColor(.red)
+                                .foregroundColor(DS.red)
                             
                             if let usdText = viewModel.usdTotalFormatted {
                                 Text(usdText)
                                     .font(.caption)
-                                    .foregroundColor(.gray)
+                                    .foregroundColor(DS.textSec)
                             }
                         }
                     }
                 }
                 .padding()
-                .background(Color(UIColor.secondarySystemBackground))
+                .background(DS.cardBG)
                 .cornerRadius(12)
+                .overlay {
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(DS.border, lineWidth: 1)
+                }
             }
             .padding(.horizontal, 20)
             .padding(.bottom, 20)
         }
+        .background(DS.background.ignoresSafeArea())
         .navigationTitle("Checkout")
         .navigationBarTitleDisplayMode(.inline)
         .safeAreaInset(edge: .bottom) {
@@ -147,11 +156,15 @@ public struct PaymentMethodView: View {
                         Text("Pay")
                             .font(.system(size: 18, weight: .semibold))
                     }
-                    .foregroundColor(.white)
+                    .foregroundColor(.black)
                     .frame(maxWidth: .infinity)
                     .frame(height: 45)
-                    .background(Color.black)
+                    .background(Color.white)
                     .cornerRadius(8)
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(Color.white.opacity(0.6), lineWidth: 1.5)
+                    }
                 }
                 .padding(.horizontal, 40)
                 
@@ -169,7 +182,11 @@ public struct PaymentMethodView: View {
             .disabled(viewModel.isLoading)
         }
         .padding(.top, 12)
-        .background(.thinMaterial)
+        .background(
+            DS.background
+                .shadow(color: .black.opacity(0.15), radius: 12, y: -4)
+        )
+        .background(DS.background.ignoresSafeArea())
     }
         .onTapGesture { UIApplication.shared.endEditing() }
         

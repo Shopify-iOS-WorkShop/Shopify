@@ -32,16 +32,19 @@ public struct CustomTabBar: View {
                                 .font(.system(size: 10, weight: .bold))
                                 .foregroundColor(.white)
                                 .frame(minWidth: 16, minHeight: 16)
-                                .background(Color.pink)
+                                .background(DS.red)
                                 .clipShape(Circle())
                                 .offset(x: 8, y: -6)
                         }
                     }
 
-                    Text(tab.rawValue)
+                    Text(LocalizedStringKey(tab.rawValue))
                         .font(.system(size: 11, weight: selectedTab == tab ? .bold : .medium))
                 }
-                .foregroundColor(selectedTab == tab ? .black : .gray)
+                .foregroundColor(selectedTab == tab ? DS.textPri : DS.textSec)
+                .padding(.vertical, 6)
+                .padding(.horizontal, 8)
+                .background(selectedTab == tab ? DS.chipBG : Color.clear, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
                 .onTapGesture {
                     onTabTapped?(tab)   // always fires, even on re-tap of current tab
                     selectedTab = tab
@@ -50,7 +53,12 @@ public struct CustomTabBar: View {
             }
         }
         .padding(.vertical, 12)
-        .background(Color(uiColor: .systemBackground))
-        .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: -2)
+        .background(DS.cardBG)
+        .overlay(alignment: .top) {
+            Rectangle()
+                .fill(DS.lightGray)
+                .frame(height: 1)
+        }
+        .shadow(color: DS.shadow.opacity(0.06), radius: 8, x: 0, y: -3)
     }
 }

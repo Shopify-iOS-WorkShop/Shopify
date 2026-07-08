@@ -3,20 +3,21 @@ import SwiftUI
 
 public struct ProductListingView: View {
     public let title: String
-    @ObservedObject public var viewModel: ProductListingViewModel
+    @StateObject public var viewModel: ProductListingViewModel
     @State private var selectedFilter: String = "All"
     @State private var showingFilterDrawer = false
     
     @Environment(ProductListingCoordinator.self) private var coordinator
+    @Environment(\.dismiss) private var dismiss
     
     private let columns = [
         GridItem(.flexible(), spacing: 16),
         GridItem(.flexible(), spacing: 16)
     ]
     
-    public init(title: String, viewModel: ProductListingViewModel) {
+    public init(title: String, viewModel: @autoclosure @escaping () -> ProductListingViewModel) {
         self.title = title
-        self.viewModel = viewModel
+        self._viewModel = StateObject(wrappedValue: viewModel())
     }
     
     public var body: some View {
@@ -33,15 +34,20 @@ public struct ProductListingView: View {
                                 .font(.system(size: 13, weight: .medium))
                                 .padding(.horizontal, 16)
                                 .padding(.vertical, 8)
-                                .background(selectedFilter == filter ? DS.navy : DS.background)
+                                .background(selectedFilter == filter ? DS.primary : DS.chipBG)
                                 .foregroundColor(selectedFilter == filter ? .white : DS.textPri)
                                 .clipShape(Capsule())
+                                .overlay {
+                                    Capsule()
+                                        .stroke(selectedFilter == filter ? Color.clear : DS.border, lineWidth: 1)
+                                }
                         }
                     }
                 }
                 .padding(.horizontal, 16)
                 .padding(.vertical, 12)
             }
+            .background(DS.background)
             
             HStack {
                 Text("Sort by:")
@@ -81,6 +87,7 @@ public struct ProductListingView: View {
             }
             .padding(.horizontal, 16)
             .padding(.bottom, 12)
+            .background(DS.background)
             
             ScrollView(showsIndicators: false) {
                 LazyVGrid(columns: columns, spacing: 16) {
@@ -97,12 +104,26 @@ public struct ProductListingView: View {
                 .padding(.bottom, 20)
             }
         }
+        .animation(.easeInOut(duration: 0.3), value: viewModel.filteredProducts.map { $0.id })
+        .background(DS.background.ignoresSafeArea())
         .task {
             await viewModel.fetchProducts()
         }
-        .navigationTitle(title)
+        .navigationTitle(LocalizedStringKey(title))
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
         .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: {
+                    dismiss()
+                }) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "chevron.backward")
+                            .font(.system(size: 16, weight: .semibold))
+                        Text(LocalizedStringKey("Back"))
+                    }
+                }
+            }
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
                     showingFilterDrawer = true
