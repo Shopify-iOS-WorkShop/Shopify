@@ -18,7 +18,11 @@ struct AdBannerCardView: View {
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {
-            backgroundLayer
+            Color.clear
+                .overlay {
+                    backgroundLayer
+                }
+                .clipped()
 
             LinearGradient(
                 colors: [.clear, .black.opacity(0.10), .black.opacity(0.78)],
@@ -111,7 +115,7 @@ struct AdBannerCardView: View {
             }
 
             HStack(spacing: 4) {
-                Text(ad.ctaText)
+                Text(LocalizedStringKey(ad.ctaText))
                     .font(.system(size: 13, weight: .bold))
                 Image(systemName: "arrow.right")
                     .font(.system(size: 11, weight: .bold))

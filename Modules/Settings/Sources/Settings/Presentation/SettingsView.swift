@@ -13,6 +13,7 @@ public struct SettingsView: View {
     @State var viewModel: SettingsViewModel
     @Environment(SettingsCoordinator.self) private var coordinator
     @AppStorage("settings_colorScheme") private var colorSchemeRaw: Int = 0
+    @AppStorage("app_language") private var appLanguage: String = "en"
 
     public init(viewModel: SettingsViewModel) {
         self.viewModel = viewModel
@@ -106,6 +107,15 @@ public struct SettingsView: View {
                         Text("System").tag(0)
                         Text("Light").tag(1)
                         Text("Dark").tag(2)
+                    }
+                    .pickerStyle(.segmented)
+                    .listRowSeparator(.hidden)
+                }
+
+                Section("Language") {
+                    Picker("Language", selection: $appLanguage) {
+                        Text("English").tag("en")
+                        Text("Arabic").tag("ar")
                     }
                     .pickerStyle(.segmented)
                     .listRowSeparator(.hidden)

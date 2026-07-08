@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3104A1592FFEBC5700020441 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3104A1562FFEBC5700020441 /* Localizable.strings */; };
 		31091F202FF9941000EA2C1C /* Stripe in Frameworks */ = {isa = PBXBuildFile; productRef = 31091F1F2FF9941000EA2C1C /* Stripe */; };
 		31091F222FF9941000EA2C1C /* StripeApplePay in Frameworks */ = {isa = PBXBuildFile; productRef = 31091F212FF9941000EA2C1C /* StripeApplePay */; };
 		31091F322FF9941000EA2C1C /* StripePayments in Frameworks */ = {isa = PBXBuildFile; productRef = 31091F312FF9941000EA2C1C /* StripePayments */; };
@@ -39,6 +40,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3104A1572FFEBC5700020441 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/Localizable.strings; sourceTree = "<group>"; };
+		3104A1582FFEBC5700020441 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		31D1E34A2FFD34CD005F34CF /* Shopify.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Shopify.entitlements; sourceTree = "<group>"; };
 		31D979202FF74DCE00FA3DD4 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
 		39EBC5CA2FF5B303009F5DA1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -84,6 +87,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3104A1552FFEBC5700020441 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				3104A1562FFEBC5700020441 /* Localizable.strings */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		31A1577C2FEFFBF50080AC8E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -111,6 +122,7 @@
 		78BFEC892FEFCB6800358550 /* Shopify */ = {
 			isa = PBXGroup;
 			children = (
+				3104A1552FFEBC5700020441 /* Resources */,
 				7825A0D72FFEA91D0091EBBE /* Secrets.swift */,
 				7823CFC12FFDB31A008A4700 /* AIAssistantFloatingButton.swift */,
 				31D1E34A2FFD34CD005F34CF /* Shopify.entitlements */,
@@ -198,6 +210,7 @@
 			knownRegions = (
 				en,
 				Base,
+				ar,
 			);
 			mainGroup = 78BFEC7E2FEFCB6800358550;
 			packageReferences = (
@@ -220,6 +233,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				78BFEC922FEFCB6A00358550 /* Preview Assets.xcassets in Resources */,
+				3104A1592FFEBC5700020441 /* Localizable.strings in Resources */,
 				78BFEC8F2FEFCB6A00358550 /* Assets.xcassets in Resources */,
 				39EBC5CB2FF5B303009F5DA1 /* GoogleService-Info.plist in Resources */,
 			);
@@ -242,6 +256,18 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		3104A1562FFEBC5700020441 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				3104A1572FFEBC5700020441 /* ar */,
+				3104A1582FFEBC5700020441 /* en */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		78BFEC932FEFCB6A00358550 /* Debug */ = {

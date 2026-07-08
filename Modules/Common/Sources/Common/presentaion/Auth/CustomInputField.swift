@@ -8,14 +8,14 @@
 import SwiftUI
 
 public struct CustomInputField: View {
-    let title: String
-    let placeholder: String
+    let title: LocalizedStringKey
+    let placeholder: LocalizedStringKey
     @Binding var text: String
     var isSecure: Bool = false
     
     @State private var isPasswordVisible: Bool = false
 
-    public init(title: String, placeholder: String, text: Binding<String>, isSecure: Bool = false) {
+    public init(title: LocalizedStringKey, placeholder: LocalizedStringKey, text: Binding<String>, isSecure: Bool = false) {
         self.title = title
         self.placeholder = placeholder
         self._text = text
@@ -24,10 +24,11 @@ public struct CustomInputField: View {
     
     public var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-                Text(title.uppercased())
-                    .font(.caption)
-                    .bold()
-                    .foregroundColor(DS.textPri)
+            Text(title)
+                .textCase(.uppercase)
+                .font(.caption)
+                .bold()
+                .foregroundColor(DS.textPri)
             
             ZStack(alignment: .trailing) {
                 if isSecure && !isPasswordVisible {

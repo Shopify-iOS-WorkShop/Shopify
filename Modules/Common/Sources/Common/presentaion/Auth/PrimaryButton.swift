@@ -8,11 +8,11 @@
 import SwiftUI
 
 public struct PrimaryButton: View {
-    let title: String
+    let title: LocalizedStringKey
     var icon: String? = nil
     let action: () -> Void
 
-    public init(title: String, icon: String? = nil, action: @escaping () -> Void) {
+    public init(title: LocalizedStringKey, icon: String? = nil, action: @escaping () -> Void) {
         self.title = title
         self.icon = icon
         self.action = action
