@@ -2,15 +2,15 @@ import SwiftUI
 
 public struct GuestSignInView: View {
     let icon: String
-    let title: String
-    let message: String
+    let title: LocalizedStringKey
+    let message: LocalizedStringKey
     let onSignInTapped: () -> Void
     let onBrowseTapped: () -> Void
     
     public init(
         icon: String,
-        title: String,
-        message: String,
+        title: LocalizedStringKey,
+        message: LocalizedStringKey,
         onSignInTapped: @escaping () -> Void,
         onBrowseTapped: @escaping () -> Void
     ) {
@@ -52,7 +52,7 @@ public struct GuestSignInView: View {
                 .padding(.horizontal, 32)
                 
                 Button(action: onBrowseTapped) {
-                    Text("Continue Browsing")
+                    Text(LocalizedStringKey("Continue Browsing"))
                         .font(.system(size: 16, weight: .semibold))
                         .foregroundColor(DS.textSec)
                         .frame(maxWidth: .infinity)

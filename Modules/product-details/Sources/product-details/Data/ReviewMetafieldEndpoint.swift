@@ -8,7 +8,7 @@ enum ReviewMetafieldEndpoint: Endpoint {
     case deleteReview(metafieldId: Int)
 
     var baseURL: String {
-        ShopifyConfig.hostname+"/admin/api/"+ShopifyConfig.apiVersion
+        "https://"+ShopifyConfig.hostname+"/admin/api/"+ShopifyConfig.apiVersion
     }
 
     var path: String {

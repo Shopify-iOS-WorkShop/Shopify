@@ -58,7 +58,6 @@ struct ShopifyApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .id(appLanguage)
                 .modelContainer(modelContainer)
                 .environment(\.locale, Locale(identifier: appLanguage))
                 .environment(\.layoutDirection, appLanguage == "ar" ? .rightToLeft : .leftToRight)
