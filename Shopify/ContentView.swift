@@ -25,14 +25,14 @@ enum GuestPromptContext {
     case addToCart
     case addToFavorites
     
-    var title: String {
+    var title: LocalizedStringKey {
         switch self {
         case .addToCart: return "Sign In to Add to Cart"
         case .addToFavorites: return "Sign In to Add to Favorites"
         }
     }
     
-    var message: String {
+    var message: LocalizedStringKey {
         switch self {
         case .addToCart:
             return "Please sign in to add items to your cart and manage your shopping."

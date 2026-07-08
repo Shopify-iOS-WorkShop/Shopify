@@ -252,3 +252,18 @@
 "Confirm Password" = "تأكيد كلمة المرور";
 "Confirm password" = "تأكيد كلمة المرور";
 "or sign up with" = "أو قم بالتسجيل باستخدام";
+"Reset Password for %@" = "إعادة تعيين كلمة المرور لـ %@";
+"Invalid product ID" = "رقم المنتج غير صالح";
+"Cart not initialized" = "لم يتم تهيئة سلة التسوق";
+
+/* Guest Mode Fixes */
+"Sign In to View Cart" = "تسجيل الدخول لعرض السلة";
+"Please sign in to add items to your cart and manage your shopping." = "يرجى تسجيل الدخول لإضافة عناصر إلى سلة التسوق الخاصة بك وإدارة تسوقك.";
+"Sign In to View Wishlist" = "تسجيل الدخول لعرض قائمة الأمنيات";
+"Please sign in to save items to your favorites and access them across devices." = "يرجى تسجيل الدخول لحفظ العناصر في مفضلتك والوصول إليها عبر الأجهزة.";
+
+/* Guest Prompt Fixes */
+"Sign In to Add to Cart" = "تسجيل الدخول للإضافة إلى السلة";
+"Sign In to Add to Favorites" = "تسجيل الدخول للإضافة إلى المفضلة";
+"Sign In Required" = "تسجيل الدخول مطلوب";
+"Please sign in to access this feature." = "يرجى تسجيل الدخول للوصول إلى هذه الميزة.";
