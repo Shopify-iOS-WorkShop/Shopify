@@ -14,7 +14,6 @@ public struct CurrencyPickerView: View {
     let rates: ExchangeRates
     /// The shared store is observed directly — no @Binding needed.
     @State var currencyStore: CurrencyStore
-    @Environment(\.colorScheme) private var colorScheme
 
     public init(rates: ExchangeRates, currencyStore: CurrencyStore) {
         self.rates = rates
@@ -31,11 +30,11 @@ public struct CurrencyPickerView: View {
                         VStack(alignment: .leading, spacing: 2) {
                             Text(code)
                                 .fontWeight(.medium)
-                                .foregroundColor(colorScheme == .dark ? .black : .primary)
+                                .foregroundColor(DS.textPri)
                             if let rate = rates.rates[code] {
                                 Text("1 \(rates.baseCurrency) = \(String(format: "%.4f", rate)) \(code)")
                                     .font(.caption)
-                                    .foregroundColor(colorScheme == .dark ? .black.opacity(0.6) : DS.textSec)
+                                    .foregroundColor(DS.textSec)
                             }
                         }
 
@@ -48,7 +47,7 @@ public struct CurrencyPickerView: View {
                         }
                     }
                     .contentShape(Rectangle())
-                    .listRowBackground(colorScheme == .dark ? Color.white : Color(UIColor.secondarySystemBackground))
+                    .listRowBackground(DS.cardBG)
                     .onTapGesture {
                         // Writing to @Observable property — SwiftUI tracks this
                         // and re-renders immediately, showing the checkmark at once.
@@ -58,7 +57,7 @@ public struct CurrencyPickerView: View {
             }
         }
         .scrollContentBackground(.hidden)
-        .background(colorScheme == .dark ? Color.white : DS.background)
+        .background(DS.background.ignoresSafeArea())
         .searchable(text: $searchText, prompt: "Search Currency")
         .navigationTitle("Select Currency")
         .navigationBarTitleDisplayMode(.inline)

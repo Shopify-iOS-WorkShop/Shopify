@@ -8,7 +8,7 @@ enum ReviewMetafieldEndpoint: Endpoint {
     case deleteReview(metafieldId: Int)
 
     var baseURL: String {
-        "https://mad46-ios-team5.myshopify.com/admin/api/2024-10"
+        ShopifyConfig.hostname+"/admin/api/"+ShopifyConfig.apiVersion
     }
 
     var path: String {
@@ -36,7 +36,7 @@ enum ReviewMetafieldEndpoint: Endpoint {
     var headers: [String: String]? {
         [
             "Content-Type": "application/json",
-            "X-Shopify-Access-Token": "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"
+            "X-Shopify-Access-Token": ShopifyConfig.accessToken
         ]
     }
 

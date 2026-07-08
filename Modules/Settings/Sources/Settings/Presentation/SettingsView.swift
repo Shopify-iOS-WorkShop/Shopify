@@ -84,10 +84,12 @@ public struct SettingsView: View {
                             NavigationLink(value: SettingsRoute.orderDetail(order: order)) {
                                 OrderRowView(order: order, viewModel: viewModel)
                             }
+                            .listRowBackground(DS.cardBG)
                         }                        
                         NavigationLink("View All Orders", value: SettingsRoute.orderHistory)
                             .font(.subheadline)
                             .foregroundColor(DS.red)
+                            .listRowBackground(DS.cardBG)
                     }
                 }
 
@@ -99,6 +101,7 @@ public struct SettingsView: View {
                             Label("Addresses", systemImage: "map")
                                 .foregroundColor(DS.textPri)
                         }
+                        .listRowBackground(DS.cardBG)
                     }
                 }
 
@@ -110,6 +113,7 @@ public struct SettingsView: View {
                     }
                     .pickerStyle(.segmented)
                     .listRowSeparator(.hidden)
+                    .listRowBackground(DS.cardBG)
                 }
 
                 Section("Language") {
@@ -119,6 +123,7 @@ public struct SettingsView: View {
                     }
                     .pickerStyle(.segmented)
                     .listRowSeparator(.hidden)
+                    .listRowBackground(DS.cardBG)
                 }
 
                 Section("Currency") {
@@ -135,12 +140,14 @@ public struct SettingsView: View {
                         }
                     }
                     .disabled(viewModel.exchangeRates == nil)
+                    .listRowBackground(DS.cardBG)
 
                     if let rates = viewModel.exchangeRates {
                         let sample = rates.convert(100, to: viewModel.selectedCurrency) ?? 100
                         Text("100 \(rates.baseCurrency) ≈ \(viewModel.selectedCurrency) \(String(format: "%.2f", sample))")
                             .font(.caption)
                             .foregroundColor(DS.textSec)
+                            .listRowBackground(DS.cardBG)
                     }
                 }
 
@@ -152,17 +159,19 @@ public struct SettingsView: View {
                             Label("Sign In", systemImage: "person.badge.plus")
                                 .foregroundColor(DS.red)
                         }
+                        .listRowBackground(DS.cardBG)
                     } else {
                         Button(role: .destructive) {
                             viewModel.requestSignOut()
                         } label: {
                             Label("Sign Out", systemImage: "rectangle.portrait.and.arrow.right")
                         }
+                        .listRowBackground(DS.cardBG)
                     }
                 }
             }
             .scrollContentBackground(.hidden)
-            .background(DS.background)
+            .background(DS.background.ignoresSafeArea())
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.large)
             .refreshable { await viewModel.onAppear() }
@@ -233,9 +242,10 @@ private struct OrderHistoryView: View {
                 NavigationLink(value: SettingsRoute.orderDetail(order: order)) {
                     OrderRowView(order: order, viewModel: viewModel)
                 }
+                .listRowBackground(DS.cardBG)
             }
             .scrollContentBackground(.hidden)
-            .background(DS.background)
+            .background(DS.background.ignoresSafeArea())
             .navigationTitle("Order History")
             .navigationBarTitleDisplayMode(.inline)
             .overlay {

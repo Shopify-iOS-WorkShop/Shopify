@@ -4,6 +4,7 @@
 //
 
 import SwiftUI
+import Common
 
 public struct OrderRowView: View {
     let order: CustomerOrder
@@ -26,14 +27,14 @@ public struct OrderRowView: View {
                         image.resizable().scaledToFill()
                     } placeholder: {
                         Image(systemName: "bag")
-                            .foregroundColor(.secondary)
+                            .foregroundColor(DS.textSec)
                     }
                     .frame(width: 52, height: 52)
                     .clipped()
                     .cornerRadius(8)
                 } else {
                     Image(systemName: "bag")
-                        .foregroundColor(.secondary)
+                        .foregroundColor(DS.textSec)
                 }
             }
 
@@ -45,13 +46,13 @@ public struct OrderRowView: View {
                 if let title = order.firstItemTitle {
                     Text(title)
                         .font(.caption)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(DS.textSec)
                         .lineLimit(1)
                 }
 
                 Text(formattedDate)
                     .font(.caption2)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(DS.textSec)
             }
 
             Spacer()
