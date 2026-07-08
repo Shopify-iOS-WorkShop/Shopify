@@ -8,13 +8,13 @@
 import SwiftUI
 
 public struct SocialLoginRow: View {
-    let label: String
+    let label: LocalizedStringKey
     var onGoogleTap: () -> Void
     var onAppleTap: () -> Void
     var onFacebookTap: () -> Void
 
     public init(
-        label: String,
+        label: LocalizedStringKey,
         onGoogleTap: @escaping () -> Void,
         onAppleTap: @escaping () -> Void,
         onFacebookTap: @escaping () -> Void

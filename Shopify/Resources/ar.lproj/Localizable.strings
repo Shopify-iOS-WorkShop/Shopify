@@ -233,3 +233,22 @@
 "Image Search" = "البحث بالصور";
 "Get complete outfit suggestions based on your preferences" = "احصل على اقتراحات أزياء كاملة بناءً على تفضيلاتك";
 "Outfit Generator" = "منسق الأزياء";
+
+/* Review Fixes */
+"Add a review" = "إضافة مراجعة";
+"Update your review" = "تحديث المراجعة";
+"Post" = "نشر";
+"Save" = "حفظ";
+
+/* Auth Fixes */
+"Email" = "البريد الإلكتروني";
+"Enter your email" = "أدخل بريدك الإلكتروني";
+"Password" = "كلمة المرور";
+"********" = "********";
+"OR LOGIN WITH" = "أو تسجيل الدخول باستخدام";
+"Full Name" = "الاسم الكامل";
+"Enter your name" = "أدخل اسمك";
+"example@email.com" = "example@email.com";
+"Confirm Password" = "تأكيد كلمة المرور";
+"Confirm password" = "تأكيد كلمة المرور";
+"or sign up with" = "أو قم بالتسجيل باستخدام";

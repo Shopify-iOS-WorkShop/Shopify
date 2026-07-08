@@ -233,3 +233,22 @@
 "Image Search" = "Image Search";
 "Get complete outfit suggestions based on your preferences" = "Get complete outfit suggestions based on your preferences";
 "Outfit Generator" = "Outfit Generator";
+
+/* Review Fixes */
+"Add a review" = "Add a review";
+"Update your review" = "Update your review";
+"Post" = "Post";
+"Save" = "Save";
+
+/* Auth Fixes */
+"Email" = "Email";
+"Enter your email" = "Enter your email";
+"Password" = "Password";
+"********" = "********";
+"OR LOGIN WITH" = "OR LOGIN WITH";
+"Full Name" = "Full Name";
+"Enter your name" = "Enter your name";
+"example@email.com" = "example@email.com";
+"Confirm Password" = "Confirm Password";
+"Confirm password" = "Confirm password";
+"or sign up with" = "or sign up with";
