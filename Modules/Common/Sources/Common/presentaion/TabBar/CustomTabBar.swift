@@ -38,7 +38,7 @@ public struct CustomTabBar: View {
                         }
                     }
 
-                    Text(tab.rawValue)
+                    Text(LocalizedStringKey(tab.rawValue))
                         .font(.system(size: 11, weight: selectedTab == tab ? .bold : .medium))
                 }
                 .foregroundColor(selectedTab == tab ? DS.textPri : DS.textSec)

@@ -10,10 +10,10 @@ import SwiftUI
 import Common
 
 public struct CheckoutBottomButton: View {
-    let title: String
+    let title: LocalizedStringKey
     let action: () -> Void
     
-    public init(title: String, action: @escaping () -> Void) {
+    public init(title: LocalizedStringKey, action: @escaping () -> Void) {
         self.title = title
         self.action = action
     }

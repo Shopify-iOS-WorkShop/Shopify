@@ -46,7 +46,7 @@ public struct CheckoutAddressView: View {
                                 .foregroundColor(DS.red)
                             
                             VStack(alignment: .leading, spacing: 4) {
-                                Text(currentAddress.title).fontWeight(.semibold)
+                                Text(LocalizedStringKey(currentAddress.title)).fontWeight(.semibold)
                                     .foregroundColor(DS.textPri)
                                 Text(currentAddress.details)
                                     .font(.system(size: 14))

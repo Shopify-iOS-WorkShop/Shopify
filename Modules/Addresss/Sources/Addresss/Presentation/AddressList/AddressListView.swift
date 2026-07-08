@@ -118,12 +118,21 @@ public struct AddressListView: View {
 
             Spacer()
 
-            Text("\(viewModel.addresses.count) Address\(viewModel.addresses.count == 1 ? "" : "es")")
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(AddressDS.red)
-                .padding(.horizontal, 10)
-                .padding(.vertical, 5)
-                .background(AddressDS.red.opacity(0.12), in: Capsule())
+            if viewModel.addresses.count == 1 {
+                Text("1 Address")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(AddressDS.red)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 5)
+                    .background(AddressDS.red.opacity(0.12), in: Capsule())
+            } else {
+                Text("\(viewModel.addresses.count) Addresses")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(AddressDS.red)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 5)
+                    .background(AddressDS.red.opacity(0.12), in: Capsule())
+            }
         }
     }
 

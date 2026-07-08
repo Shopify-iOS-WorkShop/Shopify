@@ -87,7 +87,7 @@ struct AddressSelectionSheet: View {
                                 .foregroundColor(DS.red)
                             
                             VStack(alignment: .leading, spacing: 4) {
-                                Text(address.title)
+                                Text(LocalizedStringKey(address.title))
                                     .font(.system(size: 16, weight: .semibold))
                                     .foregroundColor(DS.textPri)
                                 
