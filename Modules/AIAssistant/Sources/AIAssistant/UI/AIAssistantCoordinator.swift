@@ -25,7 +25,7 @@ public struct AIAssistantCoordinator: View {
                 featureContent
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-            .navigationTitle(selectedFeature.rawValue)
+            .navigationTitle(LocalizedStringKey(selectedFeature.rawValue))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -97,7 +97,7 @@ private struct FeatureTab: View {
             HStack(spacing: 6) {
                 Image(systemName: feature.icon)
                     .font(.caption)
-                Text(feature.rawValue.components(separatedBy: " ").dropFirst().joined(separator: " "))
+                Text(LocalizedStringKey(feature.rawValue.components(separatedBy: " ").dropFirst().joined(separator: " ")))
                     .font(.caption)
                     .fontWeight(.medium)
             }
@@ -123,7 +123,7 @@ private struct FeaturePickerSheet: View {
                     selected = feature
                     dismiss()
                 } label: {
-                    Label(feature.rawValue, systemImage: feature.icon)
+                    Label(LocalizedStringKey(feature.rawValue), systemImage: feature.icon)
                         .foregroundColor(DS.textPri)
                 }
             }

@@ -697,11 +697,7 @@ struct ReviewEditorView: View {
         NavigationStack {
             VStack(alignment: .leading, spacing: 18) {
                 VStack(alignment: .leading, spacing: 8) {	
-                    Text(isEditing ? "Update your review" : "Add a review")
-                        .font(.title3.weight(.bold))
-                        .foregroundColor(DS.textPri)
-
-                    Text("Share the details another shopper would want to know.")
+                    Text(LocalizedStringKey("Share the details another shopper would want to know."))
                         .font(.caption)
                         .foregroundColor(DS.textSec)
                 }
@@ -772,13 +768,15 @@ struct ReviewEditorView: View {
                         if isSubmitting {
                             ProgressView()
                         } else {
-                            Text(isEditing ? "Save" : "Post")
+                            Text(LocalizedStringKey(isEditing ? "Save" : "Post"))
                                 .fontWeight(.semibold)
                         }
                     }
                     .disabled(isSubmitting)
                 }
             }
+            .navigationTitle(LocalizedStringKey(isEditing ? "Update your review" : "Add a review"))
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
 }

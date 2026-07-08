@@ -10,10 +10,10 @@ import SwiftUI
 import Common
 
 public struct SectionHeaderView: View {
-    public let title: String
+    public let title: LocalizedStringKey
     public let hasViewAll: Bool
     public let onViewAllTapped: (() -> Void)?
-    public init(title: String, hasViewAll: Bool, onViewAllTapped: (() -> Void)? = nil) {
+    public init(title: LocalizedStringKey, hasViewAll: Bool, onViewAllTapped: (() -> Void)? = nil) {
         self.title = title
         self.hasViewAll = hasViewAll
         self.onViewAllTapped = onViewAllTapped

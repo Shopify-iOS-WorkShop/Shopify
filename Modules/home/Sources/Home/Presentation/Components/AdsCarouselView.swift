@@ -16,6 +16,7 @@ public struct AdsCarouselView: View {
     let onTap: (Ad) -> Void
 
     @State private var scrollPosition: Int?
+    @Environment(\.layoutDirection) private var layoutDirection
 
     private let autoAdvanceTimer = Timer.publish(every: 4.5, on: .main, in: .common).autoconnect()
 
@@ -41,6 +42,7 @@ public struct AdsCarouselView: View {
                 }
                 .scrollTargetLayout()
             }
+            .environment(\.layoutDirection, layoutDirection)
             .scrollTargetBehavior(.viewAligned)
             .scrollPosition(id: $scrollPosition)
             .frame(height: 200)

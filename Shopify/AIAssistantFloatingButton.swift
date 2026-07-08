@@ -136,11 +136,11 @@ struct AIFeaturesDrawer: View {
                                 }
                                 
                                 VStack(alignment: .leading, spacing: 4) {
-                                    Text(feature.rawValue)
+                                    Text(LocalizedStringKey(feature.rawValue))
                                         .font(.system(size: 16, weight: .semibold))
                                         .foregroundColor(DS.textPri)
                                     
-                                    Text(feature.description)
+                                    Text(LocalizedStringKey(feature.description))
                                         .font(.system(size: 13))
                                         .foregroundColor(DS.textSec)
                                         .lineLimit(2)
