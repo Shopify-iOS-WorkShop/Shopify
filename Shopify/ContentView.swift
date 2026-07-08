@@ -107,6 +107,11 @@ struct ContentView: View {
                 }
             }
 
+            appCoordinator.onNavigateToAddresses = { [self] in
+                selectedTab = .account
+                appCoordinator.settingsCoordinator.isShowingAddresses = true
+            }
+
             
             favoritesViewModel.loadFavorites()
             

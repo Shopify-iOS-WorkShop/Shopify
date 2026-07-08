@@ -21,6 +21,7 @@ import Cart
 public final class AppCoordinator {
     public var hasCompletedAuth: Bool = false
     public var isShowingCheckout: Bool = false
+    public var onNavigateToAddresses: (() -> Void)?
 
     public var showGuestSignInPrompt: Bool = false
 
@@ -80,7 +81,17 @@ public final class AppCoordinator {
                 
                 checkoutAddressCoordinator.onCheckoutComplete = { [weak self] in
                     self?.isShowingCheckout = false
-                    self?.checkoutAddressCoordinator.popToRoot()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        self?.checkoutAddressCoordinator.popToRoot()
+                    }
+                }
+
+                checkoutAddressCoordinator.onAddNewAddressRequested = { [weak self] in
+                    self?.isShowingCheckout = false
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        self?.checkoutAddressCoordinator.popToRoot()
+                        self?.onNavigateToAddresses?()
+                    }
                 }
 
                 searchCoordinator.onNavigateToDetail = { [weak self] productId in

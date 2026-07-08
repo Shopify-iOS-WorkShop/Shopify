@@ -7,10 +7,10 @@ import SwiftUI
 import Addresss
 import DependencyInjection
 
+@MainActor
 public struct SettingsView: View {
     @State var viewModel: SettingsViewModel
     @Environment(SettingsCoordinator.self) private var coordinator
-    @State private var isShowingAddresses = false
 
     public init(viewModel: SettingsViewModel) {
         self.viewModel = viewModel
@@ -93,7 +93,7 @@ public struct SettingsView: View {
                             Label("Edit Profile", systemImage: "person.circle")
                         }
                         Button {
-                            isShowingAddresses = true
+                            coordinator.isShowingAddresses = true
                         } label: {
                             Label("Addresses", systemImage: "map")
                                 .foregroundColor(.primary)
@@ -174,7 +174,11 @@ public struct SettingsView: View {
                 }
                 Button("Cancel", role: .cancel) { viewModel.cancelSignOut() }
             }
-            .sheet(isPresented: $isShowingAddresses) {
+
+            .sheet(isPresented: Binding(
+                get: { coordinator.isShowingAddresses },
+                set: { coordinator.isShowingAddresses = $0 }
+            )) {
                 AddressFlowView(
                     listViewModel: DIContainer.shared.resolve(AddressListViewModel.self)!,
                     viewModelFactory: DIContainer.shared.resolve(AddressViewModelFactory.self)!
@@ -204,7 +208,10 @@ public struct SettingsView: View {
         case .editProfile:
             EditProfilePlaceholderView()
         case .addresses:
-            EmptyView()
+            AddressFlowView(
+                listViewModel: DIContainer.shared.resolve(AddressListViewModel.self)!,
+                viewModelFactory: DIContainer.shared.resolve(AddressViewModelFactory.self)!
+            )
 
         case .orderDetail(let order):
             let detailViewModel = viewModel.makeOrderDetailViewModel(order.id)

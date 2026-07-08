@@ -9,6 +9,7 @@ import SwiftUI
 @Observable
 public final class SettingsCoordinator {
     public var path = NavigationPath()
+    public var isShowingAddresses = false
 
     /// Called by the app layer when sign-out is confirmed.
     /// Wired to Auth's SignOutUseCase in AppCoordinator.
