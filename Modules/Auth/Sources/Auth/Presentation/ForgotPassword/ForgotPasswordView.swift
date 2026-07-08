@@ -23,13 +23,13 @@ public struct ForgotPasswordView: View {
                 ZStack {
                     Text("Reset Password")
                         .font(.system(size: 23, weight: .bold))
-                        .foregroundColor(.primary)
+                        .foregroundColor(DS.textPri)
 
                     HStack {
                         Button(action: { coordinator.pop() }) {
                             Image(systemName: "chevron.left")
                                 .font(.system(size: 20, weight: .medium))
-                                .foregroundColor(.primary)
+                                .foregroundColor(DS.textPri)
                         }
                         Spacer()
                     }
@@ -44,7 +44,7 @@ public struct ForgotPasswordView: View {
             }
             .padding(.horizontal, 20)
         }
-        .background(Color(.systemBackground))
+        .background(DS.background)
         .animation(.easeInOut(duration: 0.3), value: viewModel.isEmailSent)
         .navigationBarHidden(true)
     }
@@ -55,11 +55,11 @@ public struct ForgotPasswordView: View {
             VStack(spacing: 8) {
                 Text("Forgot your password?")
                     .font(.system(size: 20, weight: .semibold))
-                    .foregroundColor(.primary)
+                    .foregroundColor(DS.textPri)
 
                 Text("Enter the email associated with your account and we'll send you a reset link.")
                     .font(.system(size: 14))
-                    .foregroundColor(.secondary)
+                    .foregroundColor(DS.textSec)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 8)
             }
@@ -76,7 +76,7 @@ public struct ForgotPasswordView: View {
             if let error = viewModel.errorMessage {
                 Text(error)
                     .font(.callout)
-                    .foregroundColor(.red)
+                    .foregroundColor(DS.red)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal)
             }
@@ -112,11 +112,11 @@ public struct ForgotPasswordView: View {
             VStack(spacing: 10) {
                 Text("Check your inbox!")
                     .font(.system(size: 22, weight: .bold))
-                    .foregroundColor(.primary)
+                    .foregroundColor(DS.textPri)
 
                 Text("A reset link has been sent to\n\(viewModel.email)")
                     .font(.system(size: 15))
-                    .foregroundColor(.secondary)
+                    .foregroundColor(DS.textSec)
                     .multilineTextAlignment(.center)
             }
 

@@ -33,7 +33,7 @@ public struct OnboardingPageView: View {
             
             Text(page.description)
                 .font(.body)
-                .foregroundColor(.secondary)
+                .foregroundColor(DS.textSec)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 40)
             

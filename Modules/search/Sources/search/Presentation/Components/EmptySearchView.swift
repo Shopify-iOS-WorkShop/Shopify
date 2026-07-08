@@ -21,7 +21,7 @@ struct EmptySearchView: View {
             }
             Text("Search for products and collections")
                 .font(.subheadline)
-                .foregroundColor(.gray)
+                .foregroundColor(.pocketMuted)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 40)
             Spacer()

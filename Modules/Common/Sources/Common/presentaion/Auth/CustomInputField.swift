@@ -27,7 +27,7 @@ public struct CustomInputField: View {
                 Text(title.uppercased())
                     .font(.caption)
                     .bold()
-                    .foregroundColor(.black)
+                    .foregroundColor(DS.textPri)
             
             ZStack(alignment: .trailing) {
                 if isSecure && !isPasswordVisible {
@@ -39,15 +39,19 @@ public struct CustomInputField: View {
                 if isSecure {
                     Button(action: { isPasswordVisible.toggle() }) {
                         Image(systemName: isPasswordVisible ? "eye.slash" : "eye")
-                            .foregroundColor(.gray)
+                            .foregroundColor(DS.textSec)
                     }
                     .padding(.trailing, 16)
                 }
             }
             .padding()
             .frame(minHeight: 56)
-            .background(Color(.systemGray6))
-            .cornerRadius(12)
+            .background(DS.fieldBG)
+            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .stroke(DS.lightGray, lineWidth: 1)
+            }
         }
     }
 }

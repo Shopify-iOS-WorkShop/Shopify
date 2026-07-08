@@ -54,7 +54,7 @@ public struct OutfitGeneratorView: View {
             }
             .padding()
         }
-        .background(Color(.systemGroupedBackground))
+        .background(DS.background)
     }
 
 
@@ -62,17 +62,17 @@ public struct OutfitGeneratorView: View {
         VStack(spacing: 8) {
             Image(systemName: "tshirt.fill")
                 .font(.system(size: 36))
-                .foregroundColor(.indigo)
+                .foregroundColor(DS.red)
             Text("AI Outfit Generator")
                 .font(.title3).bold()
             Text("Tell us the occasion and we'll build complete outfits from our store.")
                 .font(.subheadline)
-                .foregroundColor(.secondary)
+                .foregroundColor(DS.textSec)
                 .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
         .padding()
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(DS.cardBG)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
@@ -91,7 +91,7 @@ public struct OutfitGeneratorView: View {
                                 .font(.subheadline)
                                 .padding(.horizontal, 14)
                                 .padding(.vertical, 8)
-                                .background(selectedOccasion == occasion ? Color.indigo : Color(.secondarySystemGroupedBackground))
+                                .background(selectedOccasion == occasion ? DS.red : DS.cardBG)
                                 .foregroundColor(selectedOccasion == occasion ? .white : .primary)
                                 .clipShape(Capsule())
                         }
@@ -123,7 +123,7 @@ public struct OutfitGeneratorView: View {
             }
             .frame(maxWidth: .infinity)
             .padding()
-            .background(isLoading ? Color.gray : Color.indigo)
+            .background(isLoading ? DS.lightGray : DS.red)
             .foregroundColor(.white)
             .clipShape(RoundedRectangle(cornerRadius: 14))
         }
@@ -153,7 +153,7 @@ public struct OutfitGeneratorView: View {
                 generate()
             }
             .font(.subheadline)
-            .foregroundColor(.indigo)
+            .foregroundColor(DS.red)
             .frame(maxWidth: .infinity)
         }
     }
@@ -164,7 +164,7 @@ public struct OutfitGeneratorView: View {
             Image(systemName: "exclamationmark.triangle.fill").foregroundColor(.orange)
             Text(message).font(.caption)
             Spacer()
-            Button("Retry") { generate() }.foregroundColor(.indigo).font(.caption)
+            Button("Retry") { generate() }.foregroundColor(DS.red).font(.caption)
         }
         .padding()
         .background(Color.orange.opacity(0.1))
@@ -214,14 +214,14 @@ private struct OutfitCard: View {
                     VStack(alignment: .leading, spacing: 4) {
                         Text(suggestion.title)
                             .font(.subheadline).bold()
-                            .foregroundColor(.primary)
+                            .foregroundColor(DS.textPri)
                         Text(suggestion.occasion)
                             .font(.caption)
-                            .foregroundColor(.indigo)
+                            .foregroundColor(DS.red)
                     }
                     Spacer()
                     Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
-                        .foregroundColor(.secondary)
+                        .foregroundColor(DS.textSec)
                         .font(.caption)
                 }
                 .padding()
@@ -235,7 +235,7 @@ private struct OutfitCard: View {
                     if !suggestion.description.isEmpty {
                         Text(suggestion.description)
                             .font(.subheadline)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(DS.textSec)
                     }
 
                     // Products
@@ -243,7 +243,7 @@ private struct OutfitCard: View {
                         VStack(alignment: .leading, spacing: 6) {
                             Text("Products in this outfit")
                                 .font(.caption)
-                                .foregroundColor(.secondary)
+                                .foregroundColor(DS.textSec)
                                 .textCase(.uppercase)
                             ForEach(suggestion.products) { product in
                                 OutfitProductRow(product: product, onProductSelected: onProductSelected)
@@ -259,7 +259,7 @@ private struct OutfitCard: View {
                                 .font(.caption)
                             Text(suggestion.styleNotes)
                                 .font(.caption)
-                                .foregroundColor(.secondary)
+                                .foregroundColor(DS.textSec)
                         }
                         .padding(10)
                         .background(Color.yellow.opacity(0.08))
@@ -276,7 +276,7 @@ private struct OutfitCard: View {
                             .font(.subheadline).fontWeight(.medium)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 10)
-                            .background(Color.indigo)
+                            .background(DS.red)
                             .foregroundColor(.white)
                             .clipShape(RoundedRectangle(cornerRadius: 10))
                     }
@@ -285,7 +285,7 @@ private struct OutfitCard: View {
                 .padding()
             }
         }
-        .background(Color(.secondarySystemGroupedBackground))
+        .background(DS.cardBG)
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 }
@@ -308,9 +308,9 @@ private struct OutfitProductRow: View {
                         case .empty:
                             ProgressView()
                         case .failure:
-                            Color(.tertiarySystemGroupedBackground)
+                            DS.fieldBG
                         @unknown default:
-                            Color(.tertiarySystemGroupedBackground)
+                            DS.fieldBG
                         }
                     }
                     .frame(width: 40, height: 40)
@@ -320,16 +320,16 @@ private struct OutfitProductRow: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(product.title)
                         .font(.caption).bold()
-                        .foregroundColor(.primary)
+                        .foregroundColor(DS.textPri)
                         .lineLimit(1)
                     Text(product.minPrice)
                         .font(.caption2)
-                        .foregroundColor(.indigo)
+                        .foregroundColor(DS.red)
                 }
                 Spacer()
                 Image(systemName: "chevron.right")
                     .font(.caption2)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(DS.textSec)
             }
         }
         .buttonStyle(.plain)

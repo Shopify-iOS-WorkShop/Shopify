@@ -54,14 +54,18 @@ public struct SearchView: View {
             ZStack(alignment: .topTrailing) {
                 Image(systemName: "slider.horizontal.3")
                     .font(.system(size: 16, weight: .semibold))
-                    .foregroundColor(viewModel.filter.isActive ? .white : .primary)
+                    .foregroundColor(viewModel.filter.isActive ? .white : .pocketText)
                     .frame(width: 40, height: 40)
-                    .background(viewModel.filter.isActive ? Color.pocketPink : Color(.systemGray5))
+                    .background(viewModel.filter.isActive ? Color.pocketPink : Color.pocketChip)
                     .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 10, style: .continuous)
+                            .stroke(viewModel.filter.isActive ? Color.clear : Color.pocketBorder, lineWidth: 1)
+                    }
 
                 if viewModel.filter.isActive {
                     Circle()
-                        .fill(Color.yellow)
+                        .fill(Color.pocketTertiary)
                         .frame(width: 8, height: 8)
                         .offset(x: 3, y: -3)
                 }
@@ -154,7 +158,7 @@ public struct SearchView: View {
         }
         .padding(.horizontal, 10)
         .padding(.vertical, 5)
-        .background(Color.pocketPink.opacity(0.12))
+        .background(Color.pocketPinkSoft)
         .foregroundColor(.pocketPink)
         .clipShape(Capsule())
     }

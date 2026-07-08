@@ -33,15 +33,20 @@ public struct ProductListingView: View {
                                 .font(.system(size: 13, weight: .medium))
                                 .padding(.horizontal, 16)
                                 .padding(.vertical, 8)
-                                .background(selectedFilter == filter ? DS.navy : DS.background)
+                                .background(selectedFilter == filter ? DS.primary : DS.chipBG)
                                 .foregroundColor(selectedFilter == filter ? .white : DS.textPri)
                                 .clipShape(Capsule())
+                                .overlay {
+                                    Capsule()
+                                        .stroke(selectedFilter == filter ? Color.clear : DS.border, lineWidth: 1)
+                                }
                         }
                     }
                 }
                 .padding(.horizontal, 16)
                 .padding(.vertical, 12)
             }
+            .background(DS.background)
             
             HStack {
                 Text("Sort by:")
@@ -81,6 +86,7 @@ public struct ProductListingView: View {
             }
             .padding(.horizontal, 16)
             .padding(.bottom, 12)
+            .background(DS.background)
             
             ScrollView(showsIndicators: false) {
                 LazyVGrid(columns: columns, spacing: 16) {
@@ -97,6 +103,7 @@ public struct ProductListingView: View {
                 .padding(.bottom, 20)
             }
         }
+        .background(DS.background.ignoresSafeArea())
         .task {
             await viewModel.fetchProducts()
         }

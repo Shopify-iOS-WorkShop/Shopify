@@ -26,7 +26,7 @@ public struct LoginView: View {
 
                     Text("Log in to your PocketShop account")
                         .font(.system(size: 15))
-                        .foregroundColor(.gray)
+                        .foregroundColor(DS.textSec)
                 }
                 .padding(.top, 40)
 
@@ -42,7 +42,7 @@ public struct LoginView: View {
                     Button { coordinator.push(.forgotPassword) } label: {
                         Text("Forgot Password?")
                             .font(.system(size: 14, weight: .semibold))
-                            .foregroundColor(Color(red: 233/255.0, green: 69/255.0, blue: 96/255.0))
+                            .foregroundColor(DS.red)
                     }
                 }
 
@@ -50,7 +50,7 @@ public struct LoginView: View {
                 if let error = viewModel.errorMessage {
                     Text(error)
                         .font(.callout)
-                        .foregroundColor(.red)
+                        .foregroundColor(DS.red)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal)
                 }
@@ -81,12 +81,12 @@ public struct LoginView: View {
             HStack(spacing: 4) {
                 Text("Don't have an account?")
                     .font(.system(size: 15))
-                    .foregroundColor(.gray)
+                    .foregroundColor(DS.textSec)
                 Button { coordinator.push(.register) } label: {
                     Text("Sign Up")
                         .font(.system(size: 15))
                         .fontWeight(.bold)
-                        .foregroundColor(Color(red: 233/255.0, green: 69/255.0, blue: 96/255.0))
+                        .foregroundColor(DS.red)
                 }
             }
             .padding(.bottom, 16)
@@ -94,7 +94,7 @@ public struct LoginView: View {
             Button { coordinator.onContinueAsGuest?() } label: {
                 Text("Continue as Guest")
                     .fontWeight(.medium)
-                    .foregroundColor(.gray)
+                    .foregroundColor(DS.textSec)
                     .underline()
             }
             .padding(.bottom, 32)
@@ -103,6 +103,7 @@ public struct LoginView: View {
         .onReceive(viewModel.$completedSession.compactMap { $0 }) { _ in
             coordinator.onLoginSuccess?()
         }
+        .background(DS.background)
         .navigationBarHidden(true)
     }
 }

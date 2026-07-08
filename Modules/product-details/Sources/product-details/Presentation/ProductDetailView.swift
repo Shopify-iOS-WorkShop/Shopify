@@ -1,4 +1,5 @@
 import SwiftUI
+import Common
 
 
 
@@ -61,6 +62,7 @@ public struct ProductDetailView: View {
             }
 
         }
+        .background(DS.background.ignoresSafeArea())
 
         .navigationBarHidden(true)
 
@@ -101,14 +103,13 @@ public struct ProductDetailView: View {
             Image(systemName: "exclamationmark.triangle")
 
                 .font(.system(size: 48))
-
-                .foregroundColor(.red.opacity(0.7))
+                .foregroundColor(DS.red.opacity(0.7))
 
             Text(message)
 
                 .multilineTextAlignment(.center)
 
-                .foregroundColor(.secondary)
+                .foregroundColor(DS.textSec)
 
                 .padding(.horizontal, 32)
 
@@ -223,8 +224,10 @@ public struct ProductDetailView: View {
             .padding(.horizontal, 20)
 
             .padding(.top, 24)
+            .padding(.bottom, 16)
 
         }
+        .background(DS.background)
 
     }
 
@@ -275,9 +278,9 @@ public struct ProductDetailView: View {
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 16)
-                    .background(viewModel.selectedSize != nil ? Color.pink : Color.gray.opacity(0.4))
+                    .background(viewModel.selectedSize != nil ? DS.red : DS.lightGray)
                     .foregroundColor(.white)
-                    .cornerRadius(30)
+                    .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
 
                 }
 
@@ -301,7 +304,8 @@ public struct ProductDetailView: View {
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 16)
-        .background(Color(.systemBackground))
+        .background(DS.cardBG)
+        .shadow(color: DS.shadow.opacity(0.08), radius: 10, y: -4)
 
     }
 

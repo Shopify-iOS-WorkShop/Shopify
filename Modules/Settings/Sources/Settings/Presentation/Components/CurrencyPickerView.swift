@@ -33,7 +33,7 @@ public struct CurrencyPickerView: View {
                             if let rate = rates.rates[code] {
                                 Text("1 \(rates.baseCurrency) = \(String(format: "%.4f", rate)) \(code)")
                                     .font(.caption)
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(DS.textSec)
                             }
                         }
 
@@ -41,7 +41,7 @@ public struct CurrencyPickerView: View {
 
                         if currencyStore.selectedCurrency == code {
                             Image(systemName: "checkmark")
-                                .foregroundColor(Color(red: 233/255, green: 69/255, blue: 96/255))
+                                .foregroundColor(DS.red)
                                 .fontWeight(.semibold)
                         }
                     }
@@ -54,6 +54,8 @@ public struct CurrencyPickerView: View {
                 }
             }
         }
+        .scrollContentBackground(.hidden)
+        .background(DS.background)
         .searchable(text: $searchText, prompt: "Search Currency")
         .navigationTitle("Select Currency")
         .navigationBarTitleDisplayMode(.inline)

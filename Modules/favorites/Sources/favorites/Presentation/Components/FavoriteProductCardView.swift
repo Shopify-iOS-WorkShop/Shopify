@@ -1,4 +1,5 @@
 import SwiftUI
+import Common
 
 public struct FavoriteProductCardView: View {
     public let product: FavoriteProduct
@@ -20,7 +21,7 @@ public struct FavoriteProductCardView: View {
             HStack(spacing: 12) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 12)
-                        .fill(Color(.systemGray6))
+                        .fill(DS.fieldBG)
 
                     if let url = product.imageURL {
                         AsyncImage(url: url) { phase in
@@ -46,26 +47,26 @@ public struct FavoriteProductCardView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(product.vendor.uppercased())
                         .font(.system(size: 10, weight: .bold))
-                        .foregroundColor(.red)
+                        .foregroundColor(DS.red)
                         .tracking(0.8)
 
                     Text(product.title)
                         .font(.system(size: 14, weight: .semibold))
-                        .foregroundColor(.primary)
+                        .foregroundColor(DS.textPri)
                         .lineLimit(2)
 
                     HStack(spacing: 4) {
                         Image(systemName: "star.fill")
                             .font(.system(size: 10))
-                            .foregroundColor(.red)
+                            .foregroundColor(DS.red)
                         Text(String(format: "%.1f", product.rating))
                             .font(.system(size: 11, weight: .semibold))
-                            .foregroundColor(.red)
+                            .foregroundColor(DS.red)
                     }
 
                     Text("$\(String(format: "%.2f", product.price))")
                         .font(.system(size: 15, weight: .bold))
-                        .foregroundColor(.primary)
+                        .foregroundColor(DS.textPri)
                 }
 
                 Spacer()
@@ -74,15 +75,15 @@ public struct FavoriteProductCardView: View {
                 Button(action: { onRemove(product.id) }) {
                     Image(systemName: "heart.fill")
                         .font(.system(size: 16))
-                        .foregroundColor(.red)
+                        .foregroundColor(DS.red)
                         .frame(width: 36, height: 36)
-                        .background(Color.red.opacity(0.1))
+                        .background(DS.red.opacity(0.1))
                         .clipShape(Circle())
                 }
                 .buttonStyle(.plain)
             }
             .padding(12)
-            .background(Color(.systemBackground))
+            .background(DS.cardBG)
             .cornerRadius(16)
             .shadow(color: .black.opacity(0.06), radius: 8, x: 0, y: 3)
         }
@@ -92,6 +93,6 @@ public struct FavoriteProductCardView: View {
     private var placeholderIcon: some View {
         Image(systemName: "bag")
             .font(.system(size: 28, weight: .ultraLight))
-            .foregroundColor(Color(.systemGray3))
+            .foregroundColor(DS.textSec.opacity(0.45))
     }
 }

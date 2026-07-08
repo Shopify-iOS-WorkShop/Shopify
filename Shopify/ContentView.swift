@@ -76,7 +76,7 @@ struct ContentView: View {
     var body: some View {
         Group {
             if !sessionChecked {
-                Color(uiColor: .systemBackground).ignoresSafeArea()
+                DS.background.ignoresSafeArea()
             } else if !hasCompletedOnboarding {
                 OnBoardingScreen {
                     hasCompletedOnboarding = true

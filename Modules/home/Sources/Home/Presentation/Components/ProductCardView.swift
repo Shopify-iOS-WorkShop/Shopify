@@ -35,7 +35,7 @@ public struct ProductCardView: View {
             ZStack(alignment: .topTrailing) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 12)
-                        .fill(Color(hex: "#F0F0F0"))
+                        .fill(DS.fieldBG)
 
                     if let url = product.imageURL {
                         AsyncImage(url: url) { phase in
@@ -49,7 +49,7 @@ public struct ProductCardView: View {
                             case .failure:
                                 Image(systemName: "bag")
                                     .font(.system(size: 36, weight: .ultraLight))
-                                    .foregroundColor(Color(hex: "#CCCCCC"))
+                                    .foregroundColor(DS.textSec.opacity(0.55))
                             @unknown default:
                                 EmptyView()
                             }
@@ -57,7 +57,7 @@ public struct ProductCardView: View {
                     } else {
                         Image(systemName: "bag")
                             .font(.system(size: 36, weight: .ultraLight))
-                            .foregroundColor(Color(hex: "#CCCCCC"))
+                            .foregroundColor(DS.textSec.opacity(0.55))
                     }
                 }
                 .frame(height: 140)
@@ -68,9 +68,9 @@ public struct ProductCardView: View {
                         .font(.system(size: 13, weight: .semibold))
                         .foregroundColor(isFavorite ? DS.red : DS.textSec)
                         .frame(width: 28, height: 28)
-                        .background(Color.white)
+                        .background(DS.cardBG)
                         .clipShape(Circle())
-                        .shadow(color: .black.opacity(0.08), radius: 4, x: 0, y: 2)
+                        .shadow(color: DS.shadow.opacity(0.12), radius: 4, x: 0, y: 2)
                 }
                 .buttonStyle(.plain)
                 .padding(8)
@@ -110,7 +110,11 @@ public struct ProductCardView: View {
             .padding(.horizontal, 10)
         }
         .background(DS.cardBG)
-        .cornerRadius(14)
-        .shadow(color: .black.opacity(0.07), radius: 8, x: 0, y: 3)
+        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .stroke(DS.lightGray.opacity(0.8), lineWidth: 1)
+        }
+        .shadow(color: DS.shadow.opacity(0.08), radius: 10, x: 0, y: 5)
     }
 }

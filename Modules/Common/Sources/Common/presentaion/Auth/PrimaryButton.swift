@@ -30,9 +30,9 @@ public struct PrimaryButton: View {
             .foregroundColor(.white)
             .frame(maxWidth: .infinity)
             .frame(height: 58)
-            .background(Color(.systemPink))
-            .cornerRadius(24)
-            .shadow(color: Color(.systemPink).opacity(0.3), radius: 10, x: 0, y: 5)
+            .background(DS.red)
+            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+            .shadow(color: DS.red.opacity(0.28), radius: 10, x: 0, y: 5)
         }
     }
 }

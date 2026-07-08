@@ -19,7 +19,7 @@ struct SearchFilterSheet: View {
                     ForEach(SearchSortOption.allCases) { option in
                         HStack {
                             Text(option.rawValue)
-                                .foregroundColor(.primary)
+                                .foregroundColor(.pocketText)
                             Spacer()
                             if filter.sortBy == option {
                                 Image(systemName: "checkmark")
@@ -36,6 +36,7 @@ struct SearchFilterSheet: View {
                 Section("Availability") {
                     Toggle(isOn: $filter.onlyAvailable) {
                         Text("In Stock Only")
+                            .foregroundColor(.pocketText)
                     }
                     .tint(.pocketPink)
                 }
@@ -46,7 +47,7 @@ struct SearchFilterSheet: View {
                         // "All" option
                         HStack {
                             Text("All Brands")
-                                .foregroundColor(.primary)
+                                .foregroundColor(.pocketText)
                             Spacer()
                             if filter.vendor == nil {
                                 Image(systemName: "checkmark")
@@ -60,7 +61,7 @@ struct SearchFilterSheet: View {
                         ForEach(availableVendors, id: \.self) { vendor in
                             HStack {
                                 Text(vendor)
-                                    .foregroundColor(.primary)
+                                    .foregroundColor(.pocketText)
                                 Spacer()
                                 if filter.vendor == vendor {
                                     Image(systemName: "checkmark")
@@ -75,6 +76,8 @@ struct SearchFilterSheet: View {
                 }
             }
             .listStyle(.insetGrouped)
+            .scrollContentBackground(.hidden)
+            .background(Color.pocketBackground)
             .navigationTitle("Filter & Sort")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

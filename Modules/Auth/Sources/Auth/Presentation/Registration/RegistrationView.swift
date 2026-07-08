@@ -25,13 +25,13 @@ public struct RegistrationView: View {
                 ZStack {
                     Text("Create Account")
                         .font(.system(size: 23, weight: .bold))
-                        .foregroundColor(.black)
+                        .foregroundColor(DS.textPri)
 
                     HStack {
                         Button(action: { coordinator.pop() }) {
                             Image(systemName: "chevron.left")
                                 .font(.system(size: 28, weight: .medium))
-                                .foregroundColor(.black)
+                                .foregroundColor(DS.textPri)
                         }
                         Spacer()
                     }
@@ -44,7 +44,7 @@ public struct RegistrationView: View {
                         if let error = viewModel.nameValidationError {
                             Text(error)
                                 .font(.caption)
-                                .foregroundColor(.red)
+                                .foregroundColor(DS.red)
                         }
                     }
 
@@ -53,11 +53,11 @@ public struct RegistrationView: View {
                         Text("Verify email will be sent")
                             .font(.caption)
                             .fontWeight(.semibold)
-                            .foregroundColor(Color(.systemGray3))
+                            .foregroundColor(DS.textSec.opacity(0.45))
                         if let error = viewModel.emailValidationError {
                             Text(error)
                                 .font(.caption)
-                                .foregroundColor(.red)
+                                .foregroundColor(DS.red)
                         }
                     }
 
@@ -66,7 +66,7 @@ public struct RegistrationView: View {
                         if let error = viewModel.passwordLengthError {
                             Text(error)
                                 .font(.caption)
-                                .foregroundColor(.red)
+                                .foregroundColor(DS.red)
                         }
                     }
 
@@ -75,7 +75,7 @@ public struct RegistrationView: View {
                         if let error = viewModel.passwordMatchError {
                             Text(error)
                                 .font(.caption)
-                                .foregroundColor(.red)
+                                .foregroundColor(DS.red)
                         }
                     }
                 }
@@ -83,7 +83,7 @@ public struct RegistrationView: View {
                 if let error = viewModel.errorMessage {
                     Text(error)
                         .font(.callout)
-                        .foregroundColor(.red)
+                        .foregroundColor(DS.red)
                         .multilineTextAlignment(.center)
                 }
 
@@ -110,11 +110,11 @@ public struct RegistrationView: View {
                     HStack(spacing: 4) {
                         Text("Already have an account?")
                             .font(.system(size: 16))
-                            .foregroundColor(Color(.darkGray))
+                            .foregroundColor(DS.textSec)
                         Text("Login")
                             .font(.system(size: 16))
                             .fontWeight(.bold)
-                            .foregroundColor(Color(red: 233 / 255.0, green: 69 / 255.0, blue: 96 / 255.0))
+                            .foregroundColor(DS.red)
                     }
                 }
                 .padding(.top, 28)
@@ -122,7 +122,7 @@ public struct RegistrationView: View {
             }
             .padding(.horizontal, 18)
         }
-        .background(Color(.systemBackground))
+        .background(DS.background)
         .onReceive(viewModel.$completedSession.compactMap { $0 }) { session in
             coordinator.onLoginSuccess?()
         }

@@ -37,11 +37,11 @@ public struct OrderSummaryView: View {
                     Spacer()
                     Text(formatPrice(order.totalAmount))
                         .font(.headline)
-                        .foregroundColor(.red)
+                        .foregroundColor(DS.red)
                 }
             }
             .padding()
-            .background(Color(UIColor.secondarySystemGroupedBackground))
+            .background(DS.cardBG)
             .cornerRadius(12)
             .padding(.horizontal)
         }
@@ -55,7 +55,7 @@ private struct OrderSummaryRow: View {
     var body: some View {
         HStack {
             Text(title)
-                .foregroundColor(.secondary)
+                .foregroundColor(DS.textSec)
             Spacer()
             Text(value)
                 .fontWeight(.medium)

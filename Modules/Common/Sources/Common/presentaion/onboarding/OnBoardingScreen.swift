@@ -8,7 +8,7 @@
 import SwiftUI
 
 extension Color {
-    static let onboardingTheme = Color(red: 233 / 255.0, green: 69 / 255.0, blue: 96 / 255.0)
+    static let onboardingTheme = DS.red
 }
 
 public struct OnBoardingScreen: View {
@@ -56,8 +56,8 @@ public struct OnBoardingScreen: View {
                 .indexViewStyle(PageIndexViewStyle(backgroundDisplayMode: .always))
                 .animation(.easeInOut, value: currentPage)
                 .onAppear {
-                    UIPageControl.appearance().currentPageIndicatorTintColor = UIColor(red: 233 / 255.0, green: 69 / 255.0, blue: 96 / 255.0, alpha: 1.0)
-                    UIPageControl.appearance().pageIndicatorTintColor = UIColor(red: 233 / 255.0, green: 69 / 255.0, blue: 96 / 255.0, alpha: 0.2)
+                    UIPageControl.appearance().currentPageIndicatorTintColor = UIColor(DS.red)
+                    UIPageControl.appearance().pageIndicatorTintColor = UIColor(DS.red.opacity(0.2))
                 }
             
             Spacer()
@@ -70,7 +70,7 @@ public struct OnBoardingScreen: View {
                         }
                     }) {
                         Text("Skip")
-                            .foregroundColor(.gray)
+                            .foregroundColor(DS.textSec)
                             .padding()
                     }
                     
@@ -86,7 +86,7 @@ public struct OnBoardingScreen: View {
                             .foregroundColor(.white)
                             .padding()
                             .frame(width: 100)
-                            .background(Color.onboardingTheme)
+                            .background(DS.red)
                             .cornerRadius(10)
                     }
                 } else {
@@ -98,7 +98,7 @@ public struct OnBoardingScreen: View {
                             .foregroundColor(.white)
                             .padding()
                             .frame(maxWidth: .infinity)
-                            .background(Color.onboardingTheme)
+                            .background(DS.red)
                             .cornerRadius(10)
                             .padding(.horizontal)
                     }

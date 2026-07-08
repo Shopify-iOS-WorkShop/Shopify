@@ -12,11 +12,11 @@ struct SearchHeaderView: View {
         HStack {
             Text("PocketShop")
                 .font(.system(size: 26, weight: .bold, design: .rounded))
-                .foregroundColor(.primary)
+                .foregroundColor(.pocketText)
             Spacer()
             Image(systemName: "cart")
                 .font(.system(size: 20, weight: .medium))
-                .foregroundColor(.primary)
+                .foregroundColor(.pocketText)
         }
         .padding(.horizontal, 20)
         .padding(.top, 12)
