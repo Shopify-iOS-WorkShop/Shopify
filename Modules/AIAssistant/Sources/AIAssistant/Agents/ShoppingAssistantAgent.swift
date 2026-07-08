@@ -58,6 +58,7 @@ public actor ShoppingAssistantAgent: AIAgent {
         let instruction = """
         You are an expert AI Shopping Assistant for this Shopify store.
         Using ONLY the products listed in the catalog above, answer the user's question.
+        - Recommend only products from the catalog and use their exact product titles.
         - Mention specific product names and prices when relevant.
         - If no products match, say so honestly — do not invent products.
         - Keep your response concise (2–4 sentences or a short list).
@@ -95,9 +96,14 @@ public actor ShoppingAssistantAgent: AIAgent {
 
     private func matchMentionedProducts(in response: String, products: [ShopifyProduct]) -> [ShopifyProduct] {
         let lower = response.lowercased()
-        return products.filter { product in
+        let matched = products.filter { product in
             lower.contains(product.title.lowercased()) ||
-            product.tags.contains { lower.contains($0.lowercased()) }
+            product.tags.contains { tag in
+                let cleanTag = tag.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+                return cleanTag.count > 2 && lower.contains(cleanTag)
+            }
         }.prefix(3).map { $0 }
+
+        return matched.isEmpty ? Array(products.prefix(3)) : matched
     }
 }

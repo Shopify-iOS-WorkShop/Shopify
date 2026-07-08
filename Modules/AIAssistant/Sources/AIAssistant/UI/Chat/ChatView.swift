@@ -4,6 +4,7 @@ import SwiftUI
 public struct ChatView: View {
 
     let agent: ShoppingAssistantAgent
+    let onProductSelected: ((ShopifyProduct) -> Void)?
     private static let typingIndicatorID = "typing"
 
     @State private var messages: [AIMessage] = []
@@ -12,8 +13,9 @@ public struct ChatView: View {
     @State private var error: String?
     @FocusState private var inputFocused: Bool
 
-    public init(agent: ShoppingAssistantAgent) {
+    public init(agent: ShoppingAssistantAgent, onProductSelected: ((ShopifyProduct) -> Void)? = nil) {
         self.agent = agent
+        self.onProductSelected = onProductSelected
     }
 
     public var body: some View {
@@ -26,7 +28,7 @@ public struct ChatView: View {
                             emptyState
                         }
                         ForEach(messages) { message in
-                            MessageBubble(message: message)
+                            MessageBubble(message: message, onProductSelected: onProductSelected)
                                 .id(message.id)
                         }
                         if isLoading {
@@ -152,6 +154,7 @@ public struct ChatView: View {
 
 private struct MessageBubble: View {
     let message: AIMessage
+    let onProductSelected: ((ShopifyProduct) -> Void)?
 
     var isUser: Bool { message.role == .user }
 
@@ -173,7 +176,7 @@ private struct MessageBubble: View {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 8) {
                             ForEach(message.attachedProducts) { product in
-                                ProductChip(product: product)
+                                ProductChip(product: product, onProductSelected: onProductSelected)
                             }
                         }
                     }
@@ -188,21 +191,50 @@ private struct MessageBubble: View {
 
 private struct ProductChip: View {
     let product: ShopifyProduct
+    let onProductSelected: ((ShopifyProduct) -> Void)?
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(product.title)
-                .font(.caption).bold()
-                .lineLimit(1)
-            Text(product.minPrice)
-                .font(.caption2)
-                .foregroundColor(.secondary)
+        Button {
+            onProductSelected?(product)
+        } label: {
+            VStack(alignment: .leading, spacing: 8) {
+                if let imageURL = product.firstImageURL {
+                    AsyncImage(url: imageURL) { phase in
+                        switch phase {
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .scaledToFill()
+                        case .empty:
+                            ProgressView()
+                        case .failure:
+                            Color(.tertiarySystemGroupedBackground)
+                        @unknown default:
+                            Color(.tertiarySystemGroupedBackground)
+                        }
+                    }
+                    .frame(width: 132, height: 112)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                }
+
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(product.title)
+                        .font(.caption).bold()
+                        .foregroundColor(.primary)
+                        .lineLimit(2)
+                    Text(product.minPrice)
+                        .font(.caption2)
+                        .foregroundColor(.indigo)
+                }
+                .frame(width: 132, alignment: .leading)
+            }
+            .padding(8)
+            .background(Color(.tertiarySystemGroupedBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 10))
+            .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.indigo.opacity(0.2), lineWidth: 1))
         }
-        .padding(.horizontal, 10)
-        .padding(.vertical, 6)
-        .background(Color(.tertiarySystemGroupedBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 10))
-        .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.indigo.opacity(0.2), lineWidth: 1))
+        .buttonStyle(.plain)
+        .disabled(onProductSelected == nil)
     }
 }
 

@@ -19,6 +19,7 @@ import Favorites
 import Cart
 import Payment
 import Settings
+import AIAssistant
 
 enum GuestPromptContext {
     case addToCart
@@ -413,10 +414,20 @@ struct ContentView: View {
 
             // ── AI Assistant floating button ─────────────────────────────
             // Sits above every tab, bottom-right corner, 80 pt above tab bar
-            	AIAssistantFloatingButton()
+            AIAssistantFloatingButton { product in
+                openAIProduct(product)
+            }
                 .padding(.bottom, 60) // clears the custom tab bar height
         }
 
+    }
+
+    @MainActor
+    private func openAIProduct(_ product: ShopifyProduct) {
+        let rawId = product.id.components(separatedBy: "/").last ?? product.id
+        guard let productId = Int(rawId) else { return }
+        selectedTab = .home
+        appCoordinator.homeCoordinator.push(.productDetail(productId: productId))
     }
 
 

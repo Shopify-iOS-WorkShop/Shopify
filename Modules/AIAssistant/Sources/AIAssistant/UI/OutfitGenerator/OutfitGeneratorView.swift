@@ -5,6 +5,7 @@ import SwiftUI
 public struct OutfitGeneratorView: View {
 
     let agent: OutfitGeneratorAgent
+    let onProductSelected: ((ShopifyProduct) -> Void)?
 
     @State private var selectedOccasion: String = "Casual"
     @State private var preferences = ""
@@ -15,8 +16,9 @@ public struct OutfitGeneratorView: View {
 
     private let occasions = ["Casual", "Formal", "Date Night", "Workout", "Beach", "Office", "Party", "Weekend"]
 
-    public init(agent: OutfitGeneratorAgent) {
+    public init(agent: OutfitGeneratorAgent, onProductSelected: ((ShopifyProduct) -> Void)? = nil) {
         self.agent = agent
+        self.onProductSelected = onProductSelected
     }
 
     public var body: some View {
@@ -138,6 +140,7 @@ public struct OutfitGeneratorView: View {
                 OutfitCard(
                     suggestion: suggestion,
                     isExpanded: expandedOutfit == suggestion.id,
+                    onProductSelected: onProductSelected,
                     onToggle: {
                         withAnimation(.easeInOut(duration: 0.25)) {
                             expandedOutfit = expandedOutfit == suggestion.id ? nil : suggestion.id
@@ -200,6 +203,7 @@ public struct OutfitGeneratorView: View {
 private struct OutfitCard: View {
     let suggestion: OutfitSuggestion
     let isExpanded: Bool
+    let onProductSelected: ((ShopifyProduct) -> Void)?
     let onToggle: () -> Void
 
     var body: some View {
@@ -242,7 +246,7 @@ private struct OutfitCard: View {
                                 .foregroundColor(.secondary)
                                 .textCase(.uppercase)
                             ForEach(suggestion.products) { product in
-                                OutfitProductRow(product: product)
+                                OutfitProductRow(product: product, onProductSelected: onProductSelected)
                             }
                         }
                     }
@@ -264,7 +268,9 @@ private struct OutfitCard: View {
 
                     // Shop now button
                     Button {
-                        // Integration point: navigate to product or cart
+                        if let firstProduct = suggestion.products.first {
+                            onProductSelected?(firstProduct)
+                        }
                     } label: {
                         Label("Shop This Outfit", systemImage: "bag.fill")
                             .font(.subheadline).fontWeight(.medium)
@@ -274,6 +280,7 @@ private struct OutfitCard: View {
                             .foregroundColor(.white)
                             .clipShape(RoundedRectangle(cornerRadius: 10))
                     }
+                    .disabled(suggestion.products.isEmpty || onProductSelected == nil)
                 }
                 .padding()
             }
@@ -286,23 +293,46 @@ private struct OutfitCard: View {
 
 private struct OutfitProductRow: View {
     let product: ShopifyProduct
+    let onProductSelected: ((ShopifyProduct) -> Void)?
 
     var body: some View {
-        HStack(spacing: 10) {
-            RoundedRectangle(cornerRadius: 6)
-                .fill(Color.indigo.opacity(0.1))
-                .frame(width: 40, height: 40)
-                .overlay(Image(systemName: "tag.fill").foregroundColor(.indigo.opacity(0.5)).font(.caption))
+        Button {
+            onProductSelected?(product)
+        } label: {
+            HStack(spacing: 10) {
+                if let imageURL = product.firstImageURL {
+                    AsyncImage(url: imageURL) { phase in
+                        switch phase {
+                        case .success(let image):
+                            image.resizable().scaledToFill()
+                        case .empty:
+                            ProgressView()
+                        case .failure:
+                            Color(.tertiarySystemGroupedBackground)
+                        @unknown default:
+                            Color(.tertiarySystemGroupedBackground)
+                        }
+                    }
+                    .frame(width: 40, height: 40)
+                    .clipShape(RoundedRectangle(cornerRadius: 6))
+                }
 
-            VStack(alignment: .leading, spacing: 2) {
-                Text(product.title)
-                    .font(.caption).bold()
-                    .lineLimit(1)
-                Text(product.minPrice)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(product.title)
+                        .font(.caption).bold()
+                        .foregroundColor(.primary)
+                        .lineLimit(1)
+                    Text(product.minPrice)
+                        .font(.caption2)
+                        .foregroundColor(.indigo)
+                }
+                Spacer()
+                Image(systemName: "chevron.right")
                     .font(.caption2)
-                    .foregroundColor(.indigo)
+                    .foregroundColor(.secondary)
             }
-            Spacer()
         }
+        .buttonStyle(.plain)
+        .disabled(onProductSelected == nil)
     }
 }

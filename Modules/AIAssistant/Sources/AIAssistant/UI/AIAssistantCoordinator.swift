@@ -8,9 +8,11 @@ public struct AIAssistantCoordinator: View {
     @State private var showingFeaturePicker = false
 
     private let initialFeature: AIFeature?
+    private let onProductSelected: ((ShopifyProduct) -> Void)?
 
-    public init(initialFeature: AIFeature? = nil) {
+    public init(initialFeature: AIFeature? = nil, onProductSelected: ((ShopifyProduct) -> Void)? = nil) {
         self.initialFeature = initialFeature
+        self.onProductSelected = onProductSelected
     }
 
     public var body: some View {
@@ -73,13 +75,13 @@ public struct AIAssistantCoordinator: View {
     private var featureContent: some View {
         switch selectedFeature {
         case .shoppingAssistant:
-            ChatView(agent: kit.shoppingAssistant)
+            ChatView(agent: kit.shoppingAssistant, onProductSelected: onProductSelected)
         case .productComparison:
-            ProductComparisonView(agent: kit.productComparison)
+            ProductComparisonView(agent: kit.productComparison, onProductSelected: onProductSelected)
         case .imageSearch:
-            ImageSearchView(agent: kit.imageSearch)
+            ImageSearchView(agent: kit.imageSearch, onProductSelected: onProductSelected)
         case .outfitGenerator:
-            OutfitGeneratorView(agent: kit.outfitGenerator)
+            OutfitGeneratorView(agent: kit.outfitGenerator, onProductSelected: onProductSelected)
         }
     }
 }

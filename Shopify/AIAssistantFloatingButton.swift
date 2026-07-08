@@ -9,9 +9,15 @@ import SwiftUI
 import AIAssistant
 
 struct AIAssistantFloatingButton: View {
+    let onProductSelected: (ShopifyProduct) -> Void
+
     @State private var showChat = false
     @State private var showDrawer = false
     @State private var selectedFeature: AIFeature? = nil
+
+    init(onProductSelected: @escaping (ShopifyProduct) -> Void = { _ in }) {
+        self.onProductSelected = onProductSelected
+    }
     
     var body: some View {
         ZStack {
@@ -50,7 +56,10 @@ struct AIAssistantFloatingButton: View {
         // Chat fullscreen cover
         .fullScreenCover(isPresented: $showChat) {
             NavigationStack {
-                ChatView(agent: AIAssistantKit.shared.shoppingAssistant)
+                ChatView(agent: AIAssistantKit.shared.shoppingAssistant) { product in
+                    showChat = false
+                    onProductSelected(product)
+                }
                     .navigationTitle("AI Shopping Assistant")
                     .navigationBarTitleDisplayMode(.inline)
                     .toolbar {
@@ -81,7 +90,10 @@ struct AIAssistantFloatingButton: View {
         // Feature detail view
         .fullScreenCover(item: $selectedFeature) { feature in
             NavigationStack {
-                AIAssistantCoordinator(initialFeature: feature)
+                AIAssistantCoordinator(initialFeature: feature) { product in
+                    selectedFeature = nil
+                    onProductSelected(product)
+                }
                     .toolbar {
                         ToolbarItem(placement: .topBarLeading) {
                             Button(action: { selectedFeature = nil }) {

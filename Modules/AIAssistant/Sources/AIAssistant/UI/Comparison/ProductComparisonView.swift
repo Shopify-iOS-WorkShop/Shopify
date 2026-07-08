@@ -4,14 +4,16 @@ import SwiftUI
 public struct ProductComparisonView: View {
 
     let agent: ProductComparisonAgent
+    let onProductSelected: ((ShopifyProduct) -> Void)?
 
     @State private var query = ""
     @State private var result: ComparisonResult?
     @State private var isLoading = false
     @State private var error: String?
 
-    public init(agent: ProductComparisonAgent) {
+    public init(agent: ProductComparisonAgent, onProductSelected: ((ShopifyProduct) -> Void)? = nil) {
         self.agent = agent
+        self.onProductSelected = onProductSelected
     }
 
     public var body: some View {
@@ -104,7 +106,7 @@ public struct ProductComparisonView: View {
             // Product cards side by side
             HStack(alignment: .top, spacing: 12) {
                 ForEach(result.products.prefix(2)) { product in
-                    ProductCard(product: product)
+                    ProductCard(product: product, onProductSelected: onProductSelected)
                 }
             }
 
@@ -195,34 +197,50 @@ public struct ProductComparisonView: View {
 
 private struct ProductCard: View {
     let product: ShopifyProduct
+    let onProductSelected: ((ShopifyProduct) -> Void)?
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            RoundedRectangle(cornerRadius: 10)
-                .fill(Color.indigo.opacity(0.1))
-                .frame(height: 100)
-                .overlay(
-                    Image(systemName: "bag.fill")
-                        .foregroundColor(.indigo.opacity(0.5))
-                        .font(.largeTitle)
-                )
+        Button {
+            onProductSelected?(product)
+        } label: {
+            VStack(alignment: .leading, spacing: 8) {
+                if let imageURL = product.firstImageURL {
+                    AsyncImage(url: imageURL) { phase in
+                        switch phase {
+                        case .success(let image):
+                            image.resizable().scaledToFill()
+                        case .empty:
+                            ProgressView()
+                        case .failure:
+                            Color(.tertiarySystemGroupedBackground)
+                        @unknown default:
+                            Color(.tertiarySystemGroupedBackground)
+                        }
+                    }
+                    .frame(height: 100)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                }
 
-            Text(product.title)
-                .font(.caption).bold()
-                .lineLimit(2)
-            Text(product.minPrice)
-                .font(.caption2)
-                .foregroundColor(.indigo)
-            if !product.productType.isEmpty {
-                Text(product.productType)
+                Text(product.title)
+                    .font(.caption).bold()
+                    .foregroundColor(.primary)
+                    .lineLimit(2)
+                Text(product.minPrice)
                     .font(.caption2)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(.indigo)
+                if !product.productType.isEmpty {
+                    Text(product.productType)
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                }
             }
+            .padding(10)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color(.secondarySystemGroupedBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
         }
-        .padding(10)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .buttonStyle(.plain)
+        .disabled(onProductSelected == nil)
     }
 }
 

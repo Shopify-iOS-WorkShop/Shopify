@@ -5,6 +5,7 @@ import PhotosUI
 public struct ImageSearchView: View {
 
     let agent: ImageSearchAgent
+    let onProductSelected: ((ShopifyProduct) -> Void)?
 
     @State private var selectedItem: PhotosPickerItem?
     @State private var selectedImageData: Data?
@@ -15,8 +16,9 @@ public struct ImageSearchView: View {
     @State private var error: String?
     @State private var showCamera = false
 
-    public init(agent: ImageSearchAgent) {
+    public init(agent: ImageSearchAgent, onProductSelected: ((ShopifyProduct) -> Void)? = nil) {
         self.agent = agent
+        self.onProductSelected = onProductSelected
     }
 
     public var body: some View {
@@ -171,7 +173,7 @@ public struct ImageSearchView: View {
                 .foregroundColor(.secondary)
 
             ForEach(result.matchedProducts) { product in
-                MatchedProductRow(product: product)
+                MatchedProductRow(product: product, onProductSelected: onProductSelected)
             }
 
             Button("Search Again") {
@@ -243,35 +245,55 @@ public struct ImageSearchView: View {
 
 private struct MatchedProductRow: View {
     let product: ShopifyProduct
+    let onProductSelected: ((ShopifyProduct) -> Void)?
 
     var body: some View {
-        HStack(spacing: 12) {
-            RoundedRectangle(cornerRadius: 8)
-                .fill(Color.indigo.opacity(0.1))
-                .frame(width: 60, height: 60)
-                .overlay(Image(systemName: "bag.fill").foregroundColor(.indigo.opacity(0.5)))
-
-            VStack(alignment: .leading, spacing: 3) {
-                Text(product.title)
-                    .font(.subheadline).bold()
-                    .lineLimit(2)
-                Text(product.minPrice)
-                    .font(.caption)
-                    .foregroundColor(.indigo)
-                if !product.productType.isEmpty {
-                    Text(product.productType)
-                        .font(.caption2)
-                        .foregroundColor(.secondary)
+        Button {
+            onProductSelected?(product)
+        } label: {
+            HStack(spacing: 12) {
+                if let imageURL = product.firstImageURL {
+                    AsyncImage(url: imageURL) { phase in
+                        switch phase {
+                        case .success(let image):
+                            image.resizable().scaledToFill()
+                        case .empty:
+                            ProgressView()
+                        case .failure:
+                            Color(.tertiarySystemGroupedBackground)
+                        @unknown default:
+                            Color(.tertiarySystemGroupedBackground)
+                        }
+                    }
+                    .frame(width: 60, height: 60)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
                 }
+
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(product.title)
+                        .font(.subheadline).bold()
+                        .foregroundColor(.primary)
+                        .lineLimit(2)
+                    Text(product.minPrice)
+                        .font(.caption)
+                        .foregroundColor(.indigo)
+                    if !product.productType.isEmpty {
+                        Text(product.productType)
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                    }
+                }
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
             }
-            Spacer()
-            Image(systemName: "chevron.right")
-                .font(.caption)
-                .foregroundColor(.secondary)
+            .padding(10)
+            .background(Color(.tertiarySystemGroupedBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 10))
         }
-        .padding(10)
-        .background(Color(.tertiarySystemGroupedBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 10))
+        .buttonStyle(.plain)
+        .disabled(onProductSelected == nil)
     }
 }
 
