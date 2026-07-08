@@ -50,6 +50,7 @@ struct ContentView: View {
     @StateObject private var searchViewModel = AppAssembly.shared.makeSearchViewModel()
     @State private var sessionChecked: Bool = false
     @State private var selectedTab: Common.Tab = .home
+    @AppStorage("app_language") private var appLanguage: String = "en"
     @State private var cartViewModel: CartViewModel? = nil
     @State private var guestPromptContext: GuestPromptContext? = nil
 
@@ -148,7 +149,6 @@ struct ContentView: View {
        
         .onChange(of: appCoordinator.hasCompletedAuth) { _, isAuthenticated in
             guard isAuthenticated else { return }
-            selectedTab = .home
             appCoordinator.homeCoordinator.path = NavigationPath() // always show initial Home
             // Recreate cart (picks up new session owner key) and load immediately
             cartViewModel = AppAssembly.shared.resolve(CartViewModel.self)
@@ -329,6 +329,7 @@ struct ContentView: View {
                     .toolbar(.hidden, for: .tabBar)
 
             }
+            .id(appLanguage)
             .environment(currencyStore)
             .toolbar(.hidden, for: .tabBar)
 
