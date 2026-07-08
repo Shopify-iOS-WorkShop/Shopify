@@ -1,1 +1,32 @@
 **/ShopifyConfig.swift
+**/Secrets.swift
+**/Secrets.xcconfig
+**/Secrets.plist
+
+# Firebase / local secrets
+**/GoogleService-Info.plist
+
+# macOS generated files
+.DS_Store
+**/.DS_Store
+
+# Xcode user-specific generated files
+*.xcuserstate
+xcuserdata/
+**/xcuserdata/
+*.xcscmblueprint
+
+# SwiftPM / Xcode generated state
+**/.build/
+**/.swiftpm/xcode/
+**/Package.resolved
+Shopify.xcworkspace/xcshareddata/swiftpm/
+# Apollo GraphQL Generated Files
+# **/Generated/
+# **/ShopifyAPI/
+# *.graphqls
+
+# User-specific Xcode data & Schemes
+**/xcuserdata/
+**/*.xcuserstate
+**/xcschemes/

@@ -1,0 +1,38 @@
+mutation CreateDraftOrder($input: DraftOrderInput!) {
+  draftOrderCreate(input: $input) {
+    draftOrder {
+      id
+    }
+    userErrors {
+      message
+    }
+  }
+}
+
+mutation CompleteDraftOrderAsCOD($id: ID!, $paymentGatewayId: ID) {
+  draftOrderComplete(id: $id, paymentGatewayId: $paymentGatewayId) {
+    draftOrder {
+      order {
+        id
+        name
+      }
+    }
+    userErrors {
+      message
+    }
+  }
+}
+
+mutation CompleteDraftOrderAsPaid($id: ID!) {
+  draftOrderComplete(id: $id) {
+    draftOrder {
+      order {
+        id
+        name
+      }
+    }
+    userErrors {
+      message
+    }
+  }
+}

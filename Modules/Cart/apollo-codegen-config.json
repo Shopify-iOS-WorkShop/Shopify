@@ -1,0 +1,27 @@
+{
+  "schemaNamespace": "CartAPI",
+  "input": {
+      "operationSearchPaths" : [
+          "./Sources/**/*.graphql"
+    ],
+    "schemaSearchPaths": [
+      "../shopify-network/Sources/ShopifyNetwork/GraphQL/schema.graphqls"
+    ]
+  },
+  "output": {
+    "testMocks": {
+      "none": {}
+    },
+    "schemaTypes": {
+      "path": "./Sources/Cart/Data/GraphQL/Generated",
+      "moduleType": {
+        "embeddedInTarget": {
+          "name": "Cart"
+        }
+      }
+    },
+    "operations": {
+      "inSchemaModule": {}
+    }
+  }
+}

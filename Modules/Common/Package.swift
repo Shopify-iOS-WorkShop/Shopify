@@ -1,0 +1,43 @@
+// swift-tools-version: 5.9
+// The swift-tools-version declares the minimum version of Swift required to build this package.
+
+import PackageDescription
+
+let package = Package(
+    name: "Common",
+    platforms: [
+        .iOS(.v17)
+    ],
+    products: [
+      
+        
+        .library(
+            name: "Common",
+            targets: ["Common"]
+        ),
+    ],
+    dependencies: [
+        .package(path: "../shopify-network"),
+        .package(path: "../DependencyInjection")
+    ],
+    targets: [
+        // Targets are the basic building blocks of a package, defining a module or a test suite.
+        // Targets can depend on other targets in this package and products from dependencies.
+        .target(
+            name: "Common",
+            dependencies: [
+                .product(name: "DependencyInjection", package: "DependencyInjection"),
+                // Explicitly tells SPM: "Look for the product 'ShopifyNetwork' inside the package 'shopify-network'"
+                .product(name: "ShopifyNetwork", package: "shopify-network")
+            ]
+        ),
+        .testTarget(
+            name: "CommonTests",
+            dependencies: [
+                "Common",
+                .product(name: "DependencyInjection", package: "DependencyInjection"),
+                .product(name: "ShopifyNetwork", package: "shopify-network")
+            ]
+        ),
+    ]
+)
