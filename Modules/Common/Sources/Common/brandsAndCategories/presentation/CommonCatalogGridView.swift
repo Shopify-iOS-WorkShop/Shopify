@@ -9,6 +9,7 @@ import SwiftUI
 
 public struct CommonCatalogGridView: View {
     @StateObject private var viewModel: CatalogGridViewModel
+    @Environment(\.dismiss) private var dismiss
     private let type: CatalogDisplayType
     public var onItemTapped: ((GridItemEntity) -> Void)?
     // Grid Setup for layout versatility
@@ -59,7 +60,21 @@ public struct CommonCatalogGridView: View {
             }
             .background(DS.background.ignoresSafeArea())
             .animation(.spring(), value: viewModel.isLoading)
-            .navigationTitle(type.navigationTitle)
+            .navigationTitle(LocalizedStringKey(type.navigationTitle))
+            .navigationBarBackButtonHidden(true)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        HStack(spacing: 4) {
+                            Image(systemName: "chevron.backward")
+                                .font(.system(size: 16, weight: .semibold))
+                            Text(LocalizedStringKey("Back"))
+                        }
+                    }
+                }
+            }
             .task {
                 await viewModel.loadCatalogData()
             }

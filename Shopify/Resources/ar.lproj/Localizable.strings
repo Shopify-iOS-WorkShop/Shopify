@@ -255,6 +255,9 @@
 "Reset Password for %@" = "إعادة تعيين كلمة المرور لـ %@";
 "Invalid product ID" = "رقم المنتج غير صالح";
 "Cart not initialized" = "لم يتم تهيئة سلة التسوق";
+"Back" = "رجوع";
+"Categories" = "الفئات";
+"All Products" = "كل المنتجات";
 
 /* Guest Mode Fixes */
 "Sign In to View Cart" = "تسجيل الدخول لعرض السلة";
