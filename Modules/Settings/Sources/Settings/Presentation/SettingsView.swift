@@ -89,17 +89,11 @@ public struct SettingsView: View {
 
                 if !viewModel.isGuest {
                     Section("Account") {
-                        NavigationLink(value: SettingsRoute.editProfile) {
-                            Label("Edit Profile", systemImage: "person.circle")
-                        }
                         Button {
                             coordinator.isShowingAddresses = true
                         } label: {
                             Label("Addresses", systemImage: "map")
                                 .foregroundColor(.primary)
-                        }
-                        NavigationLink(value: SettingsRoute.orderHistory) {
-                            Label("Order History", systemImage: "clock.arrow.2.circlepath")
                         }
                     }
                 }
@@ -205,8 +199,6 @@ public struct SettingsView: View {
                 orders: viewModel.profile?.recentOrders ?? [],
                 viewModel: viewModel
             )
-        case .editProfile:
-            EditProfilePlaceholderView()
         case .addresses:
             AddressFlowView(
                 listViewModel: DIContainer.shared.resolve(AddressListViewModel.self)!,
@@ -217,10 +209,8 @@ public struct SettingsView: View {
             let detailViewModel = viewModel.makeOrderDetailViewModel(order.id)
             OrderDetailView(viewModel: detailViewModel)
         }
-        
     }
 }
-
 
 private struct OrderHistoryView: View {
         let orders: [CustomerOrder]
@@ -244,27 +234,4 @@ private struct OrderHistoryView: View {
                 }
             }
         }
-}
-
-
-private struct EditProfilePlaceholderView: View {
-    var body: some View {
-        ContentUnavailableView(
-            "Coming Soon", systemImage: "person.circle",
-            description: Text("Profile editing will be available here.")
-        )
-        .navigationTitle("Edit Profile")
-        .navigationBarTitleDisplayMode(.inline)
-    }
-}
-
-private struct AddressesPlaceholderView: View {
-    var body: some View {
-        ContentUnavailableView(
-            "Coming Soon", systemImage: "map",
-            description: Text("Address management will be available here.")
-        )
-        .navigationTitle("Addresses")
-        .navigationBarTitleDisplayMode(.inline)
-    }
 }
