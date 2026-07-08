@@ -3,7 +3,7 @@ import SwiftUI
 
 public struct ProductListingView: View {
     public let title: String
-    @ObservedObject public var viewModel: ProductListingViewModel
+    @StateObject public var viewModel: ProductListingViewModel
     @State private var selectedFilter: String = "All"
     @State private var showingFilterDrawer = false
     
@@ -14,9 +14,9 @@ public struct ProductListingView: View {
         GridItem(.flexible(), spacing: 16)
     ]
     
-    public init(title: String, viewModel: ProductListingViewModel) {
+    public init(title: String, viewModel: @autoclosure @escaping () -> ProductListingViewModel) {
         self.title = title
-        self.viewModel = viewModel
+        self._viewModel = StateObject(wrappedValue: viewModel())
     }
     
     public var body: some View {
