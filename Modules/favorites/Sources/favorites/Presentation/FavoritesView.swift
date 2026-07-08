@@ -122,6 +122,7 @@ public struct FavoritesView: View {
             }
         }
         .listStyle(.plain)
+        .scrollContentBackground(.hidden)
         .background(DS.background)
     }
 }

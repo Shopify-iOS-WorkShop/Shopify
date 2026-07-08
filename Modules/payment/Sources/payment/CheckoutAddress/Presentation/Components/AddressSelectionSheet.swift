@@ -41,15 +41,16 @@ struct AddressSelectionSheet: View {
             
             Image(systemName: "map.circle")
                 .font(.system(size: 72, weight: .light))
-                .foregroundColor(Color(.systemGray3))
+                .foregroundColor(DS.textSec)
             
             VStack(spacing: 8) {
                 Text("No Saved Addresses")
                     .font(.system(size: 20, weight: .bold))
+                    .foregroundColor(DS.textPri)
                 
                 Text("Add a new address to speed up your checkout process.")
                     .font(.system(size: 14))
-                    .foregroundColor(.secondary)
+                    .foregroundColor(DS.textSec)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 40)
             }
@@ -69,6 +70,7 @@ struct AddressSelectionSheet: View {
             .padding(.horizontal, 20)
             .padding(.bottom, 16)
         }
+        .background(DS.background)
     }
     
     private var populatedListView: some View {
@@ -87,19 +89,23 @@ struct AddressSelectionSheet: View {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(address.title)
                                     .font(.system(size: 16, weight: .semibold))
-                                    .foregroundColor(.primary)
+                                    .foregroundColor(DS.textPri)
                                 
                                 Text(address.details)
                                     .font(.system(size: 14))
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(DS.textSec)
                                     .multilineTextAlignment(.leading)
                             }
                             Spacer()
                         }
                         .padding(16)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(Color(.systemGray6))
+                        .background(DS.cardBG)
                         .cornerRadius(12)
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(DS.border, lineWidth: 1)
+                        }
                     }
                     .buttonStyle(PlainButtonStyle())
                 }
@@ -107,5 +113,6 @@ struct AddressSelectionSheet: View {
             .padding(.horizontal, 20)
             .padding(.top, 24)
         }
+        .background(DS.background)
     }
 }

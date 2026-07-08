@@ -47,24 +47,30 @@ public struct CheckoutAddressView: View {
                             
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(currentAddress.title).fontWeight(.semibold)
+                                    .foregroundColor(DS.textPri)
                                 Text(currentAddress.details)
                                     .font(.system(size: 14))
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(DS.textSec)
                             }
                         }
                         .padding(16)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(Color(.systemGray6))
+                        .background(DS.cardBG)
                         .cornerRadius(12)
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(DS.border, lineWidth: 1)
+                        }
                     } else {
                         HStack(alignment: .center, spacing: 12) {
                             Image(systemName: "map.circle")
                                 .font(.system(size: 32))
-                                .foregroundColor(Color(.systemGray3))
+                                .foregroundColor(DS.textSec)
                             
                             VStack(alignment: .leading, spacing: 4) {
                                 Text("No Saved Addresses")
                                     .fontWeight(.semibold)
+                                    .foregroundColor(DS.textPri)
                                 Button(action: {
                                     coordinator.onAddNewAddressRequested?()
                                 }) {
@@ -78,8 +84,12 @@ public struct CheckoutAddressView: View {
                         }
                         .padding(16)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(Color(.systemGray6))
+                        .background(DS.cardBG)
                         .cornerRadius(12)
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(DS.border, lineWidth: 1)
+                        }
                     }
                 }
                 .padding(.horizontal, 20)

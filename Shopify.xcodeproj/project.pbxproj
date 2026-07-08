@@ -13,7 +13,6 @@
 		31170F7A2FF7EA880017293F /* Payment in Frameworks */ = {isa = PBXBuildFile; productRef = 31170F792FF7EA880017293F /* Payment */; };
 		315646272FFA70F6005620F2 /* ShopifyAdminNetwork in Frameworks */ = {isa = PBXBuildFile; productRef = 315646262FFA70F6005620F2 /* ShopifyAdminNetwork */; };
 		31D979212FF74DCE00FA3DD4 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31D979202FF74DCE00FA3DD4 /* AppCoordinator.swift */; };
-		390C33172FFDF45A008A2F51 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 390C33162FFDF45A008A2F51 /* Secrets.swift */; };
 		395A74B12FFD304C00A375C1 /* Addresss in Frameworks */ = {isa = PBXBuildFile; productRef = 395A74B02FFD304C00A375C1 /* Addresss */; };
 		39EBC5CB2FF5B303009F5DA1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 39EBC5CA2FF5B303009F5DA1 /* GoogleService-Info.plist */; };
 		6D06F6F52FF946280034F8D9 /* Favorites in Frameworks */ = {isa = PBXBuildFile; productRef = 6D06F6F42FF946280034F8D9 /* Favorites */; };
@@ -41,7 +40,6 @@
 /* Begin PBXFileReference section */
 		31D1E34A2FFD34CD005F34CF /* Shopify.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Shopify.entitlements; sourceTree = "<group>"; };
 		31D979202FF74DCE00FA3DD4 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
-		390C33162FFDF45A008A2F51 /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
 		39EBC5CA2FF5B303009F5DA1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		7823CFC12FFDB31A008A4700 /* AIAssistantFloatingButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIAssistantFloatingButton.swift; sourceTree = "<group>"; };
 		7879208C2FF80BF2009EFC6F /* AppAssembly.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAssembly.swift; sourceTree = "<group>"; };
@@ -111,7 +109,6 @@
 		78BFEC892FEFCB6800358550 /* Shopify */ = {
 			isa = PBXGroup;
 			children = (
-				390C33162FFDF45A008A2F51 /* Secrets.swift */,
 				7823CFC12FFDB31A008A4700 /* AIAssistantFloatingButton.swift */,
 				31D1E34A2FFD34CD005F34CF /* Shopify.entitlements */,
 				7879208C2FF80BF2009EFC6F /* AppAssembly.swift */,
@@ -233,7 +230,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				31D979212FF74DCE00FA3DD4 /* AppCoordinator.swift in Sources */,
-				390C33172FFDF45A008A2F51 /* Secrets.swift in Sources */,
 				7879208D2FF80BF2009EFC6F /* AppAssembly.swift in Sources */,
 				78BFEC8D2FEFCB6800358550 /* ContentView.swift in Sources */,
 				7823CFC22FFDB31A008A4700 /* AIAssistantFloatingButton.swift in Sources */,

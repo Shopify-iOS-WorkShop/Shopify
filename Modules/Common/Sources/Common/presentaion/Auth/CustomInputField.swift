@@ -32,8 +32,10 @@ public struct CustomInputField: View {
             ZStack(alignment: .trailing) {
                 if isSecure && !isPasswordVisible {
                     SecureField(placeholder, text: $text)
+                        .foregroundColor(DS.textPri)
                 } else {
                     TextField(placeholder, text: $text)
+                        .foregroundColor(DS.textPri)
                 }
                 
                 if isSecure {
@@ -44,14 +46,13 @@ public struct CustomInputField: View {
                     .padding(.trailing, 16)
                 }
             }
-            .environment(\.colorScheme, .light)
             .padding()
             .frame(minHeight: 56)
-            .background(Color.white)
+            .background(DS.fieldBG)
             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
             .overlay {
                 RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .stroke(DS.lightGray, lineWidth: 1)
+                    .stroke(DS.border, lineWidth: 1)
             }
         }
     }

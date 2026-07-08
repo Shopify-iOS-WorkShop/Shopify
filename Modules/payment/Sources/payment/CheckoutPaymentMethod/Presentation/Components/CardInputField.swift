@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import Common
 
 public struct CardInputField: View {
     let title: String
@@ -25,22 +26,26 @@ public struct CardInputField: View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title)
                 .font(.system(size: 12, weight: .semibold))
-                .foregroundColor(.primary)
+                .foregroundColor(DS.textSec)
             
             HStack {
                 TextField(placeholder, text: $text)
                     .font(.system(size: 16))
+                    .foregroundColor(DS.textPri)
                     .keyboardType(.numberPad)
                 
                 if let icon = icon {
                     Image(systemName: icon)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(DS.textSec)
                 }
             }
-            .environment(\.colorScheme, .light)
             .padding()
-            .background(Color.white)
+            .background(DS.fieldBG)
             .cornerRadius(8)
+            .overlay {
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(DS.border, lineWidth: 1)
+            }
         }
     }
 }

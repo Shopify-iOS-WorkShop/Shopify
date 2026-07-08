@@ -69,45 +69,49 @@ public struct PaymentMethodView: View {
                 VStack(spacing: 12) {
                     HStack {
                         Text("Subtotal (\(viewModel.totalItems) items)")
-                            .foregroundColor(.secondary)
+                            .foregroundColor(DS.textSec)
                         
                         Spacer()
                         
                         VStack(alignment: .trailing, spacing: 2) {
                             Text(viewModel.subtotalFormatted)
+                                .foregroundColor(DS.textPri)
                             
                             if let usdText = viewModel.usdSubtotalFormatted {
                                 Text(usdText)
                                     .font(.caption)
-                                    .foregroundColor(.gray)
+                                    .foregroundColor(DS.textSec)
                             }
                         }
                     }
                     
                     HStack {
                         Text("Shipping Fee")
-                            .foregroundColor(.secondary)
+                            .foregroundColor(DS.textSec)
                         
                         Spacer()
                         
                         VStack(alignment: .trailing, spacing: 2) {
                             Text(viewModel.deliveryFeeFormatted)
+                                .foregroundColor(DS.textPri)
                             
                             if let usdText = viewModel.usdDeliveryFeeFormatted {
                                 Text(usdText)
                                     .font(.caption)
-                                    .foregroundColor(.gray)
+                                    .foregroundColor(DS.textSec)
                             }
                         }
                     }
                     
                     Divider()
+                        .background(DS.border)
                         .padding(.vertical, 4)
                     
                     HStack {
                         Text("Total Amount")
                             .font(.headline)
                             .fontWeight(.bold)
+                            .foregroundColor(DS.textPri)
                         
                         Spacer()
                         
@@ -120,14 +124,18 @@ public struct PaymentMethodView: View {
                             if let usdText = viewModel.usdTotalFormatted {
                                 Text(usdText)
                                     .font(.caption)
-                                    .foregroundColor(.gray)
+                                    .foregroundColor(DS.textSec)
                             }
                         }
                     }
                 }
                 .padding()
-                .background(Color(UIColor.secondarySystemBackground))
+                .background(DS.cardBG)
                 .cornerRadius(12)
+                .overlay {
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(DS.border, lineWidth: 1)
+                }
             }
             .padding(.horizontal, 20)
             .padding(.bottom, 20)
@@ -150,7 +158,7 @@ public struct PaymentMethodView: View {
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .frame(height: 45)
-                    .background(DS.fieldBG)
+                    .background(Color.black)
                     .cornerRadius(8)
                 }
                 .padding(.horizontal, 40)

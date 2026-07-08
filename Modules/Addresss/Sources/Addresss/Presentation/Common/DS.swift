@@ -18,6 +18,7 @@ enum AddressDS {
     static let textSec    = Color(light: "#6F7280", dark: "#B6BDD4")
     static let lightGray  = Color(light: "#E7E9EE", dark: "#2B3654")
     static let fieldBG    = Color(light: "#F1F2F5", dark: "#202842")
+    static let shadow     = Color(light: "#1A1A2E", dark: "#000000")
     static let success    = Color(hex: "#1FA36B")
     static let successBG  = Color(light: "#E5F7EE", dark: "#143D2B")
 }
