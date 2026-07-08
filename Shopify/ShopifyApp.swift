@@ -10,6 +10,7 @@ import GoogleSignIn
 import Payment
 import Favorites
 import StripeCore
+import AIAssistant
 
 @main
 struct ShopifyApp: App {
@@ -33,7 +34,19 @@ struct ShopifyApp: App {
         }
         
         _ = AppAssembly.shared.setup(with: modelContainer.mainContext)
-        
+
+        // ── AI Assistant ─────────────────────────────────────────────
+        // Real keys live in Secrets.swift which is gitignored.
+        AIAssistantKit.configure(with: AIAssistantConfig(
+            provider:              .groq,
+            geminiAPIKey:          Secrets.geminiAPIKey,
+            groqAPIKey:            Secrets.groqAPIKey,
+            groqModel:             "llama-3.3-70b-versatile",
+            groqVisionModel:       "meta-llama/llama-4-scout-17b-16e-instruct",
+            shopifyHostname:       ShopifyConfig.hostname,
+            storefrontAccessToken: ShopifyConfig.storefrontToken
+        ))
+
         StripeAPI.defaultPublishableKey = ShopifyConfig.stripeTestKey
         StripeAPI.paymentRequest(
             withMerchantIdentifier: "merchant.com.team5.test",
