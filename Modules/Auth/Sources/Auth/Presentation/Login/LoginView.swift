@@ -32,7 +32,7 @@ public struct LoginView: View {
 
                 // MARK: Fields
                 VStack(spacing: 16) {
-                    CustomInputField(title: "Email",    placeholder: "Enter your email", text: $viewModel.email)
+                    CustomInputField(title: "Email",    placeholder: "Enter your email", text: $viewModel.email, autocapitalization: .none)
                     CustomInputField(title: "Password", placeholder: "********",         text: $viewModel.password, isSecure: true)
                 }
 

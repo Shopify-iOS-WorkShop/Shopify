@@ -49,11 +49,11 @@ public struct RegistrationView: View {
                     }
 
                     VStack(alignment: .leading, spacing: 8) {
-                        CustomInputField(title: "Email", placeholder: "example@email.com", text: $viewModel.email)
+                        CustomInputField(title: "Email", placeholder: "Enter your email", text: $viewModel.email, autocapitalization: .none)
                         Text("Verify email will be sent")
                             .font(.caption)
                             .fontWeight(.semibold)
-                            .foregroundColor(DS.textSec.opacity(0.45))
+                            .foregroundColor(DS.textSec)
                         if let error = viewModel.emailValidationError {
                             Text(error)
                                 .font(.caption)

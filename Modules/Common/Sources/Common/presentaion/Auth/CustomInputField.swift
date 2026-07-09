@@ -12,14 +12,16 @@ public struct CustomInputField: View {
     let placeholder: LocalizedStringKey
     @Binding var text: String
     var isSecure: Bool = false
+    var autocapitalization: UITextAutocapitalizationType = .sentences
     
     @State private var isPasswordVisible: Bool = false
 
-    public init(title: LocalizedStringKey, placeholder: LocalizedStringKey, text: Binding<String>, isSecure: Bool = false) {
+    public init(title: LocalizedStringKey, placeholder: LocalizedStringKey, text: Binding<String>, isSecure: Bool = false, autocapitalization: UITextAutocapitalizationType = .sentences) {
         self.title = title
         self.placeholder = placeholder
         self._text = text
         self.isSecure = isSecure
+        self.autocapitalization = autocapitalization
     }
     
     public var body: some View {
@@ -34,9 +36,11 @@ public struct CustomInputField: View {
                 if isSecure && !isPasswordVisible {
                     SecureField(placeholder, text: $text)
                         .foregroundColor(DS.textPri)
+                        .autocapitalization(autocapitalization)
                 } else {
                     TextField(placeholder, text: $text)
                         .foregroundColor(DS.textPri)
+                        .autocapitalization(autocapitalization)
                 }
                 
                 if isSecure {
