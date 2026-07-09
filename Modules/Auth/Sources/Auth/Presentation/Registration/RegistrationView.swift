@@ -80,12 +80,7 @@ public struct RegistrationView: View {
                     }
                 }
 
-                if let error = viewModel.errorMessage {
-                    Text(error)
-                        .font(.callout)
-                        .foregroundColor(DS.red)
-                        .multilineTextAlignment(.center)
-                }
+
 
                 if viewModel.isLoading {
                     ProgressView()
@@ -136,6 +131,20 @@ public struct RegistrationView: View {
                 ))
                 viewModel.shouldNavigateToVerification = false
             }
+        }
+        .alert(isPresented: Binding(
+            get: { viewModel.errorMessage != nil },
+            set: { isPresented in
+                if !isPresented {
+                    viewModel.errorMessage = nil
+                }
+            }
+        )) {
+            Alert(
+                title: Text("Error"),
+                message: Text(viewModel.errorMessage ?? ""),
+                dismissButton: .default(Text("OK"))
+            )
         }
         .navigationBarHidden(true)
     }

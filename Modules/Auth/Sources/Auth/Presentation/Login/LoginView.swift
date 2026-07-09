@@ -46,14 +46,7 @@ public struct LoginView: View {
                     }
                 }
 
-                // Error message
-                if let error = viewModel.errorMessage {
-                    Text(error)
-                        .font(.callout)
-                        .foregroundColor(DS.red)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal)
-                }
+
 
                 // MARK: Actions
                 VStack(spacing: 16) {
@@ -102,6 +95,20 @@ public struct LoginView: View {
         // With REST API, both existing and new users complete login immediately
         .onReceive(viewModel.$completedSession.compactMap { $0 }) { _ in
             coordinator.onLoginSuccess?()
+        }
+        .alert(isPresented: Binding(
+            get: { viewModel.errorMessage != nil },
+            set: { isPresented in
+                if !isPresented {
+                    viewModel.errorMessage = nil
+                }
+            }
+        )) {
+            Alert(
+                title: Text("Error"),
+                message: Text(viewModel.errorMessage ?? ""),
+                dismissButton: .default(Text("OK"))
+            )
         }
         .background(DS.background)
         .navigationBarHidden(true)
