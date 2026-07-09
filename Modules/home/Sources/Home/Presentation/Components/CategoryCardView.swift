@@ -24,7 +24,7 @@ public struct CategoryCardView: View {
                 )
                 .frame(height: 90)
 
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: 12) {
                 Image(systemName: category.iconName)
                     .font(.system(size: 22, weight: .medium))
                     .foregroundColor(DS.red)
