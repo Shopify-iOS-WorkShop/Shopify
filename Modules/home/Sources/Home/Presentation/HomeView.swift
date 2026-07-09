@@ -37,12 +37,22 @@ public struct HomeView: View {
                     SectionHeaderView(title: "Shop by Brand", hasViewAll: true) {
                         coordinator.push(.catalog(type: .brands))
                     }
-                    BrandsScrollView(brands: viewModel.brands)
+                    if viewModel.isLoading && viewModel.brands.isEmpty {
+                        BrandsPlaceholderView()
+                    } else {
+                        BrandsScrollView(brands: viewModel.brands)
+                    }
 
                     SectionHeaderView(title: "Main Categories", hasViewAll: true) {
                         coordinator.push(.catalog(type: .categories))
                     }
-                    CategoriesGridView(categories: viewModel.categories)
+                    
+                    if viewModel.isLoading && viewModel.categories.isEmpty {
+                        CategoriesPlaceholderView()
+                    } else {
+                        CategoriesGridView(categories: viewModel.categories)
+                            .padding(.horizontal, 16)
+                    }
 
                     SectionHeaderView(title: "Best Sellers", hasViewAll: true) {
                         coordinator.push(.productListing(collectionId: nil, title: "All Products"))
@@ -111,5 +121,41 @@ public struct HomeView: View {
         case .url(let url):
             UIApplication.shared.open(url)
         }
+    }
+}
+
+struct BrandsPlaceholderView: View {
+    var body: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 14) {
+                ForEach(0..<5, id: \.self) { _ in
+                    VStack(spacing: 6) {
+                        Circle()
+                            .fill(Color.gray.opacity(0.2))
+                            .frame(width: 62, height: 62)
+                        
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(Color.gray.opacity(0.2))
+                            .frame(width: 50, height: 10)
+                    }
+                }
+            }
+            .padding(.horizontal, 16)
+        }
+    }
+}
+
+struct CategoriesPlaceholderView: View {
+    let columns = [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)]
+    
+    var body: some View {
+        LazyVGrid(columns: columns, spacing: 12) {
+            ForEach(0..<4, id: \.self) { _ in
+                RoundedRectangle(cornerRadius: 14)
+                    .fill(Color.gray.opacity(0.2))
+                    .frame(height: 90)
+            }
+        }
+        .padding(.horizontal, 16)
     }
 }

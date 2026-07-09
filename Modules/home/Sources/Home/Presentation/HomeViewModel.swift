@@ -63,7 +63,12 @@ public class HomeViewModel: ObservableObject {
         }
 
         do {
-            categories = Array(try await repository.fetchCategories().prefix(4))
+            let allCategories = try await repository.fetchCategories()
+            categories = Array(
+                allCategories
+                    .filter { $0.title != "Home page" && $0.title != "Hydrogen" }
+                    .prefix(4)
+            )
         } catch {
             messages.append("Categories: \(error.localizedDescription)")
             print("Error fetching home categories: \(error)")

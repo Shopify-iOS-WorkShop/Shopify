@@ -49,11 +49,11 @@ public struct RegistrationView: View {
                     }
 
                     VStack(alignment: .leading, spacing: 8) {
-                        CustomInputField(title: "Email", placeholder: "example@email.com", text: $viewModel.email)
+                        CustomInputField(title: "Email", placeholder: "Enter your email", text: $viewModel.email, autocapitalization: .none)
                         Text("Verify email will be sent")
                             .font(.caption)
                             .fontWeight(.semibold)
-                            .foregroundColor(DS.textSec.opacity(0.45))
+                            .foregroundColor(DS.textSec)
                         if let error = viewModel.emailValidationError {
                             Text(error)
                                 .font(.caption)
@@ -80,12 +80,7 @@ public struct RegistrationView: View {
                     }
                 }
 
-                if let error = viewModel.errorMessage {
-                    Text(error)
-                        .font(.callout)
-                        .foregroundColor(DS.red)
-                        .multilineTextAlignment(.center)
-                }
+
 
                 if viewModel.isLoading {
                     ProgressView()
@@ -136,6 +131,20 @@ public struct RegistrationView: View {
                 ))
                 viewModel.shouldNavigateToVerification = false
             }
+        }
+        .alert(isPresented: Binding(
+            get: { viewModel.errorMessage != nil },
+            set: { isPresented in
+                if !isPresented {
+                    viewModel.errorMessage = nil
+                }
+            }
+        )) {
+            Alert(
+                title: Text("Error"),
+                message: Text(viewModel.errorMessage ?? ""),
+                dismissButton: .default(Text("OK"))
+            )
         }
         .navigationBarHidden(true)
     }
